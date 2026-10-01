@@ -86,7 +86,7 @@ require(phase_paths(test, 'PBXSourcesBuildPhase') == ['WatchUITests/PickleBlastW
         'Unexpected UI-test source membership.')
 resources = phase_paths(app, 'PBXResourcesBuildPhase')
 expected_resources = {'WatchApp/Assets.xcassets', 'WatchApp/PrivacyInfo.xcprivacy',
-                      'WatchApp/Art/runtime_manifest.json'} | {
+                      'WatchApp/Art/runtime_manifest.json', 'WatchApp/Policy/Privacy.txt'} | {
     path.relative_to(root).as_posix() for path in (root / 'WatchApp/Art').glob('*.atlas')}
 require(len(resources) == len(set(resources)) and set(resources) == expected_resources,
         'App resource membership differs from runtime inputs.')

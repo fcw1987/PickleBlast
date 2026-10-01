@@ -33,9 +33,11 @@ obj('manifest', 'isa = PBXFileReference; lastKnownFileType = text.json; path = A
 obj('manifestBuild', f'isa = PBXBuildFile; fileRef = {uid("manifest")};')
 obj('privacy', 'isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = \"<group>\";')
 obj('privacyBuild', f'isa = PBXBuildFile; fileRef = {uid("privacy")};')
+obj('policyText', 'isa = PBXFileReference; lastKnownFileType = text; path = Policy/Privacy.txt; sourceTree = "<group>";')
+obj('policyTextBuild', f'isa = PBXBuildFile; fileRef = {uid("policyText")};')
 obj('plist', 'isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>";')
 obj('product', 'isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PickleBlast.app; sourceTree = BUILT_PRODUCTS_DIR;')
-obj('watchGroup', f'isa = PBXGroup; path = WatchApp; sourceTree = "<group>"; children = ({", ".join(uid("file:"+f) for f in files)}, {uid("assets")}, {uid("plist")}, {uid("privacy")}, {uid("manifest")}{"".join(", " + uid("atlas:"+a.name) for a in atlases)});')
+obj('watchGroup', f'isa = PBXGroup; path = WatchApp; sourceTree = "<group>"; children = ({", ".join(uid("file:"+f) for f in files)}, {uid("assets")}, {uid("plist")}, {uid("privacy")}, {uid("policyText")}, {uid("manifest")}{"".join(", " + uid("atlas:"+a.name) for a in atlases)});')
 obj('testFile', 'isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchUITests/PickleBlastWatchUITests.swift; sourceTree = SOURCE_ROOT;')
 obj('testBuild', f'isa = PBXBuildFile; fileRef = {uid("testFile")};')
 obj('testProduct', 'isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PickleBlastWatchUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR;')
@@ -54,7 +56,7 @@ for product in ['PickleBlastCore', 'PickleBlastRendering']:
     obj(product, f'isa = XCSwiftPackageProductDependency; productName = {product};')
     obj(product+'Build', f'isa = PBXBuildFile; productRef = {uid(product)};')
 obj('sources', f'isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = ({", ".join(uid("build:"+f) for f in files)}); runOnlyForDeploymentPostprocessing = 0;')
-obj('resources', f'isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = ({uid("assetsBuild")}, {uid("privacyBuild")}, {uid("manifestBuild")}{"".join(", " + uid("atlasBuild:"+a.name) for a in atlases)}); runOnlyForDeploymentPostprocessing = 0;')
+obj('resources', f'isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = ({uid("assetsBuild")}, {uid("privacyBuild")}, {uid("policyTextBuild")}, {uid("manifestBuild")}{"".join(", " + uid("atlasBuild:"+a.name) for a in atlases)}); runOnlyForDeploymentPostprocessing = 0;')
 obj('frameworks', f'isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = ({uid("PickleBlastCoreBuild")}, {uid("PickleBlastRenderingBuild")}); runOnlyForDeploymentPostprocessing = 0;')
 for mode in ['Debug', 'Release']:
     common = 'CLANG_ENABLE_MODULES = YES; CLANG_ENABLE_OBJC_ARC = YES; SDKROOT = watchos; SWIFT_VERSION = 5.0; WATCHOS_DEPLOYMENT_TARGET = 10.0;'

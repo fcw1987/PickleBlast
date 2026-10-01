@@ -236,6 +236,15 @@ struct SettingsView: View {
             }
             Toggle("Haptics", isOn: $preferences.haptics)
                 .accessibilityIdentifier("settings.haptics")
+            Section("Information") {
+                NavigationLink("Privacy") { PrivacyView() }
+                    .accessibilityIdentifier("settings.privacy")
+                NavigationLink("Support") { SupportView() }
+                    .accessibilityIdentifier("settings.support")
+                Text(verbatim: PublicInformation.version)
+                    .font(.caption.monospacedDigit())
+                    .accessibilityIdentifier("settings.version")
+            }
             #if DEBUG
             Section("Development") {
                 Toggle("Diagnostics", isOn: $preferences.diagnostics)

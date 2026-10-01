@@ -16,22 +16,22 @@ Privacy and Support information are bundled with the app and can be read offline
 
 You can change Crown sensitivity and haptics in Settings. There is no in-app control to erase saved records. Deleting the app removes its local data container. Apple's backup and restore services may retain or restore app data under Apple's policies; deleting the app does not promise deletion of backups. PickleBlast does not keep a developer-operated remote copy of your settings or records.
 
-Apple may process information through its operating system, App Store, backups, and optional diagnostic services under Apple's own policies. This policy does not claim that those services collect nothing. See [Apple's privacy policy](https://www.apple.com/legal/privacy/).
+Apple may process information through its operating system, App Store, backups, and optional diagnostic services under Apple's own policies. This policy does not claim that those services collect nothing. See Apple's privacy policy (https://www.apple.com/legal/privacy/).
 
 ## This website
 
 GitHub hosts this website through GitHub Pages. The project adds no analytics, advertising, tracking scripts, external fonts, or account system to the site.
 
-GitHub states that Pages logs visitors' IP addresses for security, including visits made without signing in. GitHub's processing is governed by the [GitHub Privacy Statement](https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement). See also [GitHub Pages data collection](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages#data-collection).
+GitHub states that Pages logs visitors' IP addresses for security, including visits made without signing in. GitHub's processing is governed by the GitHub Privacy Statement (https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement). See also GitHub Pages data collection (https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages#data-collection).
 
 ## Support and security reports
 
 Ordinary support uses GitHub Issues. Posting requires a GitHub account. Your username, issue text, and attachments are public and may be viewed or copied by others. Submit only the information needed to explain your question, bug, or suggestion. Do not include sensitive personal information, passwords, credentials, account details, serial numbers, device identifiers, or unredacted logs. Check screenshots before attaching them.
 
-Security vulnerabilities should be reported through [GitHub private vulnerability reporting](https://github.com/fcw1987/PickleBlast/security/advisories/new), not a public issue. GitHub processes those reports through its service and makes them available to authorized participants. This route is for security concerns, not private general support.
+Security vulnerabilities should be reported through GitHub private vulnerability reporting (https://github.com/fcw1987/PickleBlast/security/advisories/new), not a public issue. GitHub processes those reports through its service and makes them available to authorized participants. This route is for security concerns, not private general support.
 
 The developer uses information you voluntarily submit to understand and respond to reports. GitHub controls its account, hosting, and reporting infrastructure under its policies. The developer cannot promise to erase GitHub's infrastructure logs, backups, or copies made by others.
 
 ## Questions
 
-For questions about PickleBlast or this policy, read the [Support page](https://fcw1987.github.io/PickleBlast/support/) or open a [support question](https://github.com/fcw1987/PickleBlast/issues/new?template=support_question.yml). Keep any public question free of sensitive information.
+For questions about PickleBlast or this policy, read the Support page (https://fcw1987.github.io/PickleBlast/support/) or open a support question (https://github.com/fcw1987/PickleBlast/issues/new?template=support_question.yml). Keep any public question free of sensitive information.

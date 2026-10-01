@@ -267,6 +267,112 @@ final class PickleBlastWatchUITests: XCTestCase {
     }
 
     @MainActor
+    func testPrivacyAndSupportScrollBackPreserveSettings() throws {
+        let app = launchHome()
+        let best = element("home.best", in: app)
+        let originalBest = best.exists ? best.label : nil
+        openSettings(app)
+        let sensitivity = element("settings.sensitivity", in: app)
+        reveal(sensitivity, in: app)
+        let originalSensitivity = try value(sensitivity)
+        let haptics = element("settings.haptics", in: app)
+        reveal(haptics, in: app)
+        let originalHaptics = try value(haptics)
+        let privacy = element("settings.privacy", in: app)
+        scrollInformationTo(privacy, in: app); privacy.tap()
+        XCTAssertTrue(element("privacy.offline", in: app).waitForExistence(timeout: 5))
+        let privacyURL = element("privacy.url", in: app)
+        scrollInformationTo(privacyURL, in: app)
+        XCTAssertTrue(privacyURL.label.contains("https://fcw1987.github.io/PickleBlast/privacy/"))
+        capture("privacy-offline-top", app: app)
+        scrollInformationTo(element("privacy.end", in: app), in: app)
+        XCTAssertTrue(element("privacy.end", in: app).isHittable)
+        capture("privacy-offline-bottom", app: app)
+        let privacyBack = app.buttons["privacy.back"]
+        scrollInformationTo(privacyBack, in: app); privacyBack.tap()
+        let support = element("settings.support", in: app)
+        scrollInformationTo(support, in: app); support.tap()
+        XCTAssertTrue(element("support.offline", in: app).waitForExistence(timeout: 5))
+        let supportVersion = element("support.version", in: app)
+        XCTAssertTrue(supportVersion.label.hasPrefix("Version "))
+        let supportURL = element("support.url", in: app)
+        scrollInformationTo(supportURL, in: app)
+        XCTAssertTrue(supportURL.label.contains("https://fcw1987.github.io/PickleBlast/support/"))
+        capture("support-offline-top", app: app)
+        scrollInformationTo(element("support.help.public", in: app), in: app)
+        XCTAssertTrue(element("support.help.public", in: app).label.contains("reports are public"))
+        let supportBack = app.buttons["support.back"]
+        scrollInformationTo(supportBack, in: app)
+        capture("support-offline-bottom", app: app)
+        supportBack.tap()
+        let version = element("settings.version", in: app)
+        scrollInformationTo(version, in: app)
+        XCTAssertTrue(version.label.hasPrefix("Version "), version.label)
+        XCTAssertTrue(version.label.contains("(build "), version.label)
+        capture("settings-information", app: app)
+        scrollInformationTo(sensitivity, in: app, towardTop: true)
+        reveal(sensitivity, in: app)
+        XCTAssertEqual(try value(sensitivity), originalSensitivity)
+        reveal(haptics, in: app)
+        XCTAssertEqual(try value(haptics), originalHaptics)
+
+        // Verify durable settings and Arcade best as well as the in-memory UI.
+        app.terminate(); app.launch()
+        XCTAssertTrue(app.buttons["home.play"].waitForExistence(timeout: 10))
+        XCTAssertEqual(best.exists ? best.label : nil, originalBest)
+        openSettings(app)
+        reveal(sensitivity, in: app)
+        XCTAssertEqual(try value(sensitivity), originalSensitivity)
+        reveal(haptics, in: app)
+        XCTAssertEqual(try value(haptics), originalHaptics)
+    }
+
+    @MainActor
+    func testPrivacyAndSupportShowReadableAddressesWithoutWebLaunchControls() throws {
+        let app = launchHome()
+        openSettings(app)
+        for page in ["privacy", "support"] {
+            let entry = element("settings.\(page)", in: app)
+            scrollInformationTo(entry, in: app); entry.tap()
+            XCTAssertTrue(element("\(page).offline", in: app).waitForExistence(timeout: 5))
+            let address = element("\(page).url", in: app)
+            scrollInformationTo(address, in: app)
+            XCTAssertTrue(address.label.contains("https://fcw1987.github.io/PickleBlast/\(page)/"))
+            let fallback = element("\(page).fallback", in: app)
+            scrollInformationTo(fallback, in: app)
+            XCTAssertTrue(fallback.label.contains("browser on another device"))
+            XCTAssertFalse(app.buttons["\(page).open"].exists)
+            XCTAssertFalse(element("\(page).linkStatus", in: app).exists)
+            capture("\(page)-readable-address", app: app)
+            // Return through the normal navigation bar; the longer test also
+            // proves every offline paragraph and the bottom Back control.
+            let back = app.navigationBars.buttons.firstMatch
+            XCTAssertTrue(back.exists)
+            back.tap()
+        }
+        XCTAssertEqual(app.state, .runningForeground)
+    }
+
+    @MainActor
+    private func scrollInformationTo(_ target: XCUIElement, in app: XCUIApplication, towardTop: Bool = false) {
+        // The complete policy, including readable source URLs, takes more
+        // short drags on the 40 mm display. Keep the end-of-content assertion.
+        for _ in 0..<120 {
+            if target.exists && target.isHittable { return }
+            let upper = app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.35))
+            let lower = app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.80))
+            if (target.exists && target.frame.minY < 52) || (!target.exists && towardTop) {
+                upper.press(forDuration: 0.05, thenDragTo: lower,
+                            withVelocity: .slow, thenHoldForDuration: 0.1)
+            } else {
+                lower.press(forDuration: 0.05, thenDragTo: upper,
+                            withVelocity: .slow, thenHoldForDuration: 0.1)
+            }
+        }
+        XCTAssertTrue(target.exists && target.isHittable, "Information remains scrollable: \(target.identifier)")
+    }
+
+    @MainActor
     func testSettingsPersistAcrossRelaunch() throws {
         let app = launchHome()
         openSettings(app)
