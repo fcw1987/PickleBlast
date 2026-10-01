@@ -1,0 +1,67 @@
+name: Bug report
+description: Report a reproducible PickleBlast problem.
+title: ""
+labels: []
+body:
+  - type: markdown
+    attributes:
+      value: >-
+        Leave out passwords, credentials, signing material, account details,
+        device identifiers, and private logs.
+  - type: input
+    id: version
+    attributes:
+      label: PickleBlast version
+      placeholder: "For example, 1.0 (4)"
+    validations:
+      required: false
+  - type: input
+    id: watch
+    attributes:
+      label: Apple Watch model
+      placeholder: "For example, Apple Watch SE 3"
+    validations:
+      required: false
+  - type: input
+    id: watchos
+    attributes:
+      label: watchOS version
+      placeholder: "For example, 27.0"
+    validations:
+      required: false
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Include the game mode and actions that led to the problem.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: observed
+    attributes:
+      label: Observed behavior
+    validations:
+      required: true
+  - type: dropdown
+    id: relaunch
+    attributes:
+      label: Does it reproduce after closing and reopening PickleBlast?
+      options:
+        - Not checked
+        - Yes
+        - No
+    validations:
+      required: false
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots (optional)
+      description: Add a screenshot if it helps explain the issue. Check it for private information first.
+    validations:
+      required: false

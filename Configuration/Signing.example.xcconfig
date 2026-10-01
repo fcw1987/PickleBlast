@@ -1,0 +1,5 @@
+// Copy to Signing.local.xcconfig for physical development builds.
+// Enter your existing Xcode development team identifier after the equals sign.
+// Keep automatic signing and the existing application bundle identifier.
+// Never add credentials, certificates, provisioning exports, or account names.
+DEVELOPMENT_TEAM =

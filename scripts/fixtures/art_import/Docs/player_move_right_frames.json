@@ -1,0 +1,5794 @@
+[
+  {
+    "clip": "move_right",
+    "time_normalized": 0.0,
+    "root_px": [
+      256,
+      450.0
+    ],
+    "joints_world": {
+      "hip_0": [
+        -23.0,
+        0.0,
+        116.0
+      ],
+      "knee_0": [
+        -34.22596,
+        16.30492,
+        67.91541
+      ],
+      "ankle_0": [
+        -42.0,
+        -9.0,
+        22.0
+      ],
+      "hip_1": [
+        23.0,
+        0.0,
+        116.0
+      ],
+      "knee_1": [
+        34.22596,
+        16.30492,
+        67.91541
+      ],
+      "ankle_1": [
+        42.0,
+        -9.0,
+        22.0
+      ],
+      "right_shoulder": [
+        44.0,
+        18.0,
+        193.0
+      ],
+      "right_elbow": [
+        84.88718,
+        17.14456,
+        159.28788
+      ],
+      "right_wrist": [
+        55.6,
+        61.0,
+        154.0
+      ],
+      "left_shoulder": [
+        -40.0,
+        18.0,
+        193.0
+      ],
+      "left_elbow": [
+        -81.16696,
+        20.69545,
+        159.72816
+      ],
+      "left_wrist": [
+        -46.7,
+        60.0,
+        151.0
+      ]
+    },
+    "joints_screen": {
+      "hip_0": [
+        233.0,
+        345.73989
+      ],
+      "knee_0": [
+        221.77404,
+        381.81042
+      ],
+      "ankle_0": [
+        214.0,
+        434.17187
+      ],
+      "hip_1": [
+        279.0,
+        345.73989
+      ],
+      "knee_1": [
+        290.22596,
+        381.81042
+      ],
+      "ankle_1": [
+        298.0,
+        434.17187
+      ],
+      "right_shoulder": [
+        300.0,
+        268.64207
+      ],
+      "right_elbow": [
+        340.88718,
+        299.31732
+      ],
+      "right_wrist": [
+        311.6,
+        284.84508
+      ],
+      "left_shoulder": [
+        216.0,
+        268.64207
+      ],
+      "left_elbow": [
+        174.83304,
+        297.365
+      ],
+      "left_wrist": [
+        209.3,
+        287.97983
+      ]
+    },
+    "paddle_center_px": [
+      320.51941,
+      247.1294
+    ],
+    "wrist_px": [
+      311.6,
+      284.84508
+    ],
+    "paddle_basis_x": [
+      0.762955,
+      0.145758
+    ],
+    "paddle_basis_y": [
+      -0.162171,
+      0.68574
+    ],
+    "draw_order": [
+      "left_hand",
+      "right_hand",
+      "shin_0",
+      "shin_1",
+      "shoe_0",
+      "shoe_1",
+      "paddle",
+      "forearm_left",
+      "thigh_0",
+      "thigh_1",
+      "forearm_right",
+      "hips",
+      "upper_arm_left",
+      "upper_arm_right",
+      "torso",
+      "head"
+    ],
+    "max_reach_clamp": 0.0,
+    "root_translation_world": 0.0,
+    "foot_lift": [
+      0.0,
+      0.0
+    ],
+    "root_normalized": [
+      0.5,
+      0.87890625
+    ],
+    "paddle_center_normalized": [
+      0.62601447265625,
+      0.482674609375
+    ],
+    "wrist_normalized": [
+      0.60859375,
+      0.556338046875
+    ],
+    "filename": "player_move_right_001.png",
+    "index": 0,
+    "timestamp_seconds": 0.0,
+    "bounds512": [
+      164,
+      145,
+      352,
+      454
+    ]
+  },
+  {
+    "clip": "move_right",
+    "time_normalized": 0.03125,
+    "root_px": [
+      256,
+      450.0
+    ],
+    "joints_world": {
+      "hip_0": [
+        -23.0,
+        0.0,
+        115.95433
+      ],
+      "knee_0": [
+        -34.5377,
+        16.17461,
+        67.89953
+      ],
+      "ankle_0": [
+        -42.8125,
+        -9.0,
+        22.0
+      ],
+      "hip_1": [
+        23.0,
+        0.0,
+        115.95433
+      ],
+      "knee_1": [
+        33.97925,
+        16.8176,
+        67.9895
+      ],
+      "ankle_1": [
+        41.27673,
+        -9.0,
+        22.28175
+      ],
+      "right_shoulder": [
+        44.0,
+        18.0,
+        192.95433
+      ],
+      "right_elbow": [
+        84.83809,
+        17.0705,
+        159.18473
+      ],
+      "right_wrist": [
+        55.6,
+        61.0,
+        154.25189
+      ],
+      "left_shoulder": [
+        -40.0,
+        18.0,
+        192.95433
+      ],
+      "left_elbow": [
+        -81.14912,
+        20.60874,
+        159.65351
+      ],
+      "left_wrist": [
+        -46.7,
+        60.0,
+        151.25189
+      ]
+    },
+    "joints_screen": {
+      "hip_0": [
+        233.0,
+        345.78094
+      ],
+      "knee_0": [
+        221.4623,
+        381.88182
+      ],
+      "ankle_0": [
+        213.1875,
+        434.17187
+      ],
+      "hip_1": [
+        279.0,
+        345.78094
+      ],
+      "knee_1": [
+        289.97925,
+        381.51909
+      ],
+      "ankle_1": [
+        297.27673,
+        433.91863
+      ],
+      "right_shoulder": [
+        300.0,
+        268.68312
+      ],
+      "right_elbow": [
+        340.83809,
+        299.4425
+      ],
+      "right_wrist": [
+        311.6,
+        284.61868
+      ],
+      "left_shoulder": [
+        216.0,
+        268.68312
+      ],
+      "left_elbow": [
+        174.85088,
+        297.4701
+      ],
+      "left_wrist": [
+        209.3,
+        287.75343
+      ]
+    },
+    "paddle_center_px": [
+      320.51941,
+      246.903
+    ],
+    "wrist_px": [
+      311.6,
+      284.61868
+    ],
+    "paddle_basis_x": [
+      0.762955,
+      0.145758
+    ],
+    "paddle_basis_y": [
+      -0.162171,
+      0.68574
+    ],
+    "draw_order": [
+      "left_hand",
+      "right_hand",
+      "shin_1",
+      "shin_0",
+      "shoe_0",
+      "shoe_1",
+      "paddle",
+      "forearm_left",
+      "thigh_1",
+      "thigh_0",
+      "forearm_right",
+      "hips",
+      "upper_arm_left",
+      "upper_arm_right",
+      "torso",
+      "head"
+    ],
+    "max_reach_clamp": 0.0,
+    "root_translation_world": 0.8125,
+    "foot_lift": [
+      0.0,
+      0.2817515103959868
+    ],
+    "root_normalized": [
+      0.5,
+      0.87890625
+    ],
+    "paddle_center_normalized": [
+      0.62601447265625,
+      0.482232421875
+    ],
+    "wrist_normalized": [
+      0.60859375,
+      0.555895859375
+    ],
+    "filename": "player_move_right_002.png",
+    "index": 1,
+    "timestamp_seconds": 0.02,
+    "bounds512": [
+      164,
+      145,
+      352,
+      454
+    ]
+  },
+  {
+    "clip": "move_right",
+    "time_normalized": 0.0625,
+    "root_px": [
+      256,
+      450.0
+    ],
+    "joints_world": {
+      "hip_0": [
+        -23.0,
+        0.0,
+        115.82426
+      ],
+      "knee_0": [
+        -34.85603,
+        16.1302,
+        67.83206
+      ],
+      "ankle_0": [
+        -43.625,
+        -9.0,
+        22.0
+      ],
+      "hip_1": [
+        23.0,
+        0.0,
+        115.82426
+      ],
+      "knee_1": [
+        33.95109,
+        17.83847,
+        68.22319
+      ],
+      "ankle_1": [
+        41.00943,
+        -9.0,
+        23.06927
+      ],
+      "right_shoulder": [
+        44.0,
+        18.0,
+        192.82426
+      ],
+      "right_elbow": [
+        84.78538,
+        16.9952,
+        158.99317
+      ],
+      "right_wrist": [
+        55.6,
+        61.0,
+        154.43347
+      ],
+      "left_shoulder": [
+        -40.0,
+        18.0,
+        192.82426
+      ],
+      "left_elbow": [
+        -81.12893,
+        20.51944,
+        159.49164
+      ],
+      "left_wrist": [
+        -46.7,
+        60.0,
+        151.43347
+      ]
+    },
+    "joints_screen": {
+      "hip_0": [
+        233.0,
+        345.89784
+      ],
+      "knee_0": [
+        221.14397,
+        381.96193
+      ],
+      "ankle_0": [
+        212.375,
+        434.17187
+      ],
+      "hip_1": [
+        279.0,
+        345.89784
+      ],
+      "knee_1": [
+        289.95109,
+        380.86153
+      ],
+      "ankle_1": [
+        297.00943,
+        433.21082
+      ],
+      "right_shoulder": [
+        300.0,
+        268.80002
+      ],
+      "right_elbow": [
+        340.78538,
+        299.64768
+      ],
+      "right_wrist": [
+        311.6,
+        284.45548
+      ],
+      "left_shoulder": [
+        216.0,
+        268.80002
+      ],
+      "left_elbow": [
+        174.87107,
+        297.65474
+      ],
+      "left_wrist": [
+        209.3,
+        287.59023
+      ]
+    },
+    "paddle_center_px": [
+      320.51941,
+      246.73981
+    ],
+    "wrist_px": [
+      311.6,
+      284.45548
+    ],
+    "paddle_basis_x": [
+      0.762955,
+      0.145758
+    ],
+    "paddle_basis_y": [
+      -0.162171,
+      0.68574
+    ],
+    "draw_order": [
+      "left_hand",
+      "right_hand",
+      "shin_1",
+      "shin_0",
+      "shoe_0",
+      "shoe_1",
+      "paddle",
+      "forearm_left",
+      "thigh_1",
+      "thigh_0",
+      "forearm_right",
+      "hips",
+      "upper_arm_left",
+      "upper_arm_right",
+      "torso",
+      "head"
+    ],
+    "max_reach_clamp": 0.0,
+    "root_translation_world": 1.625,
+    "foot_lift": [
+      0.0,
+      1.0692722862309147
+    ],
+    "root_normalized": [
+      0.5,
+      0.87890625
+    ],
+    "paddle_center_normalized": [
+      0.62601447265625,
+      0.48191369140625
+    ],
+    "wrist_normalized": [
+      0.60859375,
+      0.555577109375
+    ],
+    "filename": "player_move_right_003.png",
+    "index": 2,
+    "timestamp_seconds": 0.04,
+    "bounds512": [
+      164,
+      146,
+      352,
+      454
+    ]
+  },
+  {
+    "clip": "move_right",
+    "time_normalized": 0.09375,
+    "root_px": [
+      256,
+      450.0
+    ],
+    "joints_world": {
+      "hip_0": [
+        -23.0,
+        0.0,
+        115.62961
+      ],
+      "knee_0": [
+        -35.17853,
+        16.14978,
+        67.72483
+      ],
+      "ankle_0": [
+        -44.4375,
+        -9.0,
+        22.0
+      ],
+      "hip_1": [
+        23.0,
+        0.0,
+        115.62961
+      ],
+      "knee_1": [
+        34.20748,
+        19.07114,
+        68.56918
+      ],
+      "ankle_1": [
+        41.45267,
+        -9.0,
+        24.20119
+      ],
+      "right_shoulder": [
+        44.0,
+        18.0,
+        192.62961
+      ],
+      "right_elbow": [
+        84.73721,
+        16.92996,
+        158.74252
+      ],
+      "right_wrist": [
+        55.6,
+        61.0,
+        154.51708
+      ],
+      "left_shoulder": [
+        -40.0,
+        18.0,
+        192.62961
+      ],
+      "left_elbow": [
+        -81.10961,
+        20.44103,
+        159.26734
+      ],
+      "left_wrist": [
+        -46.7,
+        60.0,
+        151.51708
+      ]
+    },
+    "joints_screen": {
+      "hip_0": [
+        233.0,
+        346.07279
+      ],
+      "knee_0": [
+        220.82147,
+        382.04973
+      ],
+      "ankle_0": [
+        211.5625,
+        434.17187
+      ],
+      "hip_1": [
+        279.0,
+        346.07279
+      ],
+      "knee_1": [
+        290.20748,
+        380.01019
+      ],
+      "ankle_1": [
+        297.45267,
+        432.19345
+      ],
+      "right_shoulder": [
+        300.0,
+        268.97497
+      ],
+      "right_elbow": [
+        340.73721,
+        299.90156
+      ],
+      "right_wrist": [
+        311.6,
+        284.38033
+      ],
+      "left_shoulder": [
+        216.0,
+        268.97497
+      ],
+      "left_elbow": [
+        174.89039,
+        297.89071
+      ],
+      "left_wrist": [
+        209.3,
+        287.51508
+      ]
+    },
+    "paddle_center_px": [
+      320.51941,
+      246.66466
+    ],
+    "wrist_px": [
+      311.6,
+      284.38033
+    ],
+    "paddle_basis_x": [
+      0.762955,
+      0.145758
+    ],
+    "paddle_basis_y": [
+      -0.162171,
+      0.68574
+    ],
+    "draw_order": [
+      "left_hand",
+      "right_hand",
+      "shin_1",
+      "shin_0",
+      "shoe_0",
+      "shoe_1",
+      "paddle",
+      "thigh_1",
+      "forearm_left",
+      "thigh_0",
+      "forearm_right",
+      "hips",
+      "upper_arm_left",
+      "upper_arm_right",
+      "torso",
+      "head"
+    ],
+    "max_reach_clamp": 0.0,
+    "root_translation_world": 2.4375,
+    "foot_lift": [
+      0.0,
+      2.20119129618863
+    ],
+    "root_normalized": [
+      0.5,
+      0.87890625
+    ],
+    "paddle_center_normalized": [
+      0.62601447265625,
+      0.4817669140625
+    ],
+    "wrist_normalized": [
+      0.60859375,
+      0.55543033203125
+    ],
+    "filename": "player_move_right_004.png",
+    "index": 3,
+    "timestamp_seconds": 0.06,
+    "bounds512": [
+      164,
+      146,
+      352,
+      454
+    ]
+  },
+  {
+    "clip": "move_right",
+    "time_normalized": 0.125,
+    "root_px": [
+      256,
+      450.0
+    ],
+    "joints_world": {
+      "hip_0": [
+        -23.0,
+        0.0,
+        115.4
+      ],
+      "knee_0": [
+        -35.50251,
+        16.19969,
+        67.59564
+      ],
+      "ankle_0": [
+        -45.25,
+        -9.0,
+        22.0
+      ],
+      "hip_1": [
+        23.0,
+        0.0,
+        115.4
+      ],
+      "knee_1": [
+        34.73689,
+        20.21311,
+        68.94922
+      ],
+      "ankle_1": [
+        42.67582,
+        -9.0,
+        25.44557
+      ],
+      "right_shoulder": [
+        44.0,
+        18.0,
+        192.4
+      ],
+      "right_elbow": [
+        84.7015,
+        16.88367,
+        158.47152
+      ],
+      "right_wrist": [
+        55.6,
+        61.0,
+        154.49
+      ],
+      "left_shoulder": [
+        -40.0,
+        18.0,
+        192.4
+      ],
+      "left_elbow": [
+        -81.09479,
+        20.38477,
+        159.01541
+      ],
+      "left_wrist": [
+        -46.7,
+        60.0,
+        151.49
+      ]
+    },
+    "joints_screen": {
+      "hip_0": [
+        233.0,
+        346.27917
+      ],
+      "knee_0": [
+        220.49749,
+        382.14397
+      ],
+      "ankle_0": [
+        210.75,
+        434.17187
+      ],
+      "hip_1": [
+        279.0,
+        346.27917
+      ],
+      "knee_1": [
+        290.73689,
+        379.16801
+      ],
+      "ankle_1": [
+        298.67582,
+        431.07502
+      ],
+      "right_shoulder": [
+        300.0,
+        269.18134
+      ],
+      "right_elbow": [
+        340.7015,
+        300.16543
+      ],
+      "right_wrist": [
+        311.6,
+        284.40467
+      ],
+      "left_shoulder": [
+        216.0,
+        269.18134
+      ],
+      "left_elbow": [
+        174.90521,
+        298.1418
+      ],
+      "left_wrist": [
+        209.3,
+        287.53942
+      ]
+    },
+    "paddle_center_px": [
+      320.51941,
+      246.68899
+    ],
+    "wrist_px": [
+      311.6,
+      284.40467
+    ],
+    "paddle_basis_x": [
+      0.762955,
+      0.145758
+    ],
+    "paddle_basis_y": [
+      -0.162171,
+      0.68574
+    ],
+    "draw_order": [
+      "left_hand",
+      "right_hand",
+      "shin_1",
+      "shin_0",
+      "shoe_0",
+      "shoe_1",
+      "paddle",
+      "thigh_1",
+      "forearm_left",
+      "thigh_0",
+      "forearm_right",
+      "hips",
+      "upper_arm_left",
+      "upper_arm_right",
+      "torso",
+      "head"
+    ],
+    "max_reach_clamp": 0.0,
+    "root_translation_world": 3.25,
+    "foot_lift": [
+      0.0,
+      3.4455668015771224
+    ],
+    "root_normalized": [
+      0.5,
+      0.87890625
+    ],
+    "paddle_center_normalized": [
+      0.62601447265625,
+      0.48181443359375
+    ],
+    "wrist_normalized": [
+      0.60859375,
+      0.55547787109375
+    ],
+    "filename": "player_move_right_005.png",
+    "index": 4,
+    "timestamp_seconds": 0.08,
+    "bounds512": [
+      164,
+      146,
+      352,
+      454
+    ]
+  },
+  {
+    "clip": "move_right",
+    "time_normalized": 0.15625,
+    "root_px": [
+      256,
+      450.0
+    ],
+    "joints_world": {
+      "hip_0": [
+        -23.0,
+        0.0,
+        115.17039
+      ],
+      "knee_0": [
+        -35.82563,
+        16.24056,
+        67.4656
+      ],
+      "ankle_0": [
+        -46.0625,
+        -9.0,
+        22.0
+      ],
+      "hip_1": [
+        23.0,
+        0.0,
+        115.17039
+      ],
+      "knee_1": [
+        35.48641,
+        21.0094,
+        69.27164
+      ],
+      "ankle_1": [
+        44.60102,
+        -9.0,
+        26.54741
+      ],
+      "right_shoulder": [
+        44.0,
+        18.0,
+        192.17039
+      ],
+      "right_elbow": [
+        84.68439,
+        16.8621,
+        158.22211
+      ],
+      "right_wrist": [
+        55.6,
+        61.0,
+        154.35635
+      ],
+      "left_shoulder": [
+        -40.0,
+        18.0,
+        192.17039
+      ],
+      "left_elbow": [
+        -81.08755,
+        20.35836,
+        158.77501
+      ],
+      "left_wrist": [
+        -46.7,
+        60.0,
+        151.35635
+      ]
+    },
+    "joints_screen": {
+      "hip_0": [
+        233.0,
+        346.48554
+      ],
+      "knee_0": [
+        220.17437,
+        382.24293
+      ],
+      "ankle_0": [
+        209.9375,
+        434.17187
+      ],
+      "hip_1": [
+        279.0,
+        346.48554
+      ],
+      "knee_1": [
+        291.48641,
+        378.52915
+      ],
+      "ankle_1": [
+        300.60102,
+        430.08468
+      ],
+      "right_shoulder": [
+        300.0,
+        269.38772
+      ],
+      "right_elbow": [
+        340.68439,
+        300.39906
+      ],
+      "right_wrist": [
+        311.6,
+        284.52479
+      ],
+      "left_shoulder": [
+        216.0,
+        269.38772
+      ],
+      "left_elbow": [
+        174.91245,
+        298.36945
+      ],
+      "left_wrist": [
+        209.3,
+        287.65954
+      ]
+    },
+    "paddle_center_px": [
+      320.51941,
+      246.80912
+    ],
+    "wrist_px": [
+      311.6,
+      284.52479
+    ],
+    "paddle_basis_x": [
+      0.762955,
+      0.145758
+    ],
+    "paddle_basis_y": [
+      -0.162171,
+      0.68574
+    ],
+    "draw_order": [
+      "left_hand",
+      "right_hand",
+      "shin_1",
+      "shin_0",
+      "shoe_0",
+      "shoe_1",
+      "thigh_1",
+      "paddle",
+      "forearm_left",
+      "thigh_0",
+      "forearm_right",
+      "hips",
+      "upper_arm_left",
+      "upper_arm_right",
+      "torso",
+      "head"
+    ],
+    "max_reach_clamp": 0.0,
+    "root_translation_world": 4.0625,
+    "foot_lift": [
+      0.0,
+      4.54741358192877
+    ],
+    "root_normalized": [
+      0.5,
+      0.87890625
+    ],
+    "paddle_center_normalized": [
+      0.62601447265625,
+      0.4820490625
+    ],
+    "wrist_normalized": [
+      0.60859375,
+      0.55571248046875
+    ],
+    "filename": "player_move_right_006.png",
+    "index": 5,
+    "timestamp_seconds": 0.1,
+    "bounds512": [
+      164,
+      146,
+      351,
+      454
+    ]
+  },
+  {
+    "clip": "move_right",
+    "time_normalized": 0.1875,
+    "root_px": [
+      256,
+      450.0
+    ],
+    "joints_world": {
+      "hip_0": [
+        -23.0,
+        0.0,
+        114.97574
+      ],
+      "knee_0": [
+        -36.14629,
+        16.23359,
+        67.35593
+      ],
+      "ankle_0": [
+        -46.875,
+        -9.0,
+        22.0
+      ],
+      "hip_1": [
+        23.0,
+        0.0,
+        114.97574
+      ],
+      "knee_1": [
+        36.38869,
+        21.27782,
+        69.45654
+      ],
+      "ankle_1": [
+        47.04111,
+        -9.0,
+        27.28095
+      ],
+      "right_shoulder": [
+        44.0,
+        18.0,
+        191.97574
+      ],
+      "right_elbow": [
+        84.68889,
+        16.86774,
+        158.03267
+      ],
+      "right_wrist": [
+        55.6,
+        61.0,
+        154.13648
+      ],
+      "left_shoulder": [
+        -40.0,
+        18.0,
+        191.97574
+      ],
+      "left_elbow": [
+        -81.08947,
+        20.36528,
+        158.5832
+      ],
+      "left_wrist": [
+        -46.7,
+        60.0,
+        151.13648
+      ]
+    },
+    "joints_screen": {
+      "hip_0": [
+        233.0,
+        346.66049
+      ],
+      "knee_0": [
+        219.85371,
+        382.34455
+      ],
+      "ankle_0": [
+        209.125,
+        434.17187
+      ],
+      "hip_1": [
+        279.0,
+        346.66049
+      ],
+      "knee_1": [
+        292.38869,
+        378.2453
+      ],
+      "ankle_1": [
+        303.04111,
+        429.42538
+      ],
+      "right_shoulder": [
+        300.0,
+        269.56267
+      ],
+      "right_elbow": [
+        340.68889,
+        300.56685
+      ],
+      "right_wrist": [
+        311.6,
+        284.72241
+      ],
+      "left_shoulder": [
+        216.0,
+        269.56267
+      ],
+      "left_elbow": [
+        174.91053,
+        298.53881
+      ],
+      "left_wrist": [
+        209.3,
+        287.85716
+      ]
+    },
+    "paddle_center_px": [
+      320.51941,
+      247.00673
+    ],
+    "wrist_px": [
+      311.6,
+      284.72241
+    ],
+    "paddle_basis_x": [
+      0.762955,
+      0.145758
+    ],
+    "paddle_basis_y": [
+      -0.162171,
+      0.68574
+    ],
+    "draw_order": [
+      "left_hand",
+      "right_hand",
+      "shin_1",
+      "shin_0",
+      "shoe_0",
+      "shoe_1",
+      "thigh_1",
+      "paddle",
+      "forearm_left",
+      "thigh_0",
+      "forearm_right",
+      "hips",
+      "upper_arm_left",
+      "upper_arm_right",
+      "torso",
+      "head"
+    ],
+    "max_reach_clamp": 0.0,
+    "root_translation_world": 4.875,
+    "foot_lift": [
+      0.0,
+      5.280952004815188
+    ],
+    "root_normalized": [
+      0.5,
+      0.87890625
+    ],
+    "paddle_center_normalized": [
+      0.62601447265625,
+      0.48243501953125
+    ],
+    "wrist_normalized": [
+      0.60859375,
+      0.55609845703125
+    ],
+    "filename": "player_move_right_007.png",
+    "index": 6,
+    "timestamp_seconds": 0.12,
+    "bounds512": [
+      164,
+      146,
+      351,
+      454
+    ]
+  },
+  {
+    "clip": "move_right",
+    "time_normalized": 0.21875,
+    "root_px": [
+      256,
+      450.0
+    ],
+    "joints_world": {
+      "hip_0": [
+        -23.0,
+        0.0,
+        114.84567
+      ],
+      "knee_0": [
+        -36.46381,
+        16.14588,
+        67.2848
+      ],
+      "ankle_0": [
+        -47.6875,
+        -9.0,
+        22.0
+      ],
+      "hip_1": [
+        23.0,
+        0.0,
+        114.84567
+      ],
+      "knee_1": [
+        37.37241,
+        20.9184,
+        69.46005
+      ],
+      "ankle_1": [
+        49.73756,
+        -9.0,
+        27.49587
+      ],
+      "right_shoulder": [
+        44.0,
+        18.0,
+        191.84567
+      ],
+      "right_elbow": [
+        84.71422,
+        16.89996,
+        157.93192
+      ],
+      "right_wrist": [
+        55.6,
+        61.0,
+        153.86386
+      ],
+      "left_shoulder": [
+        -40.0,
+        18.0,
+        191.84567
+      ],
+      "left_elbow": [
+        -81.10012,
+        20.40464,
+        158.46906
+      ],
+      "left_wrist": [
+        -46.7,
+        60.0,
+        150.86386
+      ]
+    },
+    "joints_screen": {
+      "hip_0": [
+        233.0,
+        346.77739
+      ],
+      "knee_0": [
+        219.53619,
+        382.44693
+      ],
+      "ankle_0": [
+        208.3125,
+        434.17187
+      ],
+      "hip_1": [
+        279.0,
+        346.77739
+      ],
+      "knee_1": [
+        293.37241,
+        378.3997
+      ],
+      "ankle_1": [
+        305.73756,
+        429.23221
+      ],
+      "right_shoulder": [
+        300.0,
+        269.67957
+      ],
+      "right_elbow": [
+        340.71422,
+        300.64327
+      ],
+      "right_wrist": [
+        311.6,
+        284.96744
+      ],
+      "left_shoulder": [
+        216.0,
+        269.67957
+      ],
+      "left_elbow": [
+        174.89988,
+        298.62414
+      ],
+      "left_wrist": [
+        209.3,
+        288.10219
+      ]
+    },
+    "paddle_center_px": [
+      320.51941,
+      247.25176
+    ],
+    "wrist_px": [
+      311.6,
+      284.96744
+    ],
+    "paddle_basis_x": [
+      0.762955,
+      0.145758
+    ],
+    "paddle_basis_y": [
+      -0.162171,
+      0.68574
+    ],
+    "draw_order": [
+      "left_hand",
+      "right_hand",
+      "shin_1",
+      "shin_0",
+      "shoe_0",
+      "shoe_1",
+      "thigh_1",
+      "paddle",
+      "forearm_left",
+      "thigh_0",
+      "forearm_right",
+      "hips",
+      "upper_arm_left",
+      "upper_arm_right",
+      "torso",
+      "head"
+    ],
+    "max_reach_clamp": 0.0,
+    "root_translation_world": 5.6875,
+    "foot_lift": [
+      0.0,
+      5.495872573086022
+    ],
+    "root_normalized": [
+      0.5,
+      0.87890625
+    ],
+    "paddle_center_normalized": [
+      0.62601447265625,
+      0.48291359375
+    ],
+    "wrist_normalized": [
+      0.60859375,
+      0.55657703125
+    ],
+    "filename": "player_move_right_008.png",
+    "index": 7,
+    "timestamp_seconds": 0.14,
+    "bounds512": [
+      164,
+      146,
+      352,
+      454
+    ]
+  },
+  {
+    "clip": "move_right",
+    "time_normalized": 0.25,
+    "root_px": [
+      256,
+      450.0
+    ],
+    "joints_world": {
+      "hip_0": [
+        -23.0,
+        0.0,
+        114.8
+      ],
+      "knee_0": [
+        -36.77836,
+        15.95436,
+        67.26459
+      ],
+      "ankle_0": [
+        -48.5,
+        -9.0,
+        22.0
+      ],
+      "hip_1": [
+        23.0,
+        0.0,
+        114.8
+      ],
+      "knee_1": [
+        38.35862,
+        19.91699,
+        69.28707
+      ],
+      "ankle_1": [
+        52.39848,
+        -9.0,
+        27.14814
+      ],
+      "right_shoulder": [
+        44.0,
+        18.0,
+        191.8
+      ],
+      "right_elbow": [
+        84.75594,
+        16.95493,
+        157.93466
+      ],
+      "right_wrist": [
+        55.6,
+        61.0,
+        153.58
+      ],
+      "left_shoulder": [
+        -40.0,
+        18.0,
+        191.8
+      ],
+      "left_elbow": [
+        -81.11721,
+        20.47116,
+        158.44932
+      ],
+      "left_wrist": [
+        -46.7,
+        60.0,
+        150.58
+      ]
+    },
+    "joints_screen": {
+      "hip_0": [
+        233.0,
+        346.81844
+      ],
+      "knee_0": [
+        219.22164,
+        382.54906
+      ],
+      "ankle_0": [
+        207.5,
+        434.17187
+      ],
+      "hip_1": [
+        279.0,
+        346.81844
+      ],
+      "knee_1": [
+        294.35862,
+        378.99416
+      ],
+      "ankle_1": [
+        308.39848,
+        429.54476
+      ],
+      "right_shoulder": [
+        300.0,
+        269.72062
+      ],
+      "right_elbow": [
+        340.75594,
+        300.61672
+      ],
+      "right_wrist": [
+        311.6,
+        285.22257
+      ],
+      "left_shoulder": [
+        216.0,
+        269.72062
+      ],
+      "left_elbow": [
+        174.88279,
+        298.61273
+      ],
+      "left_wrist": [
+        209.3,
+        288.35732
+      ]
+    },
+    "paddle_center_px": [
+      320.51941,
+      247.5069
+    ],
+    "wrist_px": [
+      311.6,
+      285.22257
+    ],
+    "paddle_basis_x": [
+      0.762955,
+      0.145758
+    ],
+    "paddle_basis_y": [
+      -0.162171,
+      0.68574
+    ],
+    "draw_order": [
+      "left_hand",
+      "right_hand",
+      "shin_1",
+      "shin_0",
+      "shoe_0",
+      "shoe_1",
+      "paddle",
+      "thigh_1",
+      "forearm_left",
+      "thigh_0",
+      "forearm_right",
+      "hips",
+      "upper_arm_left",
+      "upper_arm_right",
+      "torso",
+      "head"
+    ],
+    "max_reach_clamp": 0.0,
+    "root_translation_world": 6.5,
+    "foot_lift": [
+      0.0,
+      5.14813587239547
+    ],
+    "root_normalized": [
+      0.5,
+      0.87890625
+    ],
+    "paddle_center_normalized": [
+      0.62601447265625,
+      0.4834119140625
+    ],
+    "wrist_normalized": [
+      0.60859375,
+      0.55707533203125
+    ],
+    "filename": "player_move_right_009.png",
+    "index": 8,
+    "timestamp_seconds": 0.16,
+    "bounds512": [
+      164,
+      146,
+      352,
+      454
+    ]
+  },
+  {
+    "clip": "move_right",
+    "time_normalized": 0.28125,
+    "root_px": [
+      256,
+      450.0
+    ],
+    "joints_world": {
+      "hip_0": [
+        -23.0,
+        0.0,
+        114.84567
+      ],
+      "knee_0": [
+        -37.0908,
+        15.64819,
+        67.30008
+      ],
+      "ankle_0": [
+        -49.3125,
+        -9.0,
+        22.0
+      ],
+      "hip_1": [
+        23.0,
+        0.0,
+        114.84567
+      ],
+      "knee_1": [
+        39.2553,
+        18.34911,
+        68.98637
+      ],
+      "ankle_1": [
+        54.7365,
+        -9.0,
+        26.309
+      ],
+      "right_shoulder": [
+        44.0,
+        18.0,
+        191.84567
+      ],
+      "right_elbow": [
+        84.80699,
+        17.02555,
+        158.03975
+      ],
+      "right_wrist": [
+        55.6,
+        61.0,
+        153.32811
+      ],
+      "left_shoulder": [
+        -40.0,
+        18.0,
+        191.84567
+      ],
+      "left_elbow": [
+        -81.13732,
+        20.55557,
+        158.52616
+      ],
+      "left_wrist": [
+        -46.7,
+        60.0,
+        150.32811
+      ]
+    },
+    "joints_screen": {
+      "hip_0": [
+        233.0,
+        346.77739
+      ],
+      "knee_0": [
+        218.9092,
+        382.65138
+      ],
+      "ankle_0": [
+        206.6875,
+        434.17187
+      ],
+      "hip_1": [
+        279.0,
+        346.77739
+      ],
+      "knee_1": [
+        295.2553,
+        379.95174
+      ],
+      "ankle_1": [
+        310.7365,
+        430.29897
+      ],
+      "right_shoulder": [
+        300.0,
+        269.67957
+      ],
+      "right_elbow": [
+        340.80699,
+        300.49131
+      ],
+      "right_wrist": [
+        311.6,
+        285.44897
+      ],
+      "left_shoulder": [
+        216.0,
+        269.67957
+      ],
+      "left_elbow": [
+        174.86268,
+        298.50666
+      ],
+      "left_wrist": [
+        209.3,
+        288.58372
+      ]
+    },
+    "paddle_center_px": [
+      320.51941,
+      247.7333
+    ],
+    "wrist_px": [
+      311.6,
+      285.44897
+    ],
+    "paddle_basis_x": [
+      0.762955,
+      0.145758
+    ],
+    "paddle_basis_y": [
+      -0.162171,
+      0.68574
+    ],
+    "draw_order": [
+      "left_hand",
+      "right_hand",
+      "shin_0",
+      "shin_1",
+      "shoe_0",
+      "shoe_1",
+      "paddle",
+      "forearm_left",
+      "thigh_1",
+      "thigh_0",
+      "forearm_right",
+      "hips",
+      "upper_arm_left",
+      "upper_arm_right",
+      "torso",
+      "head"
+    ],
+    "max_reach_clamp": 0.0,
+    "root_translation_world": 7.3125,
+    "foot_lift": [
+      0.0,
+      4.308996695936032
+    ],
+    "root_normalized": [
+      0.5,
+      0.87890625
+    ],
+    "paddle_center_normalized": [
+      0.62601447265625,
+      0.4838541015625
+    ],
+    "wrist_normalized": [
+      0.60859375,
+      0.55751751953125
+    ],
+    "filename": "player_move_right_010.png",
+    "index": 9,
+    "timestamp_seconds": 0.18,
+    "bounds512": [
+      164,
+      146,
+      352,
+      454
+    ]
+  },
+  {
+    "clip": "move_right",
+    "time_normalized": 0.3125,
+    "root_px": [
+      256,
+      450.0
+    ],
+    "joints_world": {
+      "hip_0": [
+        -23.0,
+        0.0,
+        114.97574
+      ],
+      "knee_0": [
+        -37.40238,
+        15.22995,
+        67.38771
+      ],
+      "ankle_0": [
+        -50.125,
+        -9.0,
+        22.0
+      ],
+      "hip_1": [
+        23.0,
+        0.0,
+        114.97574
+      ],
+      "knee_1": [
+        39.96282,
+        16.38867,
+        68.63273
+      ],
+      "ankle_1": [
+        56.50679,
+        -9.0,
+        25.1504
+      ],
+      "right_shoulder": [
+        44.0,
+        18.0,
+        191.97574
+      ],
+      "right_elbow": [
+        84.85916,
+        17.1018,
+        158.23077
+      ],
+      "right_wrist": [
+        55.6,
+        61.0,
+        153.14653
+      ],
+      "left_shoulder": [
+        -40.0,
+        18.0,
+        191.97574
+      ],
+      "left_elbow": [
+        -81.15689,
+        20.64551,
+        158.68743
+      ],
+      "left_wrist": [
+        -46.7,
+        60.0,
+        150.14653
+      ]
+    },
+    "joints_screen": {
+      "hip_0": [
+        233.0,
+        346.66049
+      ],
+      "knee_0": [
+        218.59762,
+        382.75596
+      ],
+      "ankle_0": [
+        205.875,
+        434.17187
+      ],
+      "hip_1": [
+        279.0,
+        346.66049
+      ],
+      "knee_1": [
+        295.96282,
+        381.12899
+      ],
+      "ankle_1": [
+        312.50679,
+        431.34031
+      ],
+      "right_shoulder": [
+        300.0,
+        269.56267
+      ],
+      "right_elbow": [
+        340.85916,
+        300.28619
+      ],
+      "right_wrist": [
+        311.6,
+        285.61217
+      ],
+      "left_shoulder": [
+        216.0,
+        269.56267
+      ],
+      "left_elbow": [
+        174.84311,
+        298.32229
+      ],
+      "left_wrist": [
+        209.3,
+        288.74692
+      ]
+    },
+    "paddle_center_px": [
+      320.51941,
+      247.89649
+    ],
+    "wrist_px": [
+      311.6,
+      285.61217
+    ],
+    "paddle_basis_x": [
+      0.762955,
+      0.145758
+    ],
+    "paddle_basis_y": [
+      -0.162171,
+      0.68574
+    ],
+    "draw_order": [
+      "left_hand",
+      "right_hand",
+      "shin_0",
+      "shin_1",
+      "shoe_0",
+      "shoe_1",
+      "paddle",
+      "forearm_left",
+      "thigh_1",
+      "thigh_0",
+      "forearm_right",
+      "hips",
+      "upper_arm_left",
+      "upper_arm_right",
+      "torso",
+      "head"
+    ],
+    "max_reach_clamp": 0.0,
+    "root_translation_world": 8.125,
+    "foot_lift": [
+      0.0,
+      3.1504032112712657
+    ],
+    "root_normalized": [
+      0.5,
+      0.87890625
+    ],
+    "paddle_center_normalized": [
+      0.62601447265625,
+      0.48417283203125
+    ],
+    "wrist_normalized": [
+      0.60859375,
+      0.55783626953125
+    ],
+    "filename": "player_move_right_011.png",
+    "index": 10,
+    "timestamp_seconds": 0.2,
+    "bounds512": [
+      164,
+      146,
+      352,
+      454
+    ]
+  },
+  {
+    "clip": "move_right",
+    "time_normalized": 0.34375,
+    "root_px": [
+      256,
+      450.0
+    ],
+    "joints_world": {
+      "hip_0": [
+        -23.0,
+        0.0,
+        115.17039
+      ],
+      "knee_0": [
+        -37.71454,
+        14.71574,
+        67.51612
+      ],
+      "ankle_0": [
+        -50.9375,
+        -9.0,
+        22.0
+      ],
+      "hip_1": [
+        23.0,
+        0.0,
+        115.17039
+      ],
+      "knee_1": [
+        40.39433,
+        14.32144,
+        68.30533
+      ],
+      "ankle_1": [
+        57.54495,
+        -9.0,
+        23.90976
+      ],
+      "right_shoulder": [
+        44.0,
+        18.0,
+        192.17039
+      ],
+      "right_elbow": [
+        84.90461,
+        17.17182,
+        158.47874
+      ],
+      "right_wrist": [
+        55.6,
+        61.0,
+        153.06292
+      ],
+      "left_shoulder": [
+        -40.0,
+        18.0,
+        192.17039
+      ],
+      "left_elbow": [
+        -81.17307,
+        20.7271,
+        158.90868
+      ],
+      "left_wrist": [
+        -46.7,
+        60.0,
+        150.06292
+      ]
+    },
+    "joints_screen": {
+      "hip_0": [
+        233.0,
+        346.48554
+      ],
+      "knee_0": [
+        218.28546,
+        382.86596
+      ],
+      "ankle_0": [
+        205.0625,
+        434.17187
+      ],
+      "hip_1": [
+        279.0,
+        346.48554
+      ],
+      "knee_1": [
+        296.39433,
+        382.32946
+      ],
+      "ankle_1": [
+        313.54495,
+        432.45539
+      ],
+      "right_shoulder": [
+        300.0,
+        269.38772
+      ],
+      "right_elbow": [
+        340.90461,
+        300.03262
+      ],
+      "right_wrist": [
+        311.6,
+        285.68732
+      ],
+      "left_shoulder": [
+        216.0,
+        269.38772
+      ],
+      "left_elbow": [
+        174.82693,
+        298.08766
+      ],
+      "left_wrist": [
+        209.3,
+        288.82207
+      ]
+    },
+    "paddle_center_px": [
+      320.51941,
+      247.97164
+    ],
+    "wrist_px": [
+      311.6,
+      285.68732
+    ],
+    "paddle_basis_x": [
+      0.762955,
+      0.145758
+    ],
+    "paddle_basis_y": [
+      -0.162171,
+      0.68574
+    ],
+    "draw_order": [
+      "left_hand",
+      "right_hand",
+      "shin_0",
+      "shin_1",
+      "shoe_0",
+      "shoe_1",
+      "paddle",
+      "forearm_left",
+      "forearm_right",
+      "thigh_0",
+      "thigh_1",
+      "hips",
+      "upper_arm_left",
+      "upper_arm_right",
+      "torso",
+      "head"
+    ],
+    "max_reach_clamp": 0.0,
+    "root_translation_world": 8.9375,
+    "foot_lift": [
+      0.0,
+      1.9097630287569807
+    ],
+    "root_normalized": [
+      0.5,
+      0.87890625
+    ],
+    "paddle_center_normalized": [
+      0.62601447265625,
+      0.484319609375
+    ],
+    "wrist_normalized": [
+      0.60859375,
+      0.557983046875
+    ],
+    "filename": "player_move_right_012.png",
+    "index": 11,
+    "timestamp_seconds": 0.22,
+    "bounds512": [
+      164,
+      146,
+      352,
+      454
+    ]
+  },
+  {
+    "clip": "move_right",
+    "time_normalized": 0.375,
+    "root_px": [
+      256,
+      450.0
+    ],
+    "joints_world": {
+      "hip_0": [
+        -23.0,
+        0.0,
+        115.4
+      ],
+      "knee_0": [
+        -38.02877,
+        14.13401,
+        67.66777
+      ],
+      "ankle_0": [
+        -51.75,
+        -9.0,
+        22.0
+      ],
+      "hip_1": [
+        23.0,
+        0.0,
+        115.4
+      ],
+      "knee_1": [
+        40.50663,
+        12.54434,
+        68.0697
+      ],
+      "ankle_1": [
+        57.80497,
+        -9.0,
+        22.8413
+      ],
+      "right_shoulder": [
+        44.0,
+        18.0,
+        192.4
+      ],
+      "right_elbow": [
+        84.937,
+        17.22393,
+        158.74648
+      ],
+      "right_wrist": [
+        55.6,
+        61.0,
+        153.09
+      ],
+      "left_shoulder": [
+        -40.0,
+        18.0,
+        192.4
+      ],
+      "left_elbow": [
+        -81.18406,
+        20.78724,
+        159.15689
+      ],
+      "left_wrist": [
+        -46.7,
+        60.0,
+        150.09
+      ]
+    },
+    "joints_screen": {
+      "hip_0": [
+        233.0,
+        346.27917
+      ],
+      "knee_0": [
+        217.97123,
+        382.98467
+      ],
+      "ankle_0": [
+        204.25,
+        434.17187
+      ],
+      "hip_1": [
+        279.0,
+        346.27917
+      ],
+      "knee_1": [
+        296.50663,
+        383.32028
+      ],
+      "ankle_1": [
+        313.80497,
+        433.41572
+      ],
+      "right_shoulder": [
+        300.0,
+        269.18134
+      ],
+      "right_elbow": [
+        340.937,
+        299.76914
+      ],
+      "right_wrist": [
+        311.6,
+        285.66298
+      ],
+      "left_shoulder": [
+        216.0,
+        269.18134
+      ],
+      "left_elbow": [
+        174.81594,
+        297.83821
+      ],
+      "left_wrist": [
+        209.3,
+        288.79773
+      ]
+    },
+    "paddle_center_px": [
+      320.51941,
+      247.94731
+    ],
+    "wrist_px": [
+      311.6,
+      285.66298
+    ],
+    "paddle_basis_x": [
+      0.762955,
+      0.145758
+    ],
+    "paddle_basis_y": [
+      -0.162171,
+      0.68574
+    ],
+    "draw_order": [
+      "left_hand",
+      "right_hand",
+      "shin_0",
+      "shin_1",
+      "shoe_0",
+      "shoe_1",
+      "paddle",
+      "forearm_left",
+      "forearm_right",
+      "thigh_0",
+      "thigh_1",
+      "hips",
+      "upper_arm_left",
+      "upper_arm_right",
+      "torso",
+      "head"
+    ],
+    "max_reach_clamp": 0.0,
+    "root_translation_world": 9.75,
+    "foot_lift": [
+      0.0,
+      0.8412959631432579
+    ],
+    "root_normalized": [
+      0.5,
+      0.87890625
+    ],
+    "paddle_center_normalized": [
+      0.62601447265625,
+      0.48427208984375
+    ],
+    "wrist_normalized": [
+      0.60859375,
+      0.5579355078125
+    ],
+    "filename": "player_move_right_013.png",
+    "index": 12,
+    "timestamp_seconds": 0.24,
+    "bounds512": [
+      164,
+      146,
+      352,
+      454
+    ]
+  },
+  {
+    "clip": "move_right",
+    "time_normalized": 0.40625,
+    "root_px": [
+      256,
+      450.0
+    ],
+    "joints_world": {
+      "hip_0": [
+        -23.0,
+        0.0,
+        115.62961
+      ],
+      "knee_0": [
+        -38.34642,
+        13.52311,
+        67.82153
+      ],
+      "ankle_0": [
+        -52.5625,
+        -9.0,
+        22.0
+      ],
+      "hip_1": [
+        23.0,
+        0.0,
+        115.62961
+      ],
+      "knee_1": [
+        40.33316,
+        11.48811,
+        67.96846
+      ],
+      "ankle_1": [
+        57.39724,
+        -9.0,
+        22.16394
+      ],
+      "right_shoulder": [
+        44.0,
+        18.0,
+        192.62961
+      ],
+      "right_elbow": [
+        84.95215,
+        17.24894,
+        158.99395
+      ],
+      "right_wrist": [
+        55.6,
+        61.0,
+        153.22365
+      ],
+      "left_shoulder": [
+        -40.0,
+        18.0,
+        192.62961
+      ],
+      "left_elbow": [
+        -81.18905,
+        20.81595,
+        159.3951
+      ],
+      "left_wrist": [
+        -46.7,
+        60.0,
+        150.22365
+      ]
+    },
+    "joints_screen": {
+      "hip_0": [
+        233.0,
+        346.07279
+      ],
+      "knee_0": [
+        217.65358,
+        383.11427
+      ],
+      "ankle_0": [
+        203.4375,
+        434.17187
+      ],
+      "hip_1": [
+        279.0,
+        346.07279
+      ],
+      "knee_1": [
+        296.33316,
+        383.87429
+      ],
+      "ankle_1": [
+        313.39724,
+        434.02452
+      ],
+      "right_shoulder": [
+        300.0,
+        268.97497
+      ],
+      "right_elbow": [
+        340.95215,
+        299.53574
+      ],
+      "right_wrist": [
+        311.6,
+        285.54286
+      ],
+      "left_shoulder": [
+        216.0,
+        268.97497
+      ],
+      "left_elbow": [
+        174.81095,
+        297.61153
+      ],
+      "left_wrist": [
+        209.3,
+        288.67761
+      ]
+    },
+    "paddle_center_px": [
+      320.51941,
+      247.82718
+    ],
+    "wrist_px": [
+      311.6,
+      285.54286
+    ],
+    "paddle_basis_x": [
+      0.762955,
+      0.145758
+    ],
+    "paddle_basis_y": [
+      -0.162171,
+      0.68574
+    ],
+    "draw_order": [
+      "left_hand",
+      "right_hand",
+      "shin_0",
+      "shin_1",
+      "shoe_0",
+      "shoe_1",
+      "paddle",
+      "forearm_left",
+      "forearm_right",
+      "thigh_0",
+      "thigh_1",
+      "hips",
+      "upper_arm_left",
+      "upper_arm_right",
+      "torso",
+      "head"
+    ],
+    "max_reach_clamp": 0.0,
+    "root_translation_world": 10.5625,
+    "foot_lift": [
+      0.0,
+      0.1639418031901187
+    ],
+    "root_normalized": [
+      0.5,
+      0.87890625
+    ],
+    "paddle_center_normalized": [
+      0.62601447265625,
+      0.4840374609375
+    ],
+    "wrist_normalized": [
+      0.60859375,
+      0.5577008984375
+    ],
+    "filename": "player_move_right_014.png",
+    "index": 13,
+    "timestamp_seconds": 0.26,
+    "bounds512": [
+      164,
+      146,
+      352,
+      454
+    ]
+  },
+  {
+    "clip": "move_right",
+    "time_normalized": 0.4375,
+    "root_px": [
+      256,
+      450.0
+    ],
+    "joints_world": {
+      "hip_0": [
+        -23.0,
+        0.0,
+        115.82426
+      ],
+      "knee_0": [
+        -38.66856,
+        12.92687,
+        67.95577
+      ],
+      "ankle_0": [
+        -53.375,
+        -9.0,
+        22.0
+      ],
+      "hip_1": [
+        23.0,
+        0.0,
+        115.82426
+      ],
+      "knee_1": [
+        40.00597,
+        11.37467,
+        68.01826
+      ],
+      "ankle_1": [
+        56.625,
+        -9.0,
+        22.0
+      ],
+      "right_shoulder": [
+        44.0,
+        18.0,
+        192.82426
+      ],
+      "right_elbow": [
+        84.94818,
+        17.24235,
+        159.18393
+      ],
+      "right_wrist": [
+        55.6,
+        61.0,
+        153.44352
+      ],
+      "left_shoulder": [
+        -40.0,
+        18.0,
+        192.82426
+      ],
+      "left_elbow": [
+        -81.18775,
+        20.80839,
+        159.58751
+      ],
+      "left_wrist": [
+        -46.7,
+        60.0,
+        150.44352
+      ]
+    },
+    "joints_screen": {
+      "hip_0": [
+        233.0,
+        345.89784
+      ],
+      "knee_0": [
+        217.33144,
+        383.25499
+      ],
+      "ankle_0": [
+        202.625,
+        434.17187
+      ],
+      "hip_1": [
+        279.0,
+        345.89784
+      ],
+      "knee_1": [
+        296.00597,
+        383.87926
+      ],
+      "ankle_1": [
+        312.625,
+        434.17187
+      ],
+      "right_shoulder": [
+        300.0,
+        268.80002
+      ],
+      "right_elbow": [
+        340.94818,
+        299.36789
+      ],
+      "right_wrist": [
+        311.6,
+        285.34524
+      ],
+      "left_shoulder": [
+        216.0,
+        268.80002
+      ],
+      "left_elbow": [
+        174.81225,
+        297.4419
+      ],
+      "left_wrist": [
+        209.3,
+        288.47999
+      ]
+    },
+    "paddle_center_px": [
+      320.51941,
+      247.62957
+    ],
+    "wrist_px": [
+      311.6,
+      285.34524
+    ],
+    "paddle_basis_x": [
+      0.762955,
+      0.145758
+    ],
+    "paddle_basis_y": [
+      -0.162171,
+      0.68574
+    ],
+    "draw_order": [
+      "left_hand",
+      "right_hand",
+      "shin_0",
+      "shin_1",
+      "shoe_0",
+      "shoe_1",
+      "paddle",
+      "forearm_left",
+      "forearm_right",
+      "thigh_0",
+      "thigh_1",
+      "hips",
+      "upper_arm_left",
+      "upper_arm_right",
+      "torso",
+      "head"
+    ],
+    "max_reach_clamp": 0.0,
+    "root_translation_world": 11.375,
+    "foot_lift": [
+      0.0,
+      8.248678804640217e-32
+    ],
+    "root_normalized": [
+      0.5,
+      0.87890625
+    ],
+    "paddle_center_normalized": [
+      0.62601447265625,
+      0.48365150390625
+    ],
+    "wrist_normalized": [
+      0.60859375,
+      0.557314921875
+    ],
+    "filename": "player_move_right_015.png",
+    "index": 14,
+    "timestamp_seconds": 0.28,
+    "bounds512": [
+      164,
+      146,
+      352,
+      454
+    ]
+  },
+  {
+    "clip": "move_right",
+    "time_normalized": 0.46875,
+    "root_px": [
+      256,
+      450.0
+    ],
+    "joints_world": {
+      "hip_0": [
+        -23.0,
+        0.0,
+        115.95433
+      ],
+      "knee_0": [
+        -38.99584,
+        12.38825,
+        68.05167
+      ],
+      "ankle_0": [
+        -54.1875,
+        -9.0,
+        22.0
+      ],
+      "hip_1": [
+        23.0,
+        0.0,
+        115.95433
+      ],
+      "knee_1": [
+        39.66536,
+        11.60483,
+        68.08374
+      ],
+      "ankle_1": [
+        55.8125,
+        -9.0,
+        22.0
+      ],
+      "right_shoulder": [
+        44.0,
+        18.0,
+        192.95433
+      ],
+      "right_elbow": [
+        84.92558,
+        17.20535,
+        159.28735
+      ],
+      "right_wrist": [
+        55.6,
+        61.0,
+        153.71614
+      ],
+      "left_shoulder": [
+        -40.0,
+        18.0,
+        192.95433
+      ],
+      "left_elbow": [
+        -81.18024,
+        20.76585,
+        159.7047
+      ],
+      "left_wrist": [
+        -46.7,
+        60.0,
+        150.71614
+      ]
+    },
+    "joints_screen": {
+      "hip_0": [
+        233.0,
+        345.78094
+      ],
+      "knee_0": [
+        217.00416,
+        383.40491
+      ],
+      "ankle_0": [
+        201.8125,
+        434.17187
+      ],
+      "hip_1": [
+        279.0,
+        345.78094
+      ],
+      "knee_1": [
+        295.66536,
+        383.71952
+      ],
+      "ankle_1": [
+        311.8125,
+        434.17187
+      ],
+      "right_shoulder": [
+        300.0,
+        268.68312
+      ],
+      "right_elbow": [
+        340.92558,
+        299.29115
+      ],
+      "right_wrist": [
+        311.6,
+        285.10021
+      ],
+      "left_shoulder": [
+        216.0,
+        268.68312
+      ],
+      "left_elbow": [
+        174.81976,
+        297.35522
+      ],
+      "left_wrist": [
+        209.3,
+        288.23497
+      ]
+    },
+    "paddle_center_px": [
+      320.51941,
+      247.38454
+    ],
+    "wrist_px": [
+      311.6,
+      285.10021
+    ],
+    "paddle_basis_x": [
+      0.762955,
+      0.145758
+    ],
+    "paddle_basis_y": [
+      -0.162171,
+      0.68574
+    ],
+    "draw_order": [
+      "left_hand",
+      "right_hand",
+      "shin_0",
+      "shin_1",
+      "shoe_0",
+      "shoe_1",
+      "paddle",
+      "forearm_left",
+      "forearm_right",
+      "thigh_0",
+      "thigh_1",
+      "hips",
+      "upper_arm_left",
+      "upper_arm_right",
+      "torso",
+      "head"
+    ],
+    "max_reach_clamp": 0.0,
+    "root_translation_world": 12.1875,
+    "foot_lift": [
+      0.0,
+      8.248678804640217e-32
+    ],
+    "root_normalized": [
+      0.5,
+      0.87890625
+    ],
+    "paddle_center_normalized": [
+      0.62601447265625,
+      0.4831729296875
+    ],
+    "wrist_normalized": [
+      0.60859375,
+      0.55683634765625
+    ],
+    "filename": "player_move_right_016.png",
+    "index": 15,
+    "timestamp_seconds": 0.3,
+    "bounds512": [
+      164,
+      145,
+      352,
+      454
+    ]
+  },
+  {
+    "clip": "move_right",
+    "time_normalized": 0.5,
+    "root_px": [
+      256,
+      450.0
+    ],
+    "joints_world": {
+      "hip_0": [
+        -23.0,
+        0.0,
+        116.0
+      ],
+      "knee_0": [
+        -39.3283,
+        11.94157,
+        68.09608
+      ],
+      "ankle_0": [
+        -55.0,
+        -9.0,
+        22.0
+      ],
+      "hip_1": [
+        23.0,
+        0.0,
+        116.0
+      ],
+      "knee_1": [
+        39.3283,
+        11.94157,
+        68.09608
+      ],
+      "ankle_1": [
+        55.0,
+        -9.0,
+        22.0
+      ],
+      "right_shoulder": [
+        44.0,
+        18.0,
+        193.0
+      ],
+      "right_elbow": [
+        84.88718,
+        17.14456,
+        159.28788
+      ],
+      "right_wrist": [
+        55.6,
+        61.0,
+        154.0
+      ],
+      "left_shoulder": [
+        -40.0,
+        18.0,
+        193.0
+      ],
+      "left_elbow": [
+        -81.16696,
+        20.69545,
+        159.72816
+      ],
+      "left_wrist": [
+        -46.7,
+        60.0,
+        151.0
+      ]
+    },
+    "joints_screen": {
+      "hip_0": [
+        233.0,
+        345.73989
+      ],
+      "knee_0": [
+        216.6717,
+        383.56081
+      ],
+      "ankle_0": [
+        201.0,
+        434.17187
+      ],
+      "hip_1": [
+        279.0,
+        345.73989
+      ],
+      "knee_1": [
+        295.3283,
+        383.56081
+      ],
+      "ankle_1": [
+        311.0,
+        434.17187
+      ],
+      "right_shoulder": [
+        300.0,
+        268.64207
+      ],
+      "right_elbow": [
+        340.88718,
+        299.31732
+      ],
+      "right_wrist": [
+        311.6,
+        284.84508
+      ],
+      "left_shoulder": [
+        216.0,
+        268.64207
+      ],
+      "left_elbow": [
+        174.83304,
+        297.365
+      ],
+      "left_wrist": [
+        209.3,
+        287.97983
+      ]
+    },
+    "paddle_center_px": [
+      320.51941,
+      247.1294
+    ],
+    "wrist_px": [
+      311.6,
+      284.84508
+    ],
+    "paddle_basis_x": [
+      0.762955,
+      0.145758
+    ],
+    "paddle_basis_y": [
+      -0.162171,
+      0.68574
+    ],
+    "draw_order": [
+      "left_hand",
+      "right_hand",
+      "shin_0",
+      "shin_1",
+      "shoe_0",
+      "shoe_1",
+      "paddle",
+      "forearm_left",
+      "forearm_right",
+      "thigh_0",
+      "thigh_1",
+      "hips",
+      "upper_arm_left",
+      "upper_arm_right",
+      "torso",
+      "head"
+    ],
+    "max_reach_clamp": 0.0,
+    "root_translation_world": 13.0,
+    "foot_lift": [
+      0.0,
+      8.248678804640217e-32
+    ],
+    "root_normalized": [
+      0.5,
+      0.87890625
+    ],
+    "paddle_center_normalized": [
+      0.62601447265625,
+      0.482674609375
+    ],
+    "wrist_normalized": [
+      0.60859375,
+      0.556338046875
+    ],
+    "filename": "player_move_right_017.png",
+    "index": 16,
+    "timestamp_seconds": 0.32,
+    "bounds512": [
+      164,
+      145,
+      352,
+      454
+    ]
+  },
+  {
+    "clip": "move_right",
+    "time_normalized": 0.53125,
+    "root_px": [
+      256,
+      450.0
+    ],
+    "joints_world": {
+      "hip_0": [
+        -23.0,
+        0.0,
+        115.95433
+      ],
+      "knee_0": [
+        -39.6644,
+        11.6536,
+        68.09525
+      ],
+      "ankle_0": [
+        -55.80883,
+        -9.0,
+        22.0324
+      ],
+      "hip_1": [
+        23.0,
+        0.0,
+        115.95433
+      ],
+      "knee_1": [
+        38.99584,
+        12.38825,
+        68.05167
+      ],
+      "ankle_1": [
+        54.1875,
+        -9.0,
+        22.0
+      ],
+      "right_shoulder": [
+        44.0,
+        18.0,
+        192.95433
+      ],
+      "right_elbow": [
+        84.83809,
+        17.0705,
+        159.18473
+      ],
+      "right_wrist": [
+        55.6,
+        61.0,
+        154.25189
+      ],
+      "left_shoulder": [
+        -40.0,
+        18.0,
+        192.95433
+      ],
+      "left_elbow": [
+        -81.14912,
+        20.60874,
+        159.65351
+      ],
+      "left_wrist": [
+        -46.7,
+        60.0,
+        151.25189
+      ]
+    },
+    "joints_screen": {
+      "hip_0": [
+        233.0,
+        345.78094
+      ],
+      "knee_0": [
+        216.3356,
+        383.68779
+      ],
+      "ankle_0": [
+        200.19117,
+        434.14275
+      ],
+      "hip_1": [
+        279.0,
+        345.78094
+      ],
+      "knee_1": [
+        294.99584,
+        383.40491
+      ],
+      "ankle_1": [
+        310.1875,
+        434.17187
+      ],
+      "right_shoulder": [
+        300.0,
+        268.68312
+      ],
+      "right_elbow": [
+        340.83809,
+        299.4425
+      ],
+      "right_wrist": [
+        311.6,
+        284.61868
+      ],
+      "left_shoulder": [
+        216.0,
+        268.68312
+      ],
+      "left_elbow": [
+        174.85088,
+        297.4701
+      ],
+      "left_wrist": [
+        209.3,
+        287.75343
+      ]
+    },
+    "paddle_center_px": [
+      320.51941,
+      246.903
+    ],
+    "wrist_px": [
+      311.6,
+      284.61868
+    ],
+    "paddle_basis_x": [
+      0.762955,
+      0.145758
+    ],
+    "paddle_basis_y": [
+      -0.162171,
+      0.68574
+    ],
+    "draw_order": [
+      "left_hand",
+      "right_hand",
+      "shin_1",
+      "shin_0",
+      "shoe_1",
+      "shoe_0",
+      "paddle",
+      "forearm_left",
+      "forearm_right",
+      "thigh_1",
+      "thigh_0",
+      "hips",
+      "upper_arm_left",
+      "upper_arm_right",
+      "torso",
+      "head"
+    ],
+    "max_reach_clamp": 0.0,
+    "root_translation_world": 13.8125,
+    "foot_lift": [
+      0.03240388403352949,
+      8.248678804640217e-32
+    ],
+    "root_normalized": [
+      0.5,
+      0.87890625
+    ],
+    "paddle_center_normalized": [
+      0.62601447265625,
+      0.482232421875
+    ],
+    "wrist_normalized": [
+      0.60859375,
+      0.555895859375
+    ],
+    "filename": "player_move_right_018.png",
+    "index": 17,
+    "timestamp_seconds": 0.34,
+    "bounds512": [
+      164,
+      145,
+      352,
+      454
+    ]
+  },
+  {
+    "clip": "move_right",
+    "time_normalized": 0.5625,
+    "root_px": [
+      256,
+      450.0
+    ],
+    "joints_world": {
+      "hip_0": [
+        -23.0,
+        0.0,
+        115.82426
+      ],
+      "knee_0": [
+        -39.93712,
+        12.11122,
+        68.175
+      ],
+      "ankle_0": [
+        -56.44731,
+        -9.0,
+        22.4505
+      ],
+      "hip_1": [
+        23.0,
+        0.0,
+        115.82426
+      ],
+      "knee_1": [
+        38.66856,
+        12.92687,
+        67.95577
+      ],
+      "ankle_1": [
+        53.375,
+        -9.0,
+        22.0
+      ],
+      "right_shoulder": [
+        44.0,
+        18.0,
+        192.82426
+      ],
+      "right_elbow": [
+        84.78538,
+        16.9952,
+        158.99317
+      ],
+      "right_wrist": [
+        55.6,
+        61.0,
+        154.43347
+      ],
+      "left_shoulder": [
+        -40.0,
+        18.0,
+        192.82426
+      ],
+      "left_elbow": [
+        -81.12893,
+        20.51944,
+        159.49164
+      ],
+      "left_wrist": [
+        -46.7,
+        60.0,
+        151.43347
+      ]
+    },
+    "joints_screen": {
+      "hip_0": [
+        233.0,
+        345.89784
+      ],
+      "knee_0": [
+        216.06288,
+        383.41551
+      ],
+      "ankle_0": [
+        199.55269,
+        433.76697
+      ],
+      "hip_1": [
+        279.0,
+        345.89784
+      ],
+      "knee_1": [
+        294.66856,
+        383.25499
+      ],
+      "ankle_1": [
+        309.375,
+        434.17187
+      ],
+      "right_shoulder": [
+        300.0,
+        268.80002
+      ],
+      "right_elbow": [
+        340.78538,
+        299.64768
+      ],
+      "right_wrist": [
+        311.6,
+        284.45548
+      ],
+      "left_shoulder": [
+        216.0,
+        268.80002
+      ],
+      "left_elbow": [
+        174.87107,
+        297.65474
+      ],
+      "left_wrist": [
+        209.3,
+        287.59023
+      ]
+    },
+    "paddle_center_px": [
+      320.51941,
+      246.73981
+    ],
+    "wrist_px": [
+      311.6,
+      284.45548
+    ],
+    "paddle_basis_x": [
+      0.762955,
+      0.145758
+    ],
+    "paddle_basis_y": [
+      -0.162171,
+      0.68574
+    ],
+    "draw_order": [
+      "left_hand",
+      "right_hand",
+      "shin_1",
+      "shin_0",
+      "shoe_1",
+      "shoe_0",
+      "paddle",
+      "forearm_left",
+      "forearm_right",
+      "thigh_1",
+      "thigh_0",
+      "hips",
+      "upper_arm_left",
+      "upper_arm_right",
+      "torso",
+      "head"
+    ],
+    "max_reach_clamp": 0.0,
+    "root_translation_world": 14.625,
+    "foot_lift": [
+      0.45049915829954484,
+      8.248678804640217e-32
+    ],
+    "root_normalized": [
+      0.5,
+      0.87890625
+    ],
+    "paddle_center_normalized": [
+      0.62601447265625,
+      0.48191369140625
+    ],
+    "wrist_normalized": [
+      0.60859375,
+      0.555577109375
+    ],
+    "filename": "player_move_right_019.png",
+    "index": 18,
+    "timestamp_seconds": 0.36,
+    "bounds512": [
+      164,
+      146,
+      352,
+      454
+    ]
+  },
+  {
+    "clip": "move_right",
+    "time_normalized": 0.59375,
+    "root_px": [
+      256,
+      450.0
+    ],
+    "joints_world": {
+      "hip_0": [
+        -23.0,
+        0.0,
+        115.62961
+      ],
+      "knee_0": [
+        -40.01027,
+        13.40471,
+        68.3542
+      ],
+      "ankle_0": [
+        -56.60717,
+        -9.0,
+        23.28124
+      ],
+      "hip_1": [
+        23.0,
+        0.0,
+        115.62961
+      ],
+      "knee_1": [
+        38.34642,
+        13.52311,
+        67.82153
+      ],
+      "ankle_1": [
+        52.5625,
+        -9.0,
+        22.0
+      ],
+      "right_shoulder": [
+        44.0,
+        18.0,
+        192.62961
+      ],
+      "right_elbow": [
+        84.73721,
+        16.92996,
+        158.74252
+      ],
+      "right_wrist": [
+        55.6,
+        61.0,
+        154.51708
+      ],
+      "left_shoulder": [
+        -40.0,
+        18.0,
+        192.62961
+      ],
+      "left_elbow": [
+        -81.10961,
+        20.44103,
+        159.26734
+      ],
+      "left_wrist": [
+        -46.7,
+        60.0,
+        151.51708
+      ]
+    },
+    "joints_screen": {
+      "hip_0": [
+        233.0,
+        346.07279
+      ],
+      "knee_0": [
+        215.98973,
+        382.68742
+      ],
+      "ankle_0": [
+        199.39283,
+        433.0203
+      ],
+      "hip_1": [
+        279.0,
+        346.07279
+      ],
+      "knee_1": [
+        294.34642,
+        383.11427
+      ],
+      "ankle_1": [
+        308.5625,
+        434.17187
+      ],
+      "right_shoulder": [
+        300.0,
+        268.97497
+      ],
+      "right_elbow": [
+        340.73721,
+        299.90156
+      ],
+      "right_wrist": [
+        311.6,
+        284.38033
+      ],
+      "left_shoulder": [
+        216.0,
+        268.97497
+      ],
+      "left_elbow": [
+        174.89039,
+        297.89071
+      ],
+      "left_wrist": [
+        209.3,
+        287.51508
+      ]
+    },
+    "paddle_center_px": [
+      320.51941,
+      246.66466
+    ],
+    "wrist_px": [
+      311.6,
+      284.38033
+    ],
+    "paddle_basis_x": [
+      0.762955,
+      0.145758
+    ],
+    "paddle_basis_y": [
+      -0.162171,
+      0.68574
+    ],
+    "draw_order": [
+      "left_hand",
+      "right_hand",
+      "shin_1",
+      "shin_0",
+      "shoe_1",
+      "shoe_0",
+      "paddle",
+      "forearm_left",
+      "forearm_right",
+      "thigh_1",
+      "thigh_0",
+      "hips",
+      "upper_arm_left",
+      "upper_arm_right",
+      "torso",
+      "head"
+    ],
+    "max_reach_clamp": 0.0,
+    "root_translation_world": 15.4375,
+    "foot_lift": [
+      1.281236666088609,
+      8.248678804640217e-32
+    ],
+    "root_normalized": [
+      0.5,
+      0.87890625
+    ],
+    "paddle_center_normalized": [
+      0.62601447265625,
+      0.4817669140625
+    ],
+    "wrist_normalized": [
+      0.60859375,
+      0.55543033203125
+    ],
+    "filename": "player_move_right_020.png",
+    "index": 19,
+    "timestamp_seconds": 0.38,
+    "bounds512": [
+      164,
+      146,
+      352,
+      454
+    ]
+  },
+  {
+    "clip": "move_right",
+    "time_normalized": 0.625,
+    "root_px": [
+      256,
+      450.0
+    ],
+    "joints_world": {
+      "hip_0": [
+        -23.0,
+        0.0,
+        115.4
+      ],
+      "knee_0": [
+        -39.813,
+        15.22182,
+        68.60663
+      ],
+      "ankle_0": [
+        -56.11987,
+        -9.0,
+        24.37554
+      ],
+      "hip_1": [
+        23.0,
+        0.0,
+        115.4
+      ],
+      "knee_1": [
+        38.02877,
+        14.13401,
+        67.66777
+      ],
+      "ankle_1": [
+        51.75,
+        -9.0,
+        22.0
+      ],
+      "right_shoulder": [
+        44.0,
+        18.0,
+        192.4
+      ],
+      "right_elbow": [
+        84.7015,
+        16.88367,
+        158.47152
+      ],
+      "right_wrist": [
+        55.6,
+        61.0,
+        154.49
+      ],
+      "left_shoulder": [
+        -40.0,
+        18.0,
+        192.4
+      ],
+      "left_elbow": [
+        -81.09479,
+        20.38477,
+        159.01541
+      ],
+      "left_wrist": [
+        -46.7,
+        60.0,
+        151.49
+      ]
+    },
+    "joints_screen": {
+      "hip_0": [
+        233.0,
+        346.27917
+      ],
+      "knee_0": [
+        216.187,
+        381.66396
+      ],
+      "ankle_0": [
+        199.88013,
+        432.03675
+      ],
+      "hip_1": [
+        279.0,
+        346.27917
+      ],
+      "knee_1": [
+        294.02877,
+        382.98467
+      ],
+      "ankle_1": [
+        307.75,
+        434.17187
+      ],
+      "right_shoulder": [
+        300.0,
+        269.18134
+      ],
+      "right_elbow": [
+        340.7015,
+        300.16543
+      ],
+      "right_wrist": [
+        311.6,
+        284.40467
+      ],
+      "left_shoulder": [
+        216.0,
+        269.18134
+      ],
+      "left_elbow": [
+        174.90521,
+        298.1418
+      ],
+      "left_wrist": [
+        209.3,
+        287.53942
+      ]
+    },
+    "paddle_center_px": [
+      320.51941,
+      246.68899
+    ],
+    "wrist_px": [
+      311.6,
+      284.40467
+    ],
+    "paddle_basis_x": [
+      0.762955,
+      0.145758
+    ],
+    "paddle_basis_y": [
+      -0.162171,
+      0.68574
+    ],
+    "draw_order": [
+      "left_hand",
+      "right_hand",
+      "shin_1",
+      "shin_0",
+      "shoe_1",
+      "shoe_0",
+      "paddle",
+      "forearm_left",
+      "thigh_0",
+      "forearm_right",
+      "thigh_1",
+      "hips",
+      "upper_arm_left",
+      "upper_arm_right",
+      "torso",
+      "head"
+    ],
+    "max_reach_clamp": 0.0,
+    "root_translation_world": 16.25,
+    "foot_lift": [
+      2.3755417149853213,
+      8.248678804640217e-32
+    ],
+    "root_normalized": [
+      0.5,
+      0.87890625
+    ],
+    "paddle_center_normalized": [
+      0.62601447265625,
+      0.48181443359375
+    ],
+    "wrist_normalized": [
+      0.60859375,
+      0.55547787109375
+    ],
+    "filename": "player_move_right_021.png",
+    "index": 20,
+    "timestamp_seconds": 0.4,
+    "bounds512": [
+      164,
+      146,
+      352,
+      454
+    ]
+  },
+  {
+    "clip": "move_right",
+    "time_normalized": 0.65625,
+    "root_px": [
+      256,
+      450.0
+    ],
+    "joints_world": {
+      "hip_0": [
+        -23.0,
+        0.0,
+        115.17039
+      ],
+      "knee_0": [
+        -39.34478,
+        17.18432,
+        68.89354
+      ],
+      "ankle_0": [
+        -54.95233,
+        -9.0,
+        25.53704
+      ],
+      "hip_1": [
+        23.0,
+        0.0,
+        115.17039
+      ],
+      "knee_1": [
+        37.71454,
+        14.71574,
+        67.51612
+      ],
+      "ankle_1": [
+        50.9375,
+        -9.0,
+        22.0
+      ],
+      "right_shoulder": [
+        44.0,
+        18.0,
+        192.17039
+      ],
+      "right_elbow": [
+        84.68439,
+        16.8621,
+        158.22211
+      ],
+      "right_wrist": [
+        55.6,
+        61.0,
+        154.35635
+      ],
+      "left_shoulder": [
+        -40.0,
+        18.0,
+        192.17039
+      ],
+      "left_elbow": [
+        -81.08755,
+        20.35836,
+        158.77501
+      ],
+      "left_wrist": [
+        -46.7,
+        60.0,
+        151.35635
+      ]
+    },
+    "joints_screen": {
+      "hip_0": [
+        233.0,
+        346.48554
+      ],
+      "knee_0": [
+        216.65522,
+        380.54579
+      ],
+      "ankle_0": [
+        201.04767,
+        430.9928
+      ],
+      "hip_1": [
+        279.0,
+        346.48554
+      ],
+      "knee_1": [
+        293.71454,
+        382.86596
+      ],
+      "ankle_1": [
+        306.9375,
+        434.17187
+      ],
+      "right_shoulder": [
+        300.0,
+        269.38772
+      ],
+      "right_elbow": [
+        340.68439,
+        300.39906
+      ],
+      "right_wrist": [
+        311.6,
+        284.52479
+      ],
+      "left_shoulder": [
+        216.0,
+        269.38772
+      ],
+      "left_elbow": [
+        174.91245,
+        298.36945
+      ],
+      "left_wrist": [
+        209.3,
+        287.65954
+      ]
+    },
+    "paddle_center_px": [
+      320.51941,
+      246.80912
+    ],
+    "wrist_px": [
+      311.6,
+      284.52479
+    ],
+    "paddle_basis_x": [
+      0.762955,
+      0.145758
+    ],
+    "paddle_basis_y": [
+      -0.162171,
+      0.68574
+    ],
+    "draw_order": [
+      "left_hand",
+      "right_hand",
+      "shin_0",
+      "shin_1",
+      "shoe_1",
+      "shoe_0",
+      "paddle",
+      "forearm_left",
+      "thigh_0",
+      "thigh_1",
+      "forearm_right",
+      "hips",
+      "upper_arm_left",
+      "upper_arm_right",
+      "torso",
+      "head"
+    ],
+    "max_reach_clamp": 0.0,
+    "root_translation_world": 17.0625,
+    "foot_lift": [
+      3.537042783247437,
+      8.248678804640217e-32
+    ],
+    "root_normalized": [
+      0.5,
+      0.87890625
+    ],
+    "paddle_center_normalized": [
+      0.62601447265625,
+      0.4820490625
+    ],
+    "wrist_normalized": [
+      0.60859375,
+      0.55571248046875
+    ],
+    "filename": "player_move_right_022.png",
+    "index": 21,
+    "timestamp_seconds": 0.42,
+    "bounds512": [
+      164,
+      146,
+      351,
+      454
+    ]
+  },
+  {
+    "clip": "move_right",
+    "time_normalized": 0.6875,
+    "root_px": [
+      256,
+      450.0
+    ],
+    "joints_world": {
+      "hip_0": [
+        -23.0,
+        0.0,
+        114.97574
+      ],
+      "knee_0": [
+        -38.65547,
+        18.97767,
+        69.16357
+      ],
+      "ankle_0": [
+        -53.1798,
+        -9.0,
+        26.55731
+      ],
+      "hip_1": [
+        23.0,
+        0.0,
+        114.97574
+      ],
+      "knee_1": [
+        37.40238,
+        15.22995,
+        67.38771
+      ],
+      "ankle_1": [
+        50.125,
+        -9.0,
+        22.0
+      ],
+      "right_shoulder": [
+        44.0,
+        18.0,
+        191.97574
+      ],
+      "right_elbow": [
+        84.68889,
+        16.86774,
+        158.03267
+      ],
+      "right_wrist": [
+        55.6,
+        61.0,
+        154.13648
+      ],
+      "left_shoulder": [
+        -40.0,
+        18.0,
+        191.97574
+      ],
+      "left_elbow": [
+        -81.08947,
+        20.36528,
+        158.5832
+      ],
+      "left_wrist": [
+        -46.7,
+        60.0,
+        151.13648
+      ]
+    },
+    "joints_screen": {
+      "hip_0": [
+        233.0,
+        346.66049
+      ],
+      "knee_0": [
+        217.34453,
+        379.51693
+      ],
+      "ankle_0": [
+        202.8202,
+        430.07579
+      ],
+      "hip_1": [
+        279.0,
+        346.66049
+      ],
+      "knee_1": [
+        293.40238,
+        382.75596
+      ],
+      "ankle_1": [
+        306.125,
+        434.17187
+      ],
+      "right_shoulder": [
+        300.0,
+        269.56267
+      ],
+      "right_elbow": [
+        340.68889,
+        300.56685
+      ],
+      "right_wrist": [
+        311.6,
+        284.72241
+      ],
+      "left_shoulder": [
+        216.0,
+        269.56267
+      ],
+      "left_elbow": [
+        174.91053,
+        298.53881
+      ],
+      "left_wrist": [
+        209.3,
+        287.85716
+      ]
+    },
+    "paddle_center_px": [
+      320.51941,
+      247.00673
+    ],
+    "wrist_px": [
+      311.6,
+      284.72241
+    ],
+    "paddle_basis_x": [
+      0.762955,
+      0.145758
+    ],
+    "paddle_basis_y": [
+      -0.162171,
+      0.68574
+    ],
+    "draw_order": [
+      "left_hand",
+      "right_hand",
+      "shin_0",
+      "shin_1",
+      "shoe_1",
+      "shoe_0",
+      "paddle",
+      "forearm_left",
+      "thigh_0",
+      "thigh_1",
+      "forearm_right",
+      "hips",
+      "upper_arm_left",
+      "upper_arm_right",
+      "torso",
+      "head"
+    ],
+    "max_reach_clamp": 0.0,
+    "root_translation_world": 17.875,
+    "foot_lift": [
+      4.557310116749424,
+      8.248678804640217e-32
+    ],
+    "root_normalized": [
+      0.5,
+      0.87890625
+    ],
+    "paddle_center_normalized": [
+      0.62601447265625,
+      0.48243501953125
+    ],
+    "wrist_normalized": [
+      0.60859375,
+      0.55609845703125
+    ],
+    "filename": "player_move_right_023.png",
+    "index": 22,
+    "timestamp_seconds": 0.44,
+    "bounds512": [
+      164,
+      146,
+      351,
+      454
+    ]
+  },
+  {
+    "clip": "move_right",
+    "time_normalized": 0.71875,
+    "root_px": [
+      256,
+      450.0
+    ],
+    "joints_world": {
+      "hip_0": [
+        -23.0,
+        0.0,
+        114.84567
+      ],
+      "knee_0": [
+        -37.82096,
+        20.3829,
+        69.36077
+      ],
+      "ankle_0": [
+        -50.95879,
+        -9.0,
+        27.25326
+      ],
+      "hip_1": [
+        23.0,
+        0.0,
+        114.84567
+      ],
+      "knee_1": [
+        37.0908,
+        15.64819,
+        67.30008
+      ],
+      "ankle_1": [
+        49.3125,
+        -9.0,
+        22.0
+      ],
+      "right_shoulder": [
+        44.0,
+        18.0,
+        191.84567
+      ],
+      "right_elbow": [
+        84.71422,
+        16.89996,
+        157.93192
+      ],
+      "right_wrist": [
+        55.6,
+        61.0,
+        153.86386
+      ],
+      "left_shoulder": [
+        -40.0,
+        18.0,
+        191.84567
+      ],
+      "left_elbow": [
+        -81.10012,
+        20.40464,
+        158.46906
+      ],
+      "left_wrist": [
+        -46.7,
+        60.0,
+        150.86386
+      ]
+    },
+    "joints_screen": {
+      "hip_0": [
+        233.0,
+        346.77739
+      ],
+      "knee_0": [
+        218.17904,
+        378.72368
+      ],
+      "ankle_0": [
+        205.04121,
+        429.45027
+      ],
+      "hip_1": [
+        279.0,
+        346.77739
+      ],
+      "knee_1": [
+        293.0908,
+        382.65138
+      ],
+      "ankle_1": [
+        305.3125,
+        434.17187
+      ],
+      "right_shoulder": [
+        300.0,
+        269.67957
+      ],
+      "right_elbow": [
+        340.71422,
+        300.64327
+      ],
+      "right_wrist": [
+        311.6,
+        284.96744
+      ],
+      "left_shoulder": [
+        216.0,
+        269.67957
+      ],
+      "left_elbow": [
+        174.89988,
+        298.62414
+      ],
+      "left_wrist": [
+        209.3,
+        288.10219
+      ]
+    },
+    "paddle_center_px": [
+      320.51941,
+      247.25176
+    ],
+    "wrist_px": [
+      311.6,
+      284.96744
+    ],
+    "paddle_basis_x": [
+      0.762955,
+      0.145758
+    ],
+    "paddle_basis_y": [
+      -0.162171,
+      0.68574
+    ],
+    "draw_order": [
+      "left_hand",
+      "right_hand",
+      "shin_0",
+      "shin_1",
+      "shoe_1",
+      "shoe_0",
+      "paddle",
+      "thigh_0",
+      "forearm_left",
+      "thigh_1",
+      "forearm_right",
+      "hips",
+      "upper_arm_left",
+      "upper_arm_right",
+      "torso",
+      "head"
+    ],
+    "max_reach_clamp": 0.0,
+    "root_translation_world": 18.6875,
+    "foot_lift": [
+      5.253258158986095,
+      8.248678804640217e-32
+    ],
+    "root_normalized": [
+      0.5,
+      0.87890625
+    ],
+    "paddle_center_normalized": [
+      0.62601447265625,
+      0.48291359375
+    ],
+    "wrist_normalized": [
+      0.60859375,
+      0.55657703125
+    ],
+    "filename": "player_move_right_024.png",
+    "index": 23,
+    "timestamp_seconds": 0.46,
+    "bounds512": [
+      164,
+      146,
+      352,
+      454
+    ]
+  },
+  {
+    "clip": "move_right",
+    "time_normalized": 0.75,
+    "root_px": [
+      256,
+      450.0
+    ],
+    "joints_world": {
+      "hip_0": [
+        -23.0,
+        0.0,
+        114.8
+      ],
+      "knee_0": [
+        -36.9222,
+        21.2693,
+        69.43714
+      ],
+      "ankle_0": [
+        -48.5,
+        -9.0,
+        27.5
+      ],
+      "hip_1": [
+        23.0,
+        0.0,
+        114.8
+      ],
+      "knee_1": [
+        36.77836,
+        15.95436,
+        67.26459
+      ],
+      "ankle_1": [
+        48.5,
+        -9.0,
+        22.0
+      ],
+      "right_shoulder": [
+        44.0,
+        18.0,
+        191.8
+      ],
+      "right_elbow": [
+        84.75594,
+        16.95493,
+        157.93466
+      ],
+      "right_wrist": [
+        55.6,
+        61.0,
+        153.58
+      ],
+      "left_shoulder": [
+        -40.0,
+        18.0,
+        191.8
+      ],
+      "left_elbow": [
+        -81.11721,
+        20.47116,
+        158.44932
+      ],
+      "left_wrist": [
+        -46.7,
+        60.0,
+        150.58
+      ]
+    },
+    "joints_screen": {
+      "hip_0": [
+        233.0,
+        346.81844
+      ],
+      "knee_0": [
+        219.0778,
+        378.26646
+      ],
+      "ankle_0": [
+        207.5,
+        429.2285
+      ],
+      "hip_1": [
+        279.0,
+        346.81844
+      ],
+      "knee_1": [
+        292.77836,
+        382.54906
+      ],
+      "ankle_1": [
+        304.5,
+        434.17187
+      ],
+      "right_shoulder": [
+        300.0,
+        269.72062
+      ],
+      "right_elbow": [
+        340.75594,
+        300.61672
+      ],
+      "right_wrist": [
+        311.6,
+        285.22257
+      ],
+      "left_shoulder": [
+        216.0,
+        269.72062
+      ],
+      "left_elbow": [
+        174.88279,
+        298.61273
+      ],
+      "left_wrist": [
+        209.3,
+        288.35732
+      ]
+    },
+    "paddle_center_px": [
+      320.51941,
+      247.5069
+    ],
+    "wrist_px": [
+      311.6,
+      285.22257
+    ],
+    "paddle_basis_x": [
+      0.762955,
+      0.145758
+    ],
+    "paddle_basis_y": [
+      -0.162171,
+      0.68574
+    ],
+    "draw_order": [
+      "left_hand",
+      "right_hand",
+      "shin_0",
+      "shin_1",
+      "shoe_1",
+      "thigh_0",
+      "paddle",
+      "shoe_0",
+      "forearm_left",
+      "thigh_1",
+      "forearm_right",
+      "hips",
+      "upper_arm_left",
+      "upper_arm_right",
+      "torso",
+      "head"
+    ],
+    "max_reach_clamp": 0.0,
+    "root_translation_world": 19.5,
+    "foot_lift": [
+      5.5,
+      8.248678804640217e-32
+    ],
+    "root_normalized": [
+      0.5,
+      0.87890625
+    ],
+    "paddle_center_normalized": [
+      0.62601447265625,
+      0.4834119140625
+    ],
+    "wrist_normalized": [
+      0.60859375,
+      0.55707533203125
+    ],
+    "filename": "player_move_right_025.png",
+    "index": 24,
+    "timestamp_seconds": 0.48,
+    "bounds512": [
+      164,
+      146,
+      352,
+      454
+    ]
+  },
+  {
+    "clip": "move_right",
+    "time_normalized": 0.78125,
+    "root_px": [
+      256,
+      450.0
+    ],
+    "joints_world": {
+      "hip_0": [
+        -23.0,
+        0.0,
+        114.84567
+      ],
+      "knee_0": [
+        -36.03242,
+        21.58256,
+        69.36657
+      ],
+      "ankle_0": [
+        -46.04121,
+        -9.0,
+        27.25326
+      ],
+      "hip_1": [
+        23.0,
+        0.0,
+        114.84567
+      ],
+      "knee_1": [
+        36.46381,
+        16.14588,
+        67.2848
+      ],
+      "ankle_1": [
+        47.6875,
+        -9.0,
+        22.0
+      ],
+      "right_shoulder": [
+        44.0,
+        18.0,
+        191.84567
+      ],
+      "right_elbow": [
+        84.80699,
+        17.02555,
+        158.03975
+      ],
+      "right_wrist": [
+        55.6,
+        61.0,
+        153.32811
+      ],
+      "left_shoulder": [
+        -40.0,
+        18.0,
+        191.84567
+      ],
+      "left_elbow": [
+        -81.13732,
+        20.55557,
+        158.52616
+      ],
+      "left_wrist": [
+        -46.7,
+        60.0,
+        150.32811
+      ]
+    },
+    "joints_screen": {
+      "hip_0": [
+        233.0,
+        346.77739
+      ],
+      "knee_0": [
+        219.96758,
+        378.19257
+      ],
+      "ankle_0": [
+        209.95879,
+        429.45027
+      ],
+      "hip_1": [
+        279.0,
+        346.77739
+      ],
+      "knee_1": [
+        292.46381,
+        382.44693
+      ],
+      "ankle_1": [
+        303.6875,
+        434.17187
+      ],
+      "right_shoulder": [
+        300.0,
+        269.67957
+      ],
+      "right_elbow": [
+        340.80699,
+        300.49131
+      ],
+      "right_wrist": [
+        311.6,
+        285.44897
+      ],
+      "left_shoulder": [
+        216.0,
+        269.67957
+      ],
+      "left_elbow": [
+        174.86268,
+        298.50666
+      ],
+      "left_wrist": [
+        209.3,
+        288.58372
+      ]
+    },
+    "paddle_center_px": [
+      320.51941,
+      247.7333
+    ],
+    "wrist_px": [
+      311.6,
+      285.44897
+    ],
+    "paddle_basis_x": [
+      0.762955,
+      0.145758
+    ],
+    "paddle_basis_y": [
+      -0.162171,
+      0.68574
+    ],
+    "draw_order": [
+      "left_hand",
+      "right_hand",
+      "shin_0",
+      "shin_1",
+      "shoe_1",
+      "thigh_0",
+      "paddle",
+      "shoe_0",
+      "forearm_left",
+      "thigh_1",
+      "forearm_right",
+      "hips",
+      "upper_arm_left",
+      "upper_arm_right",
+      "torso",
+      "head"
+    ],
+    "max_reach_clamp": 0.0,
+    "root_translation_world": 20.3125,
+    "foot_lift": [
+      5.253258158986097,
+      8.248678804640217e-32
+    ],
+    "root_normalized": [
+      0.5,
+      0.87890625
+    ],
+    "paddle_center_normalized": [
+      0.62601447265625,
+      0.4838541015625
+    ],
+    "wrist_normalized": [
+      0.60859375,
+      0.55751751953125
+    ],
+    "filename": "player_move_right_026.png",
+    "index": 25,
+    "timestamp_seconds": 0.5,
+    "bounds512": [
+      164,
+      146,
+      352,
+      454
+    ]
+  },
+  {
+    "clip": "move_right",
+    "time_normalized": 0.8125,
+    "root_px": [
+      256,
+      450.0
+    ],
+    "joints_world": {
+      "hip_0": [
+        -23.0,
+        0.0,
+        114.97574
+      ],
+      "knee_0": [
+        -35.21483,
+        21.33742,
+        69.1553
+      ],
+      "ankle_0": [
+        -43.8202,
+        -9.0,
+        26.55731
+      ],
+      "hip_1": [
+        23.0,
+        0.0,
+        114.97574
+      ],
+      "knee_1": [
+        36.14629,
+        16.23359,
+        67.35593
+      ],
+      "ankle_1": [
+        46.875,
+        -9.0,
+        22.0
+      ],
+      "right_shoulder": [
+        44.0,
+        18.0,
+        191.97574
+      ],
+      "right_elbow": [
+        84.85916,
+        17.1018,
+        158.23077
+      ],
+      "right_wrist": [
+        55.6,
+        61.0,
+        153.14653
+      ],
+      "left_shoulder": [
+        -40.0,
+        18.0,
+        191.97574
+      ],
+      "left_elbow": [
+        -81.15689,
+        20.64551,
+        158.68743
+      ],
+      "left_wrist": [
+        -46.7,
+        60.0,
+        150.14653
+      ]
+    },
+    "joints_screen": {
+      "hip_0": [
+        233.0,
+        346.66049
+      ],
+      "knee_0": [
+        220.78517,
+        378.48992
+      ],
+      "ankle_0": [
+        212.1798,
+        430.07579
+      ],
+      "hip_1": [
+        279.0,
+        346.66049
+      ],
+      "knee_1": [
+        292.14629,
+        382.34455
+      ],
+      "ankle_1": [
+        302.875,
+        434.17187
+      ],
+      "right_shoulder": [
+        300.0,
+        269.56267
+      ],
+      "right_elbow": [
+        340.85916,
+        300.28619
+      ],
+      "right_wrist": [
+        311.6,
+        285.61217
+      ],
+      "left_shoulder": [
+        216.0,
+        269.56267
+      ],
+      "left_elbow": [
+        174.84311,
+        298.32229
+      ],
+      "left_wrist": [
+        209.3,
+        288.74692
+      ]
+    },
+    "paddle_center_px": [
+      320.51941,
+      247.89649
+    ],
+    "wrist_px": [
+      311.6,
+      285.61217
+    ],
+    "paddle_basis_x": [
+      0.762955,
+      0.145758
+    ],
+    "paddle_basis_y": [
+      -0.162171,
+      0.68574
+    ],
+    "draw_order": [
+      "left_hand",
+      "right_hand",
+      "shin_0",
+      "shin_1",
+      "shoe_1",
+      "shoe_0",
+      "paddle",
+      "thigh_0",
+      "forearm_left",
+      "thigh_1",
+      "forearm_right",
+      "hips",
+      "upper_arm_left",
+      "upper_arm_right",
+      "torso",
+      "head"
+    ],
+    "max_reach_clamp": 0.0,
+    "root_translation_world": 21.125,
+    "foot_lift": [
+      4.5573101167494245,
+      8.248678804640217e-32
+    ],
+    "root_normalized": [
+      0.5,
+      0.87890625
+    ],
+    "paddle_center_normalized": [
+      0.62601447265625,
+      0.48417283203125
+    ],
+    "wrist_normalized": [
+      0.60859375,
+      0.55783626953125
+    ],
+    "filename": "player_move_right_027.png",
+    "index": 26,
+    "timestamp_seconds": 0.52,
+    "bounds512": [
+      164,
+      146,
+      352,
+      454
+    ]
+  },
+  {
+    "clip": "move_right",
+    "time_normalized": 0.84375,
+    "root_px": [
+      256,
+      450.0
+    ],
+    "joints_world": {
+      "hip_0": [
+        -23.0,
+        0.0,
+        115.17039
+      ],
+      "knee_0": [
+        -34.52718,
+        20.6141,
+        68.84348
+      ],
+      "ankle_0": [
+        -42.04767,
+        -9.0,
+        25.53704
+      ],
+      "hip_1": [
+        23.0,
+        0.0,
+        115.17039
+      ],
+      "knee_1": [
+        35.82563,
+        16.24056,
+        67.4656
+      ],
+      "ankle_1": [
+        46.0625,
+        -9.0,
+        22.0
+      ],
+      "right_shoulder": [
+        44.0,
+        18.0,
+        192.17039
+      ],
+      "right_elbow": [
+        84.90461,
+        17.17182,
+        158.47874
+      ],
+      "right_wrist": [
+        55.6,
+        61.0,
+        153.06292
+      ],
+      "left_shoulder": [
+        -40.0,
+        18.0,
+        192.17039
+      ],
+      "left_elbow": [
+        -81.17307,
+        20.7271,
+        158.90868
+      ],
+      "left_wrist": [
+        -46.7,
+        60.0,
+        150.06292
+      ]
+    },
+    "joints_screen": {
+      "hip_0": [
+        233.0,
+        346.48554
+      ],
+      "knee_0": [
+        221.47282,
+        379.08727
+      ],
+      "ankle_0": [
+        213.95233,
+        430.9928
+      ],
+      "hip_1": [
+        279.0,
+        346.48554
+      ],
+      "knee_1": [
+        291.82563,
+        382.24293
+      ],
+      "ankle_1": [
+        302.0625,
+        434.17187
+      ],
+      "right_shoulder": [
+        300.0,
+        269.38772
+      ],
+      "right_elbow": [
+        340.90461,
+        300.03262
+      ],
+      "right_wrist": [
+        311.6,
+        285.68732
+      ],
+      "left_shoulder": [
+        216.0,
+        269.38772
+      ],
+      "left_elbow": [
+        174.82693,
+        298.08766
+      ],
+      "left_wrist": [
+        209.3,
+        288.82207
+      ]
+    },
+    "paddle_center_px": [
+      320.51941,
+      247.97164
+    ],
+    "wrist_px": [
+      311.6,
+      285.68732
+    ],
+    "paddle_basis_x": [
+      0.762955,
+      0.145758
+    ],
+    "paddle_basis_y": [
+      -0.162171,
+      0.68574
+    ],
+    "draw_order": [
+      "left_hand",
+      "right_hand",
+      "shin_0",
+      "shin_1",
+      "shoe_1",
+      "shoe_0",
+      "paddle",
+      "thigh_0",
+      "forearm_left",
+      "thigh_1",
+      "forearm_right",
+      "hips",
+      "upper_arm_left",
+      "upper_arm_right",
+      "torso",
+      "head"
+    ],
+    "max_reach_clamp": 0.0,
+    "root_translation_world": 21.9375,
+    "foot_lift": [
+      3.5370427832474407,
+      8.248678804640217e-32
+    ],
+    "root_normalized": [
+      0.5,
+      0.87890625
+    ],
+    "paddle_center_normalized": [
+      0.62601447265625,
+      0.484319609375
+    ],
+    "wrist_normalized": [
+      0.60859375,
+      0.557983046875
+    ],
+    "filename": "player_move_right_028.png",
+    "index": 27,
+    "timestamp_seconds": 0.54,
+    "bounds512": [
+      164,
+      146,
+      352,
+      454
+    ]
+  },
+  {
+    "clip": "move_right",
+    "time_normalized": 0.875,
+    "root_px": [
+      256,
+      450.0
+    ],
+    "joints_world": {
+      "hip_0": [
+        -23.0,
+        0.0,
+        115.4
+      ],
+      "knee_0": [
+        -34.02463,
+        19.55574,
+        68.49552
+      ],
+      "ankle_0": [
+        -40.88013,
+        -9.0,
+        24.37554
+      ],
+      "hip_1": [
+        23.0,
+        0.0,
+        115.4
+      ],
+      "knee_1": [
+        35.50251,
+        16.19969,
+        67.59564
+      ],
+      "ankle_1": [
+        45.25,
+        -9.0,
+        22.0
+      ],
+      "right_shoulder": [
+        44.0,
+        18.0,
+        192.4
+      ],
+      "right_elbow": [
+        84.937,
+        17.22393,
+        158.74648
+      ],
+      "right_wrist": [
+        55.6,
+        61.0,
+        153.09
+      ],
+      "left_shoulder": [
+        -40.0,
+        18.0,
+        192.4
+      ],
+      "left_elbow": [
+        -81.18406,
+        20.78724,
+        159.15689
+      ],
+      "left_wrist": [
+        -46.7,
+        60.0,
+        150.09
+      ]
+    },
+    "joints_screen": {
+      "hip_0": [
+        233.0,
+        346.27917
+      ],
+      "knee_0": [
+        221.97537,
+        379.86397
+      ],
+      "ankle_0": [
+        215.11987,
+        432.03675
+      ],
+      "hip_1": [
+        279.0,
+        346.27917
+      ],
+      "knee_1": [
+        291.50251,
+        382.14397
+      ],
+      "ankle_1": [
+        301.25,
+        434.17187
+      ],
+      "right_shoulder": [
+        300.0,
+        269.18134
+      ],
+      "right_elbow": [
+        340.937,
+        299.76914
+      ],
+      "right_wrist": [
+        311.6,
+        285.66298
+      ],
+      "left_shoulder": [
+        216.0,
+        269.18134
+      ],
+      "left_elbow": [
+        174.81594,
+        297.83821
+      ],
+      "left_wrist": [
+        209.3,
+        288.79773
+      ]
+    },
+    "paddle_center_px": [
+      320.51941,
+      247.94731
+    ],
+    "wrist_px": [
+      311.6,
+      285.66298
+    ],
+    "paddle_basis_x": [
+      0.762955,
+      0.145758
+    ],
+    "paddle_basis_y": [
+      -0.162171,
+      0.68574
+    ],
+    "draw_order": [
+      "left_hand",
+      "right_hand",
+      "shin_0",
+      "shin_1",
+      "shoe_1",
+      "shoe_0",
+      "paddle",
+      "forearm_left",
+      "thigh_0",
+      "thigh_1",
+      "forearm_right",
+      "hips",
+      "upper_arm_left",
+      "upper_arm_right",
+      "torso",
+      "head"
+    ],
+    "max_reach_clamp": 0.0,
+    "root_translation_world": 22.75,
+    "foot_lift": [
+      2.3755417149853235,
+      8.248678804640217e-32
+    ],
+    "root_normalized": [
+      0.5,
+      0.87890625
+    ],
+    "paddle_center_normalized": [
+      0.62601447265625,
+      0.48427208984375
+    ],
+    "wrist_normalized": [
+      0.60859375,
+      0.5579355078125
+    ],
+    "filename": "player_move_right_029.png",
+    "index": 28,
+    "timestamp_seconds": 0.56,
+    "bounds512": [
+      164,
+      146,
+      352,
+      454
+    ]
+  },
+  {
+    "clip": "move_right",
+    "time_normalized": 0.90625,
+    "root_px": [
+      256,
+      450.0
+    ],
+    "joints_world": {
+      "hip_0": [
+        -23.0,
+        0.0,
+        115.62961
+      ],
+      "knee_0": [
+        -33.75324,
+        18.36302,
+        68.18314
+      ],
+      "ankle_0": [
+        -40.39283,
+        -9.0,
+        23.28124
+      ],
+      "hip_1": [
+        23.0,
+        0.0,
+        115.62961
+      ],
+      "knee_1": [
+        35.17853,
+        16.14978,
+        67.72483
+      ],
+      "ankle_1": [
+        44.4375,
+        -9.0,
+        22.0
+      ],
+      "right_shoulder": [
+        44.0,
+        18.0,
+        192.62961
+      ],
+      "right_elbow": [
+        84.95215,
+        17.24894,
+        158.99395
+      ],
+      "right_wrist": [
+        55.6,
+        61.0,
+        153.22365
+      ],
+      "left_shoulder": [
+        -40.0,
+        18.0,
+        192.62961
+      ],
+      "left_elbow": [
+        -81.18905,
+        20.81595,
+        159.3951
+      ],
+      "left_wrist": [
+        -46.7,
+        60.0,
+        150.22365
+      ]
+    },
+    "joints_screen": {
+      "hip_0": [
+        233.0,
+        346.07279
+      ],
+      "knee_0": [
+        222.24676,
+        380.66758
+      ],
+      "ankle_0": [
+        215.60717,
+        433.0203
+      ],
+      "hip_1": [
+        279.0,
+        346.07279
+      ],
+      "knee_1": [
+        291.17853,
+        382.04973
+      ],
+      "ankle_1": [
+        300.4375,
+        434.17187
+      ],
+      "right_shoulder": [
+        300.0,
+        268.97497
+      ],
+      "right_elbow": [
+        340.95215,
+        299.53574
+      ],
+      "right_wrist": [
+        311.6,
+        285.54286
+      ],
+      "left_shoulder": [
+        216.0,
+        268.97497
+      ],
+      "left_elbow": [
+        174.81095,
+        297.61153
+      ],
+      "left_wrist": [
+        209.3,
+        288.67761
+      ]
+    },
+    "paddle_center_px": [
+      320.51941,
+      247.82718
+    ],
+    "wrist_px": [
+      311.6,
+      285.54286
+    ],
+    "paddle_basis_x": [
+      0.762955,
+      0.145758
+    ],
+    "paddle_basis_y": [
+      -0.162171,
+      0.68574
+    ],
+    "draw_order": [
+      "left_hand",
+      "right_hand",
+      "shin_0",
+      "shin_1",
+      "shoe_1",
+      "shoe_0",
+      "paddle",
+      "forearm_left",
+      "thigh_0",
+      "thigh_1",
+      "forearm_right",
+      "hips",
+      "upper_arm_left",
+      "upper_arm_right",
+      "torso",
+      "head"
+    ],
+    "max_reach_clamp": 0.0,
+    "root_translation_world": 23.5625,
+    "foot_lift": [
+      1.281236666088611,
+      8.248678804640217e-32
+    ],
+    "root_normalized": [
+      0.5,
+      0.87890625
+    ],
+    "paddle_center_normalized": [
+      0.62601447265625,
+      0.4840374609375
+    ],
+    "wrist_normalized": [
+      0.60859375,
+      0.5577008984375
+    ],
+    "filename": "player_move_right_030.png",
+    "index": 29,
+    "timestamp_seconds": 0.58,
+    "bounds512": [
+      164,
+      146,
+      352,
+      454
+    ]
+  },
+  {
+    "clip": "move_right",
+    "time_normalized": 0.9375,
+    "root_px": [
+      256,
+      450.0
+    ],
+    "joints_world": {
+      "hip_0": [
+        -23.0,
+        0.0,
+        115.82426
+      ],
+      "knee_0": [
+        -33.73182,
+        17.28002,
+        67.96793
+      ],
+      "ankle_0": [
+        -40.55269,
+        -9.0,
+        22.4505
+      ],
+      "hip_1": [
+        23.0,
+        0.0,
+        115.82426
+      ],
+      "knee_1": [
+        34.85603,
+        16.1302,
+        67.83206
+      ],
+      "ankle_1": [
+        43.625,
+        -9.0,
+        22.0
+      ],
+      "right_shoulder": [
+        44.0,
+        18.0,
+        192.82426
+      ],
+      "right_elbow": [
+        84.94818,
+        17.24235,
+        159.18393
+      ],
+      "right_wrist": [
+        55.6,
+        61.0,
+        153.44352
+      ],
+      "left_shoulder": [
+        -40.0,
+        18.0,
+        192.82426
+      ],
+      "left_elbow": [
+        -81.18775,
+        20.80839,
+        159.58751
+      ],
+      "left_wrist": [
+        -46.7,
+        60.0,
+        150.44352
+      ]
+    },
+    "joints_screen": {
+      "hip_0": [
+        233.0,
+        345.89784
+      ],
+      "knee_0": [
+        222.26818,
+        381.33577
+      ],
+      "ankle_0": [
+        215.44731,
+        433.76697
+      ],
+      "hip_1": [
+        279.0,
+        345.89784
+      ],
+      "knee_1": [
+        290.85603,
+        381.96193
+      ],
+      "ankle_1": [
+        299.625,
+        434.17187
+      ],
+      "right_shoulder": [
+        300.0,
+        268.80002
+      ],
+      "right_elbow": [
+        340.94818,
+        299.36789
+      ],
+      "right_wrist": [
+        311.6,
+        285.34524
+      ],
+      "left_shoulder": [
+        216.0,
+        268.80002
+      ],
+      "left_elbow": [
+        174.81225,
+        297.4419
+      ],
+      "left_wrist": [
+        209.3,
+        288.47999
+      ]
+    },
+    "paddle_center_px": [
+      320.51941,
+      247.62957
+    ],
+    "wrist_px": [
+      311.6,
+      285.34524
+    ],
+    "paddle_basis_x": [
+      0.762955,
+      0.145758
+    ],
+    "paddle_basis_y": [
+      -0.162171,
+      0.68574
+    ],
+    "draw_order": [
+      "left_hand",
+      "right_hand",
+      "shin_0",
+      "shin_1",
+      "shoe_1",
+      "shoe_0",
+      "paddle",
+      "forearm_left",
+      "thigh_0",
+      "thigh_1",
+      "forearm_right",
+      "hips",
+      "upper_arm_left",
+      "upper_arm_right",
+      "torso",
+      "head"
+    ],
+    "max_reach_clamp": 0.0,
+    "root_translation_world": 24.375,
+    "foot_lift": [
+      0.4504991582995458,
+      8.248678804640217e-32
+    ],
+    "root_normalized": [
+      0.5,
+      0.87890625
+    ],
+    "paddle_center_normalized": [
+      0.62601447265625,
+      0.48365150390625
+    ],
+    "wrist_normalized": [
+      0.60859375,
+      0.557314921875
+    ],
+    "filename": "player_move_right_031.png",
+    "index": 30,
+    "timestamp_seconds": 0.6,
+    "bounds512": [
+      164,
+      146,
+      352,
+      454
+    ]
+  },
+  {
+    "clip": "move_right",
+    "time_normalized": 0.96875,
+    "root_px": [
+      256,
+      450.0
+    ],
+    "joints_world": {
+      "hip_0": [
+        -23.0,
+        0.0,
+        115.95433
+      ],
+      "knee_0": [
+        -33.92642,
+        16.5622,
+        67.88867
+      ],
+      "ankle_0": [
+        -41.19117,
+        -9.0,
+        22.0324
+      ],
+      "hip_1": [
+        23.0,
+        0.0,
+        115.95433
+      ],
+      "knee_1": [
+        34.5377,
+        16.17461,
+        67.89953
+      ],
+      "ankle_1": [
+        42.8125,
+        -9.0,
+        22.0
+      ],
+      "right_shoulder": [
+        44.0,
+        18.0,
+        192.95433
+      ],
+      "right_elbow": [
+        84.92558,
+        17.20535,
+        159.28735
+      ],
+      "right_wrist": [
+        55.6,
+        61.0,
+        153.71614
+      ],
+      "left_shoulder": [
+        -40.0,
+        18.0,
+        192.95433
+      ],
+      "left_elbow": [
+        -81.18024,
+        20.76585,
+        159.7047
+      ],
+      "left_wrist": [
+        -46.7,
+        60.0,
+        150.71614
+      ]
+    },
+    "joints_screen": {
+      "hip_0": [
+        233.0,
+        345.78094
+      ],
+      "knee_0": [
+        222.07358,
+        381.72167
+      ],
+      "ankle_0": [
+        214.80883,
+        434.14275
+      ],
+      "hip_1": [
+        279.0,
+        345.78094
+      ],
+      "knee_1": [
+        290.5377,
+        381.88182
+      ],
+      "ankle_1": [
+        298.8125,
+        434.17187
+      ],
+      "right_shoulder": [
+        300.0,
+        268.68312
+      ],
+      "right_elbow": [
+        340.92558,
+        299.29115
+      ],
+      "right_wrist": [
+        311.6,
+        285.10021
+      ],
+      "left_shoulder": [
+        216.0,
+        268.68312
+      ],
+      "left_elbow": [
+        174.81976,
+        297.35522
+      ],
+      "left_wrist": [
+        209.3,
+        288.23497
+      ]
+    },
+    "paddle_center_px": [
+      320.51941,
+      247.38454
+    ],
+    "wrist_px": [
+      311.6,
+      285.10021
+    ],
+    "paddle_basis_x": [
+      0.762955,
+      0.145758
+    ],
+    "paddle_basis_y": [
+      -0.162171,
+      0.68574
+    ],
+    "draw_order": [
+      "left_hand",
+      "right_hand",
+      "shin_0",
+      "shin_1",
+      "shoe_1",
+      "shoe_0",
+      "paddle",
+      "forearm_left",
+      "thigh_0",
+      "thigh_1",
+      "forearm_right",
+      "hips",
+      "upper_arm_left",
+      "upper_arm_right",
+      "torso",
+      "head"
+    ],
+    "max_reach_clamp": 0.0,
+    "root_translation_world": 25.1875,
+    "foot_lift": [
+      0.0324038840335298,
+      8.248678804640217e-32
+    ],
+    "root_normalized": [
+      0.5,
+      0.87890625
+    ],
+    "paddle_center_normalized": [
+      0.62601447265625,
+      0.4831729296875
+    ],
+    "wrist_normalized": [
+      0.60859375,
+      0.55683634765625
+    ],
+    "filename": "player_move_right_032.png",
+    "index": 31,
+    "timestamp_seconds": 0.62,
+    "bounds512": [
+      164,
+      145,
+      352,
+      454
+    ]
+  }
+]

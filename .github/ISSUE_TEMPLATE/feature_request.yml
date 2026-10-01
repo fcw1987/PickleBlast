@@ -1,0 +1,26 @@
+name: Feature request
+description: Suggest a feature for PickleBlast.
+title: ""
+labels: []
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem or use case would this address?
+      description: Describe when you would want this during a quick Apple Watch play session.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What behavior do you propose?
+      description: Describe what you would expect the game to do.
+    validations:
+      required: true
+  - type: textarea
+    id: fit
+    attributes:
+      label: Why does this fit Apple Watch quick play?
+      description: Explain how it would work for short, glanceable play on the Watch.
+    validations:
+      required: true

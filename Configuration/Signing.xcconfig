@@ -1,0 +1,4 @@
+// Portable public defaults. Simulator builds use CODE_SIGNING_ALLOWED=NO.
+// Physical development builds may supply a team in the ignored local file.
+DEVELOPMENT_TEAM =
+#include? "Signing.local.xcconfig"

@@ -1,0 +1,39 @@
+.build/
+.swiftpm/
+DerivedData/
+build/
+*.xcuserstate
+xcuserdata/
+.DS_Store
+*.xcresult/
+docs/evidence/local/
+# Raw development captures stay private; curated images use docs/images.
+/docs/evidence/
+
+# Supplied immutable art masters; only the deterministic runtime allowlist is committed.
+PickleBlast_Final_Approved_Art/
+
+__pycache__/
+
+# Owner signing selection stays local; public simulator builds need no team.
+/Configuration/Signing.local.xcconfig
+
+# Local packaging, signing exports and developer environments are never source inputs.
+*.xcarchive/
+*.dSYM/
+*.ipa
+*.p12
+*.p8
+*.mobileprovision
+*.provisionprofile
+.env
+.env.*
+.venv/
+venv/
+
+# Private backups and local reports
+*.bundle
+*.tar
+*.zip
+/private/
+coverage/

@@ -1,0 +1,873 @@
+import XCTest
+
+/// Genuine Watch UI tests: launch normally and synthesize touch/Crown events.
+/// Ordinary navigation/settings use no fixtures. The explicitly named controlled
+/// input tests freeze DEBUG simulation time to isolate slow synthetic Crown calls.
+/// The separately named scripted full-run test opts into the DEBUG autoplayer.
+final class PickleBlastWatchUITests: XCTestCase {
+    override func setUpWithError() throws {
+        continueAfterFailure = false
+    }
+
+    @MainActor
+    func testCoordinatePauseTapResumeAndHomeInEveryMode() throws {
+        for mode in ["arcade", "wall", "allThree"] {
+            let app = launchHome()
+            if mode == "arcade" { _ = startRun(app) }
+            else {
+                app.buttons["home.bossRally"].tap()
+                let choice = app.buttons["boss.select.\(mode)"]
+                reveal(choice, in: app); choice.tap()
+                XCTAssertTrue(element("game.court", in: app).waitForExistence(timeout: 5))
+            }
+            let pause = app.buttons["game.pause"]
+            XCTAssertTrue(pause.waitForExistence(timeout: 5))
+            XCTAssertGreaterThanOrEqual(pause.frame.width, 43.9)
+            XCTAssertGreaterThanOrEqual(pause.frame.height, 43.9)
+            XCTAssertGreaterThanOrEqual(pause.frame.minY, app.frame.minY)
+            // A literal screen tap near the lower edge, away from the 14pt
+            // icon, proves the expanded target receives a physical touch.
+            // Identifier.tap() alone can hide native-host gesture conflicts.
+            func tapPauseEdge() {
+                let frame = pause.frame
+                app.coordinate(withNormalizedOffset: .zero).withOffset(CGVector(
+                    dx: frame.midX - app.frame.minX,
+                    dy: frame.minY - app.frame.minY + 36)).tap()
+            }
+            tapPauseEdge()
+            let resume = app.buttons["pause.resume"]
+            XCTAssertTrue(resume.waitForExistence(timeout: 5), "Pause edge tap in \(mode)")
+            capture("coordinate-pause-\(mode)", app: app)
+            resume.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
+            XCTAssertTrue(pause.waitForExistence(timeout: 5))
+            let court = element("game.court", in: app)
+            let resumed = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
+                let value = court.value as? String ?? ""
+                return !value.contains("Resume countdown") && !value.contains("Paused") && court.exists
+            }, object: nil)
+            XCTAssertEqual(XCTWaiter.wait(for: [resumed], timeout: 5), .completed)
+            tapPauseEdge()
+            let home = app.buttons["pause.home"]
+            reveal(home, in: app)
+            home.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
+            XCTAssertTrue(app.buttons["home.play"].waitForExistence(timeout: 5))
+        }
+    }
+
+    @MainActor
+    func testOrdinaryPauseScrollRestartResetsEachMode() throws {
+        let app = launchHome()
+        for mode in ["arcade", "banger", "allThree"] {
+            if mode == "arcade" { _ = startRun(app) }
+            else {
+                app.buttons["home.bossRally"].tap()
+                let choice = app.buttons["boss.select.\(mode)"]
+                reveal(choice, in: app); choice.tap()
+            }
+            let court = element("game.court", in: app)
+            XCTAssertTrue(court.waitForExistence(timeout: 5))
+            // Change authoritative position through ordinary touch so reset
+            // cannot pass merely because the initial score is still zero.
+            dragAcross(court, from: 0.5, to: 0.7)
+            XCTAssertGreaterThan(try playerX(court), 11)
+            app.buttons["game.pause"].tap()
+            XCTAssertTrue(app.buttons["pause.resume"].waitForExistence(timeout: 5))
+            capture("ordinary-restart-before-scroll-\(mode)", app: app)
+            let restart = app.buttons["pause.restart"]
+            reveal(restart, in: app)
+            XCTAssertLessThanOrEqual(restart.frame.maxY, app.frame.maxY - 4)
+            capture("ordinary-restart-visible-\(mode)", app: app)
+            restart.tap()
+
+            let reset = try value(court)
+            XCTAssertEqual(try playerX(court), 10, accuracy: 0.001, reset)
+            if mode == "arcade" {
+                XCTAssertTrue(reset.hasPrefix("Arcade."), reset)
+                XCTAssertTrue(reset.contains("Score 0. 3 lives. 2 saves."), reset)
+            } else {
+                XCTAssertTrue(reset.contains(mode == "banger"
+                    ? "Boss Rally. THE BANGER." : "All Three. Match 1 of 3. THE WALL."), reset)
+                XCTAssertTrue(reset.contains("You 0. Boss 0. 2 saves. Rally 0 returns."), reset)
+                XCTAssertTrue(reset.contains("Score 0."), reset)
+            }
+            XCTAssertFalse(reset.contains("Paused"), reset)
+            XCTAssertTrue(app.buttons["game.pause"].waitForExistence(timeout: 5))
+            app.buttons["game.pause"].tap()
+            let home = app.buttons["pause.home"]
+            reveal(home, in: app); home.tap()
+            XCTAssertTrue(app.buttons["home.play"].waitForExistence(timeout: 5))
+        }
+    }
+
+    @MainActor
+    func testAllThreeLossRetryStartsAtWallAndChooseOpponentRemainsAvailable() throws {
+        let app = launchHome()
+        app.buttons["home.bossRally"].tap()
+        let allThree = app.buttons["boss.select.allThree"]
+        reveal(allThree, in: app); allThree.tap()
+        let court = element("game.court", in: app)
+        XCTAssertTrue(court.waitForExistence(timeout: 5))
+        XCTAssertTrue((court.value as? String ?? "").contains("Match 1 of 3. THE WALL"))
+        dragAcross(court, from: 0.5, to: 0.02)
+        XCTAssertTrue(element("results", in: app).waitForExistence(timeout: 35))
+        XCTAssertEqual(element("results.seriesProgress", in: app).label, "0 OF 3 BOSSES DEFEATED")
+        XCTAssertEqual(element("results.matchScore", in: app).label, "YOU 0 · BOSS 3")
+        capture("all-three-real-loss", app: app)
+        let retry = app.buttons["results.replay"]
+        reveal(retry, in: app); retry.tap()
+        XCTAssertTrue(court.waitForExistence(timeout: 5))
+        XCTAssertTrue((court.value as? String ?? "").contains("Match 1 of 3. THE WALL"))
+        XCTAssertTrue((court.value as? String ?? "").contains("You 0. Boss 0. 2 saves."))
+        app.buttons["game.pause"].tap()
+        let home = app.buttons["pause.home"]
+        reveal(home, in: app); home.tap()
+        app.buttons["home.bossRally"].tap()
+        XCTAssertTrue(app.buttons["boss.select.wall"].waitForExistence(timeout: 5))
+    }
+
+    @MainActor
+    func testScriptedAllThreeAutomaticProgressionAndFinalResult() throws {
+        let app = XCUIApplication()
+        // Explicit DEBUG public-input oracle exercises the complete sequence;
+        // it is lifecycle/progression evidence, not a human balance model.
+        app.launchArguments = ["--validation-series", "--validation-autoplay"]
+        app.launchEnvironment = [:]
+        app.launch()
+        let court = element("game.court", in: app)
+        XCTAssertTrue(court.waitForExistence(timeout: 5))
+        for (index, boss) in ["THE WALL", "THE BANGER", "THE POACHER"].enumerated() {
+            let observed = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
+                (court.value as? String ?? "").contains("Match \(index + 1) of 3. \(boss)")
+            }, object: nil)
+            XCTAssertEqual(XCTWaiter.wait(for: [observed], timeout: 80), .completed)
+            capture("scripted-all-three-match-\(index + 1)", app: app)
+            XCTAssertFalse(element("results", in: app).exists)
+        }
+        XCTAssertTrue(element("results", in: app).waitForExistence(timeout: 90))
+        XCTAssertEqual(element("results.seriesProgress", in: app).label, "3 OF 3 BOSSES DEFEATED")
+        XCTAssertEqual(element("results.matchScore", in: app).label, "YOU 3 · BOSS 0")
+        capture("scripted-all-three-win", app: app)
+        let opponents = app.buttons["results.chooseOpponent"]
+        reveal(opponents, in: app); opponents.tap()
+        XCTAssertTrue(app.buttons["boss.select.allThree"].waitForExistence(timeout: 5))
+    }
+
+    @MainActor
+    func testOrdinaryCenteredAutomaticReturn() throws {
+        let app = launchHome()
+        let court = startRun(app)
+        // No DEBUG controller or injected state: the untouched centered player
+        // automatically returns the first serve and earns a real target hit.
+        let scored = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
+            let value = court.value as? String ?? ""
+            return value.contains("Score ") && !value.contains("Score 0.")
+        }, object: nil)
+        XCTAssertEqual(XCTWaiter.wait(for: [scored], timeout: 15), .completed)
+        XCTAssertTrue((court.value as? String ?? "").contains("3 lives"))
+        capture("ordinary-centered-return", app: app)
+    }
+
+    @MainActor
+    func testOrdinaryFreeRecoveriesThenChargedMiss() throws {
+        let app = launchHome()
+        let court = startRun(app)
+        dragAcross(court, from: 0.5, to: 0.02)
+        func awaitStatus(_ fragment: String) {
+            let expectation = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
+                (court.value as? String ?? "").contains(fragment)
+            }, object: nil)
+            XCTAssertEqual(XCTWaiter.wait(for: [expectation], timeout: 12), .completed)
+        }
+        awaitStatus("3 lives. 1 saves.")
+        let savedScore = try XCTUnwrap((court.value as? String)?.components(separatedBy: "Score ").last?.components(separatedBy: ".").first.flatMap(Int.init))
+        capture("ordinary-first-free-recovery", app: app)
+        awaitStatus("3 lives. 0 saves.")
+        capture("ordinary-second-free-recovery", app: app)
+        awaitStatus("2 lives. 0 saves.")
+        capture("ordinary-charged-miss", app: app)
+        let afterMisses = try XCTUnwrap((court.value as? String)?.components(separatedBy: "Score ").last?.components(separatedBy: ".").first.flatMap(Int.init))
+        XCTAssertEqual(afterMisses, savedScore, "Recoveries and a charged miss preserve already earned score")
+    }
+
+    @MainActor
+    func testHomePlayPauseResumeAndHome() throws {
+        let app = launchHome()
+        capture("ordinary-home", app: app)
+        let court = startRun(app)
+
+        app.buttons["game.pause"].tap()
+        let resume = app.buttons["pause.resume"]
+        XCTAssertTrue(resume.waitForExistence(timeout: 5))
+        XCTAssertTrue(resume.isEnabled)
+        capture("ordinary-pause", app: app)
+
+        resume.tap()
+        XCTAssertTrue(app.buttons["game.pause"].waitForExistence(timeout: 5))
+        // The core intentionally ignores gameplay input during the resume
+        // countdown. Its completion is observable, so do not race it or sleep.
+        let countdownFinished = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
+            let status = court.value as? String ?? ""
+            return status.contains("Player x=") && !status.contains("Resume countdown") && !status.contains("Paused")
+        }, object: nil)
+        XCTAssertEqual(XCTWaiter.wait(for: [countdownFinished], timeout: 5), .completed)
+        capture("ordinary-resumed-court", app: app)
+
+        app.buttons["game.pause"].tap()
+        let home = app.buttons["pause.home"]
+        reveal(home, in: app)
+        home.tap()
+        XCTAssertTrue(app.buttons["home.play"].waitForExistence(timeout: 5))
+    }
+
+    @MainActor
+    func testControlledTouchThenCrownReversesAtLeftBoundary() throws {
+        let app = launchControls()
+        let court = element("game.court", in: app)
+        // Exercise focus restoration after the actual pause/resume UI before
+        // checking the first reverse Crown movement. DEBUG holds gameplay still.
+        app.buttons["game.pause"].tap()
+        XCTAssertTrue(app.buttons["pause.resume"].waitForExistence(timeout: 5))
+        app.buttons["pause.resume"].tap()
+        XCTAssertTrue(app.buttons["game.pause"].waitForExistence(timeout: 5))
+        dragAcross(court, from: 0.5, to: 0.02)
+        let left = try playerX(court)
+        XCTAssertLessThan(left, 2, "Touch reaches the authoritative left boundary")
+
+        // Excess input into the wall must not accumulate an invisible offset.
+        XCUIDevice.shared.rotateDigitalCrown(delta: -0.05, velocity: 3)
+        XCTAssertEqual(try playerX(court), left, accuracy: 0.02)
+        XCUIDevice.shared.rotateDigitalCrown(delta: 0.125, velocity: 3)
+        waitForPlayer(court, description: "The first reverse Crown movement leaves the left boundary") {
+            $0 > left + 0.005
+        }
+        capture("controlled-left-reversal", app: app)
+    }
+
+    @MainActor
+    func testControlledTouchThenCrownReversesAtRightBoundary() throws {
+        let app = launchControls()
+        // Leaving the game and starting again must restore Crown focus too.
+        app.buttons["game.pause"].tap()
+        let home = app.buttons["pause.home"]
+        reveal(home, in: app)
+        home.tap()
+        XCTAssertTrue(app.buttons["home.play"].waitForExistence(timeout: 5))
+        let court = startRun(app)
+        dragAcross(court, from: 0.5, to: 0.98)
+        let right = try playerX(court)
+        XCTAssertGreaterThan(right, 18, "Touch reaches the authoritative right boundary")
+
+        XCUIDevice.shared.rotateDigitalCrown(delta: 0.05, velocity: 3)
+        XCTAssertEqual(try playerX(court), right, accuracy: 0.02)
+        XCUIDevice.shared.rotateDigitalCrown(delta: -0.125, velocity: 3)
+        waitForPlayer(court, description: "The first reverse Crown movement leaves the right boundary") {
+            $0 < right - 0.005
+        }
+        capture("controlled-right-reversal", app: app)
+    }
+
+    @MainActor
+    func testSettingsPersistAcrossRelaunch() throws {
+        let app = launchHome()
+        openSettings(app)
+        let sensitivity = element("settings.sensitivity", in: app)
+        reveal(sensitivity, in: app)
+        let originalSensitivity = try value(sensitivity)
+        let originalPercentage = try sensitivityPercentage(originalSensitivity)
+        sensitivity.adjust(toNormalizedSliderPosition: originalPercentage == 15 ? 1 : 0)
+        waitForValueChange(sensitivity, from: originalSensitivity)
+        let changedSensitivity = try value(sensitivity)
+        let haptics = element("settings.haptics", in: app)
+        reveal(haptics, in: app)
+        let originalHaptics = try value(haptics)
+        haptics.coordinate(withNormalizedOffset: CGVector(dx: 0.85, dy: 0.5)).tap()
+        waitForValueChange(haptics, from: originalHaptics)
+        let changedHaptics = try value(haptics)
+
+        // Termination and a new ordinary launch test LocalStore persistence.
+        app.terminate()
+        app.launch()
+        XCTAssertTrue(app.buttons["home.play"].waitForExistence(timeout: 10))
+        openSettings(app)
+        let relaunchedSensitivity = element("settings.sensitivity", in: app)
+        reveal(relaunchedSensitivity, in: app)
+        XCTAssertEqual(try value(relaunchedSensitivity), changedSensitivity)
+        capture("ordinary-sensitivity-persisted", app: app)
+
+        // Restore the slider while it is fully visible. Scrolling to haptics
+        // can leave it clipped behind the small Watch's navigation header.
+        // Assert cleanup after both attempts so slider failure cannot skip haptics.
+        let sensitivityRestored = restoreSensitivity(relaunchedSensitivity, in: app,
+            percentage: originalPercentage, expected: originalSensitivity)
+        let relaunchedHaptics = element("settings.haptics", in: app)
+        reveal(relaunchedHaptics, in: app)
+        XCTAssertEqual(try value(relaunchedHaptics), changedHaptics)
+        capture("ordinary-haptics-persisted", app: app)
+        if reveal(relaunchedHaptics, in: app, failIfHidden: false),
+           try value(relaunchedHaptics) != originalHaptics {
+            relaunchedHaptics.coordinate(withNormalizedOffset: CGVector(dx: 0.85, dy: 0.5)).tap()
+        }
+        let hapticsRestored = valueBecomes(relaunchedHaptics, equalTo: originalHaptics)
+        XCTAssertTrue(sensitivityRestored,
+            "Restore sensitivity: expected \(originalSensitivity), actual \(String(describing: relaunchedSensitivity.value)), frame \(relaunchedSensitivity.frame), app frame \(app.frame)")
+        XCTAssertTrue(hapticsRestored,
+            "Restore haptics: expected \(originalHaptics), actual \(String(describing: relaunchedHaptics.value)), frame \(relaunchedHaptics.frame)")
+
+        app.terminate()
+        app.launch()
+        XCTAssertTrue(app.buttons["home.play"].waitForExistence(timeout: 10))
+        openSettings(app)
+        let restoredSensitivity = element("settings.sensitivity", in: app)
+        reveal(restoredSensitivity, in: app)
+        XCTAssertEqual(try value(restoredSensitivity), originalSensitivity)
+        let restoredHaptics = element("settings.haptics", in: app)
+        reveal(restoredHaptics, in: app)
+        XCTAssertEqual(try value(restoredHaptics), originalHaptics)
+        capture("ordinary-settings-restored", app: app)
+    }
+
+    @MainActor
+    func testOrdinaryGameOverAndReplayTwice() throws {
+        let app = launchHome()
+        _ = startRun(app)
+
+        // Move aside through normal touch input so automatic center returns do
+        // not sustain the rally. No fixture or injected life/score forces defeat.
+        for replayNumber in 1...2 {
+            let results = element("results", in: app)
+            let court = element("game.court", in: app)
+            for remainingLives in stride(from: 2, through: 0, by: -1) {
+                if results.exists { break }
+                dragAcross(court, from: 0.5, to: 0.02)
+                let missed = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
+                    if results.exists { return true }
+                    guard court.exists, let status = court.value as? String else { return false }
+                    // A slow accessibility query can observe more than one
+                    // completed miss; never require a transient life count.
+                    return (0...remainingLives).contains { status.contains("\($0) lives") }
+                }, object: nil)
+                XCTAssertEqual(XCTWaiter.wait(for: [missed], timeout: 20), .completed,
+                               "Normal touch movement should allow the next miss")
+            }
+            XCTAssertTrue(results.waitForExistence(timeout: 5),
+                          "Ordinary run \(replayNumber) should reach results")
+            XCTAssertTrue(app.staticTexts["GAME OVER"].exists)
+            capture("ordinary-game-over-\(replayNumber)", app: app)
+
+            let replay = app.buttons["results.replay"]
+            reveal(replay, in: app)
+            replay.tap()
+            XCTAssertTrue(element("game.court", in: app).waitForExistence(timeout: 5))
+            XCTAssertTrue(app.buttons["game.pause"].waitForExistence(timeout: 5))
+            capture("ordinary-replay-\(replayNumber)", app: app)
+        }
+    }
+
+    @MainActor
+    func testScriptedFullRunVictoryAndReplay() throws {
+        let app = XCUIApplication()
+        // This is scripted gameplay using public core movement inputs, distinct
+        // from ordinary UI navigation and static fixture screenshots.
+        app.launchArguments = ["--validation-autoplay"]
+        app.launchEnvironment = [:]
+        app.launch()
+        XCTAssertTrue(element("game.court", in: app).waitForExistence(timeout: 10))
+        let results = element("results", in: app)
+        XCTAssertTrue(results.waitForExistence(timeout: 240), "Scripted full run should reach results")
+
+        let visibleText = app.staticTexts.allElementsBoundByIndex.map(\.label)
+            .joined(separator: " ").replacingOccurrences(of: "\n", with: " ")
+        XCTAssertTrue(visibleText.contains("THE WALL IS DOWN"), visibleText)
+        let scoreLabel = element("results.score", in: app).label
+        XCTAssertTrue(scoreLabel.hasPrefix("Final score"), scoreLabel)
+        XCTAssertGreaterThanOrEqual(try XCTUnwrap(Int(scoreLabel.filter(\.isNumber))), 20_050, "All authored targets plus wave/boss awards must be represented; exact collision-event accounting is covered in the deterministic core run.")
+        capture("scripted-dense-full-run-victory", app: app)
+
+        let replay = app.buttons["results.replay"]
+        reveal(replay, in: app)
+        replay.tap()
+        XCTAssertTrue(element("game.court", in: app).waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["game.pause"].waitForExistence(timeout: 5))
+        capture("scripted-full-run-replay", app: app)
+    }
+
+    @MainActor
+    func testInstalledAppIconAndOpenFromWatchLauncher() throws {
+        let app = launchHome()
+        // XCUIDeviceButton.home and pressButton are provided by the installed
+        // Watch XCUIAutomation headers. Carousel's identifier is verified from
+        // the installed Watch runtime's CoreServices/Carousel.app/Info.plist.
+        XCUIDevice.shared.press(.home)
+        // The first press returns to Smart Stack on this runtime. Root verified
+        // that screen in the failed capture; the second press opens the app grid.
+        XCUIDevice.shared.press(.home)
+        let launcher = XCUIApplication(bundleIdentifier: "com.apple.Carousel")
+        let icon = launcher.descendants(matching: .any).matching(
+            NSPredicate(format: "label == %@ OR identifier == %@", "PickleBlast", "com.pickleblast.watchapp")
+        ).firstMatch
+
+        // Newly installed apps can be below the visible portion of the grid or
+        // list. Only capture an app-icon claim after locating its actual item.
+        for _ in 0..<10 {
+            if icon.exists && icon.isHittable { break }
+            launcher.swipeUp()
+        }
+        let launcherTree = XCTAttachment(string: launcher.debugDescription)
+        launcherTree.name = "watch-launcher-accessibility"
+        launcherTree.lifetime = .keepAlways
+        add(launcherTree)
+        let screenshot = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
+        screenshot.name = icon.exists && icon.isHittable ? "installed-pickleblast-app-icon" : "watch-launcher-icon-search-failed"
+        screenshot.lifetime = .keepAlways
+        add(screenshot)
+        XCTAssertTrue(icon.exists && icon.isHittable, "Installed PickleBlast icon must be visible in the Watch launcher")
+
+        icon.tap()
+        XCTAssertTrue(app.buttons["home.play"].waitForExistence(timeout: 10))
+        capture("ordinary-opened-from-watch-icon", app: app)
+    }
+
+    @MainActor
+    func testBossRallySelectEachOpponentPauseResumeAndHome() throws {
+        let app = launchHome()
+        for id in ["wall", "banger", "poacher"] {
+            let rally = app.buttons["home.bossRally"]
+            reveal(rally, in: app)
+            rally.tap()
+            // Wait for actionable menu content across Watch accessibility trees.
+            XCTAssertTrue(app.buttons["boss.select.allThree"].waitForExistence(timeout: 10),
+                          app.debugDescription)
+            let choice = app.buttons["boss.select.\(id)"]
+            reveal(choice, in: app)
+            capture("ordinary-boss-select-\(id)", app: app)
+            choice.tap()
+            let court = element("game.court", in: app)
+            XCTAssertTrue(court.waitForExistence(timeout: 5))
+            XCTAssertTrue((court.value as? String ?? "").lowercased().contains(id))
+            XCTAssertTrue((court.value as? String ?? "").contains("Boss Rally"))
+            capture("ordinary-boss-\(id)", app: app)
+            app.buttons["game.pause"].tap()
+            XCTAssertTrue(app.buttons["pause.resume"].waitForExistence(timeout: 5))
+            app.buttons["pause.resume"].tap()
+            XCTAssertTrue(app.buttons["game.pause"].waitForExistence(timeout: 5))
+            let resumed = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
+                let status = court.value as? String ?? ""
+                return !status.contains("Resume countdown") && !status.contains("Paused")
+            }, object: nil)
+            XCTAssertEqual(XCTWaiter.wait(for: [resumed], timeout: 5), .completed)
+            capture("ordinary-boss-resumed-\(id)", app: app)
+            app.buttons["game.pause"].tap()
+            let home = app.buttons["pause.home"]
+            reveal(home, in: app); home.tap()
+            XCTAssertTrue(app.buttons["home.play"].waitForExistence(timeout: 5))
+        }
+        _ = startRun(app)
+        XCTAssertTrue((element("game.court", in: app).value as? String ?? "").contains("Arcade"))
+        capture("ordinary-arcade-after-boss-selection", app: app)
+    }
+
+    @MainActor
+    func testSystemInterruptionRequiresResumeInBothModes() throws {
+        let app = launchHome()
+        for mode in ["arcade", "banger"] {
+            if mode == "arcade" { _ = startRun(app) }
+            else {
+                app.buttons["home.bossRally"].tap()
+                let choice = app.buttons["boss.select.banger"]
+                reveal(choice, in: app); choice.tap()
+            }
+            let startingCourt = element("game.court", in: app)
+            XCTAssertTrue(startingCourt.waitForExistence(timeout: 5))
+            let identity = (startingCourt.value as? String ?? "").lowercased()
+            XCTAssertTrue(identity.contains(mode == "arcade" ? "arcade" : "boss rally"))
+            if mode == "banger" { XCTAssertTrue(identity.contains("banger")) }
+            for cycle in 0..<2 {
+                XCUIDevice.shared.press(.home)
+                let backgrounded = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
+                    app.state != .runningForeground
+                }, object: nil)
+                XCTAssertEqual(XCTWaiter.wait(for: [backgrounded], timeout: 5), .completed)
+                app.activate()
+                let resume = app.buttons["pause.resume"]
+                XCTAssertTrue(resume.waitForExistence(timeout: 5))
+                capture("interrupted-\(mode)-\(cycle)", app: app)
+                resume.tap()
+                let court = element("game.court", in: app)
+                let resumed = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
+                    let status = court.value as? String ?? ""
+                    return court.exists && !status.contains("Resume countdown") && !status.contains("Paused")
+                }, object: nil)
+                XCTAssertEqual(XCTWaiter.wait(for: [resumed], timeout: 5), .completed)
+            }
+            app.buttons["game.pause"].tap()
+            let home = app.buttons["pause.home"]
+            reveal(home, in: app); home.tap()
+            XCTAssertTrue(app.buttons["home.play"].waitForExistence(timeout: 5))
+        }
+    }
+
+    @MainActor
+    func testBossRallyOrdinaryDefeatRetryAndChooseOpponent() throws {
+        let app = launchHome()
+        let rally = app.buttons["home.bossRally"]
+        reveal(rally, in: app); rally.tap()
+        let wall = app.buttons["boss.select.wall"]
+        reveal(wall, in: app); wall.tap()
+        let court = element("game.court", in: app)
+        XCTAssertTrue(court.waitForExistence(timeout: 5))
+        let results = element("results", in: app)
+        for replay in 0..<2 {
+            for _ in 0..<6 {
+                if results.exists { break }
+                dragAcross(court, from: 0.5, to: 0.02)
+                let changed = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
+                    results.exists || (court.value as? String ?? "").contains("ready.")
+                }, object: nil)
+                _ = XCTWaiter.wait(for: [changed], timeout: 5)
+            }
+            XCTAssertTrue(results.waitForExistence(timeout: 20))
+            XCTAssertEqual(element("results.matchScore", in: app).label, "YOU 0 · BOSS 3")
+            capture("ordinary-boss-defeat-\(replay)", app: app)
+            if replay == 0 {
+                let retry = app.buttons["results.replay"]
+                reveal(retry, in: app)
+                XCTAssertEqual(retry.label, "Retry")
+                retry.tap()
+                XCTAssertTrue(court.waitForExistence(timeout: 5))
+                XCTAssertTrue((court.value as? String ?? "").lowercased().contains("wall"))
+            }
+        }
+        let choose = app.buttons["results.chooseOpponent"]
+        reveal(choose, in: app); choose.tap()
+        XCTAssertTrue(element("boss.selection", in: app).waitForExistence(timeout: 5))
+        capture("ordinary-boss-choose-after-defeat", app: app)
+    }
+
+    @MainActor
+    func testBossRallySavesDoNotScoreAndThirdPointEndsMatch() throws {
+        let app = launchHome()
+        app.buttons["home.bossRally"].tap()
+        let choice = app.buttons["boss.select.wall"]
+        reveal(choice, in: app); choice.tap()
+        let court = element("game.court", in: app)
+        XCTAssertTrue(court.waitForExistence(timeout: 5))
+        XCTAssertFalse((court.value as? String ?? "").contains("lives"))
+        dragAcross(court, from: 0.5, to: 0.02)
+        // Normal input keeps the player outside the neutral serve. Each save
+        // preserves 0–0; the following three genuine misses decide the match.
+        for status in ["You 0. Boss 0. 1 saves.", "You 0. Boss 0. 0 saves.",
+                       "You 0. Boss 1. 0 saves.", "You 0. Boss 2. 0 saves."] {
+            let observed = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
+                (court.value as? String ?? "").contains(status)
+            }, object: nil)
+            XCTAssertEqual(XCTWaiter.wait(for: [observed], timeout: 8), .completed, status)
+            capture("rally-score-" + status, app: app)
+        }
+        XCTAssertTrue(element("results", in: app).waitForExistence(timeout: 8))
+        XCTAssertEqual(element("results.matchScore", in: app).label, "YOU 0 · BOSS 3")
+        capture("rally-third-opponent-point", app: app)
+        let retry = app.buttons["results.replay"]
+        reveal(retry, in: app); retry.tap()
+        XCTAssertTrue(court.waitForExistence(timeout: 5))
+        XCTAssertTrue((court.value as? String ?? "").contains("You 0. Boss 0. 2 saves."))
+    }
+
+    @MainActor func testScriptedWallRallyVictoryRematchAndChooseOpponent() throws { try scriptedBossVictory("wall") }
+    @MainActor func testScriptedBangerRallyVictoryRematchAndChooseOpponent() throws { try scriptedBossVictory("banger") }
+    @MainActor func testScriptedPoacherRallyVictoryRematchAndChooseOpponent() throws { try scriptedBossVictory("poacher") }
+
+    @MainActor
+    func testPowerPreparationPauseResumeAndHome() throws {
+        let app = XCUIApplication()
+        app.launchArguments = ["--validation-boss=banger", "--validation-policy=powerResponder",
+                               "--validation-seed=2958360576", "--validation-pause-special"]
+        app.launchEnvironment = [:]
+        app.launch()
+        // The real core reaches its first power reservation; a DEBUG-only
+        // trigger calls the ordinary pause method at that event, without
+        // injecting a ball, points, opponent or special state.
+        let resume = app.buttons["pause.resume"]
+        XCTAssertTrue(resume.waitForExistence(timeout: 30))
+        capture("interrupted-power-preparation", app: app)
+        resume.tap()
+        let court = element("game.court", in: app)
+        let resumed = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
+            let status = court.value as? String ?? ""
+            return court.exists && !status.contains("Paused") && !status.contains("Resume countdown")
+        }, object: nil)
+        XCTAssertEqual(XCTWaiter.wait(for: [resumed], timeout: 5), .completed)
+        capture("resumed-power-preparation", app: app)
+        app.buttons["game.pause"].tap()
+        let home = app.buttons["pause.home"]
+        reveal(home, in: app); home.tap()
+        XCTAssertTrue(app.buttons["home.play"].waitForExistence(timeout: 5))
+    }
+
+    @MainActor
+    func testRepeatedModeHomeTransitionsRemainResponsive() throws {
+        let app = launchHome()
+        capture("stress-home-initial", app: app)
+        for cycle in 0..<12 {
+            let mode = ["arcade", "wall", "banger", "poacher", "allThree"][cycle % 5]
+            if mode == "arcade" {
+                _ = startRun(app)
+            } else {
+                app.buttons["home.bossRally"].tap()
+                let choice = app.buttons["boss.select.\(mode)"]
+                reveal(choice, in: app); choice.tap()
+                XCTAssertTrue(element("game.court", in: app).waitForExistence(timeout: 5))
+            }
+            XCTAssertTrue(app.buttons["game.pause"].waitForExistence(timeout: 5))
+            capture("stress-play-\(cycle)-\(mode)", app: app)
+            app.buttons["game.pause"].tap()
+            let home = app.buttons["pause.home"]
+            reveal(home, in: app); home.tap()
+            XCTAssertTrue(app.buttons["home.play"].waitForExistence(timeout: 5))
+            XCTAssertTrue(app.buttons["home.bossRally"].isHittable)
+            capture("stress-home-\(cycle)-\(mode)", app: app)
+        }
+    }
+
+    @MainActor
+    func testModeHomeLifetimesWithoutRepeatedScreenshots() throws {
+        let app = launchHome(arguments: ["--validation-lifetimes"])
+        for cycle in 0..<24 {
+            let mode = ["arcade", "wall", "banger", "poacher", "allThree"][cycle % 5]
+            if mode == "arcade" { _ = startRun(app) }
+            else {
+                app.buttons["home.bossRally"].tap()
+                let choice = app.buttons["boss.select.\(mode)"]
+                reveal(choice, in: app); choice.tap()
+                XCTAssertTrue(element("game.court", in: app).waitForExistence(timeout: 5))
+            }
+            app.buttons["game.pause"].tap()
+            let home = app.buttons["pause.home"]
+            reveal(home, in: app); home.tap()
+            XCTAssertTrue(app.buttons["home.play"].waitForExistence(timeout: 5))
+            print("NATIVE_STRESS settled-home-\(cycle)-\(mode)")
+            // The separate app process keeps running while its scene teardown
+            // settles; the root samples host RSS without taking a screenshot.
+            Thread.sleep(forTimeInterval: 1.2)
+        }
+        capture("lifetime-probe-final-home", app: app)
+    }
+
+    @MainActor
+    private func scriptedBossVictory(_ id: String) throws {
+        let app = XCUIApplication()
+        app.launchArguments = ["--validation-autoplay", "--validation-boss=\(id)"]
+        app.launchEnvironment = [:]
+        app.launch()
+        let results = element("results", in: app)
+        XCTAssertTrue(results.waitForExistence(timeout: 90))
+        let visible = app.staticTexts.allElementsBoundByIndex.map(\.label).joined(separator: " ").uppercased()
+        XCTAssertTrue(visible.contains(id.uppercased()), visible)
+        XCTAssertFalse(app.staticTexts["GAME OVER"].exists)
+        let score = element("results.score", in: app).label
+        XCTAssertEqual(try XCTUnwrap(Int(score.filter(\.isNumber))), 2_500)
+        capture("scripted-\(id)-victory", app: app)
+        let rematch = app.buttons["results.replay"]
+        reveal(rematch, in: app)
+        XCTAssertEqual(rematch.label, "Rematch")
+        rematch.tap()
+        let court = element("game.court", in: app)
+        XCTAssertTrue(court.waitForExistence(timeout: 5))
+        XCTAssertTrue((court.value as? String ?? "").lowercased().contains(id))
+        capture("scripted-\(id)-rematch", app: app)
+        XCTAssertTrue(results.waitForExistence(timeout: 90))
+        let choose = app.buttons["results.chooseOpponent"]
+        reveal(choose, in: app); choose.tap()
+        XCTAssertTrue(element("boss.selection", in: app).waitForExistence(timeout: 5))
+        capture("scripted-\(id)-choose-opponent", app: app)
+        let back = app.buttons["boss.select.back"]
+        reveal(back, in: app); back.tap()
+        XCTAssertTrue(app.buttons["home.play"].waitForExistence(timeout: 5))
+    }
+
+    @MainActor
+    private func launchControls() -> XCUIApplication {
+        let app = XCUIApplication()
+        // Freeze only the DEBUG validation simulation. Real SwiftUI Crown/touch
+        // controls still act on authoritative state; synthetic Crown calls take
+        // several seconds in this runtime, longer than a normal incoming rally.
+        app.launchArguments = ["--validation-controls"]
+        app.launch()
+        XCTAssertTrue(element("game.court", in: app).waitForExistence(timeout: 10))
+        if app.buttons["pause.resume"].exists { app.buttons["pause.resume"].tap() }
+        XCTAssertTrue(app.buttons["game.pause"].waitForExistence(timeout: 5))
+        return app
+    }
+
+    @MainActor
+    private func launchHome(arguments: [String] = []) -> XCUIApplication {
+        let app = XCUIApplication()
+        app.launchArguments = arguments
+        app.launchEnvironment = [:]
+        app.launch()
+        XCTAssertTrue(app.buttons["home.play"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.buttons["home.play"].isHittable)
+        XCTAssertTrue(app.buttons["home.bossRally"].isHittable,
+                      "Both game modes must be available on Home without scrolling")
+        return app
+    }
+
+    @MainActor
+    private func startRun(_ app: XCUIApplication) -> XCUIElement {
+        let play = app.buttons["home.play"]
+        reveal(play, in: app)
+        play.tap()
+        let court = element("game.court", in: app)
+        XCTAssertTrue(court.waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["game.pause"].waitForExistence(timeout: 5))
+        return court
+    }
+
+    @MainActor
+    private func openSettings(_ app: XCUIApplication) {
+        let settings = element("home.settings", in: app)
+        reveal(settings, in: app)
+        settings.tap()
+        XCTAssertTrue(element("settings.haptics", in: app).waitForExistence(timeout: 5), app.debugDescription)
+    }
+
+    @MainActor
+    private func element(_ identifier: String, in app: XCUIApplication) -> XCUIElement {
+        app.descendants(matching: .any).matching(identifier: identifier).firstMatch
+    }
+
+    @MainActor
+    @discardableResult
+    private func reveal(_ target: XCUIElement, in app: XCUIApplication,
+                        failIfHidden: Bool = true) -> Bool {
+        let needsFullGeometry = ["settings.haptics", "settings.sensitivity", "pause.restart"].contains(target.identifier)
+        for _ in 0..<8 {
+            if target.exists {
+                if !needsFullGeometry && target.isHittable { return true }
+                if target.frame.height > 0 && target.frame.maxY <= app.frame.maxY - 4 && target.frame.minY >= 52 { return true }
+            }
+            // Watch's default full-screen swipe can skip an entire card in
+            // the longer chooser and oscillate around it. Use a short drag
+            // wholly inside the display, then inspect fresh element geometry.
+            let upper = app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.46))
+            let lower = app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.76))
+            if target.exists && target.frame.minY < 52 {
+                upper.press(forDuration: 0.05, thenDragTo: lower,
+                            withVelocity: .slow, thenHoldForDuration: 0.2)
+            } else {
+                lower.press(forDuration: 0.05, thenDragTo: upper,
+                            withVelocity: .slow, thenHoldForDuration: 0.2)
+            }
+        }
+        let visible = target.exists && (needsFullGeometry
+            ? target.frame.height > 0 && target.frame.maxY <= app.frame.maxY - 4 && target.frame.minY >= 52
+            : target.isHittable)
+        if failIfHidden {
+            XCTAssertTrue(visible, "Expected a visible \(target.identifier), frame \(target.frame), app frame \(app.frame)")
+        }
+        return visible
+    }
+
+    @MainActor
+    private func dragAcross(_ court: XCUIElement, from start: CGFloat, to end: CGFloat) {
+        // Stay below the HUD and above the pause control on both Watch sizes.
+        let origin = court.coordinate(withNormalizedOffset: CGVector(dx: start, dy: 0.55))
+        let destination = court.coordinate(withNormalizedOffset: CGVector(dx: end, dy: 0.55))
+        origin.press(forDuration: 0.05, thenDragTo: destination)
+    }
+
+    @MainActor
+    private func playerX(_ court: XCUIElement) throws -> Double {
+        let accessibilityValue = try value(court)
+        let prefix = "Player x="
+        guard let range = accessibilityValue.range(of: prefix) else {
+            XCTFail("Court must expose its authoritative player position: \(accessibilityValue)")
+            throw UIContractError.missingPlayerPosition
+        }
+        let token = accessibilityValue[range.upperBound...].prefix { $0.isNumber || $0 == "." || $0 == "-" }
+        // The accessibility sentence has a period immediately after the number.
+        guard let result = Double(token.hasSuffix(".") ? token.dropLast() : token[...]) else {
+            XCTFail("Unparseable authoritative player position: \(accessibilityValue)")
+            throw UIContractError.missingPlayerPosition
+        }
+        return result
+    }
+
+    @MainActor
+    private func waitForPlayer(_ court: XCUIElement, description: String,
+                               condition: @escaping (Double) -> Bool) {
+        let predicate = NSPredicate { _, _ in
+            guard let position = try? self.playerX(court) else { return false }
+            return condition(position)
+        }
+        let expectation = XCTNSPredicateExpectation(predicate: predicate, object: nil)
+        XCTAssertEqual(XCTWaiter.wait(for: [expectation], timeout: 3), .completed, description)
+    }
+
+    @MainActor
+    private func value(_ element: XCUIElement) throws -> String {
+        guard let raw = element.value else {
+            XCTFail("Missing accessibility value for \(element.identifier)")
+            throw UIContractError.missingValue
+        }
+        return String(describing: raw)
+    }
+
+    private func sensitivityPercentage(_ value: String) throws -> Int {
+        guard let result = Int(value.prefix { $0.isNumber }) else {
+            XCTFail("Unparseable sensitivity percentage: \(value)")
+            throw UIContractError.missingValue
+        }
+        return result
+    }
+
+    @MainActor
+    private func waitForValueChange(_ element: XCUIElement, from original: String) {
+        let predicate = NSPredicate { _, _ in
+            guard let actual = try? self.value(element) else { return false }
+            return actual != original
+        }
+        let expectation = XCTNSPredicateExpectation(predicate: predicate, object: nil)
+        XCTAssertEqual(XCTWaiter.wait(for: [expectation], timeout: 3), .completed)
+    }
+
+    @MainActor
+    private func valueBecomes(_ element: XCUIElement, equalTo expected: String) -> Bool {
+        let predicate = NSPredicate { _, _ in
+            guard let actual = element.value else { return false }
+            return String(describing: actual) == expected
+        }
+        let expectation = XCTNSPredicateExpectation(predicate: predicate, object: nil)
+        return XCTWaiter.wait(for: [expectation], timeout: 3) == .completed
+    }
+
+    @MainActor
+    private func restoreSensitivity(_ slider: XCUIElement, in app: XCUIApplication,
+                                    percentage: Int, expected: String) -> Bool {
+        // The displayed baseline percentage rounds half-values. Recover the
+        // nearest of the existing seven slider detents, not a new Crown gain.
+        let position = CGFloat((Double(percentage - 15) * 6 / 45).rounded() / 6)
+        for attempt in 1...3 {
+            let visible = reveal(slider, in: app, failIfHidden: false)
+            let actual = slider.value.map { String(describing: $0) } ?? "<missing>"
+            print("SETTINGS_RESTORE attempt=\(attempt) expected=\(expected) actual=\(actual) normalized=\(position) visible=\(visible) frame=\(slider.frame) appFrame=\(app.frame)")
+            guard visible else { continue }
+            if actual == expected { return true }
+            slider.adjust(toNormalizedSliderPosition: position)
+            if valueBecomes(slider, equalTo: expected) { return true }
+        }
+        return false
+    }
+
+    @MainActor
+    private func capture(_ name: String, app: XCUIApplication) {
+        let attachment = XCTAttachment(screenshot: app.screenshot())
+        attachment.name = name
+        attachment.lifetime = .keepAlways
+        add(attachment)
+    }
+
+    private enum UIContractError: Error {
+        case missingPlayerPosition
+        case missingValue
+    }
+}
