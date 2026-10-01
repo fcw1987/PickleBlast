@@ -1,5 +1,15 @@
 # Support
 
-PickleBlast does not accept code or artwork contributions or pull requests. For a reproducible bug, compatibility problem, or feature request, use the matching GitHub Issue template. Please include the Watch model, watchOS version, PickleBlast version, steps to reproduce, and the behavior you expected and observed when relevant. Screenshots can help. Remove personal information, device identifiers, account details, credentials, and private logs.
+Read the [PickleBlast support guide](https://fcw1987.github.io/PickleBlast/support/) for controls, sensitivity, pause/resume, haptics, and troubleshooting. Privacy and Support are also available offline in the app's Settings, under Information. The version and build appear there and on the native Support page.
 
-For a security concern, follow [Security](SECURITY.md) and report it privately. Do not post vulnerabilities in public Issues.
+GitHub Issues is the only ordinary public contact channel:
+
+- [Report a bug](https://github.com/fcw1987/PickleBlast/issues/new?template=bug_report.yml)
+- [Request a feature](https://github.com/fcw1987/PickleBlast/issues/new?template=feature_request.yml)
+- [Ask a support question](https://github.com/fcw1987/PickleBlast/issues/new?template=support_question.yml)
+
+Reading the website needs no account. Posting requires a GitHub account, and your username, text, and attachments are public. Include only useful details: app version/build, Watch model, watchOS version, steps, and expected/actual behavior where relevant. Screenshots are optional. Remove personal information, account details, credentials, serial numbers, device identifiers, and private logs.
+
+For security vulnerabilities, use the separate private route in [Security](SECURITY.md). Do not post exploit details publicly or use security reporting for ordinary support.
+
+Feedback is welcome. Code and artwork contributions and pull requests are not accepted; see [Contributing](CONTRIBUTING.md). No response time, fix, or future feature is promised.

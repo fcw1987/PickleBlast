@@ -6,12 +6,14 @@ body:
   - type: markdown
     attributes:
       value: >-
-        Leave out passwords, credentials, signing material, account details,
-        device identifiers, and private logs.
+        GitHub Issues are public and require a GitHub account. Leave out personal details,
+        passwords, credentials, signing material, account details, serial numbers,
+        device identifiers, and private logs. Use private vulnerability reporting for security concerns.
   - type: input
     id: version
     attributes:
-      label: PickleBlast version
+      label: PickleBlast version and build
+      description: Find these in Settings under Information.
       placeholder: "For example, 1.0 (4)"
     validations:
       required: false

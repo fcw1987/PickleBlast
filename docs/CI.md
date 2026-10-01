@@ -4,7 +4,7 @@
 
 `scripts/ci_watch.sh` requires `scripts/validate.sh` to pass, covering runtime resource integrity, importer safety fixtures, Swift package tests, Release package compilation, project reproducibility, source-tree scanning, documentation links, policy consistency, and an unsigned generic watchOS Release build. It then requires an unsigned generic watchOS Debug build. Missing full Xcode, asset failures, source violations, and build failures fail the job.
 
-The script discovers available Apple Watch simulators and selects a device from the newest installed Watch runtime. When available, it runs the native Boss Rally navigation, pause, resume, and Home UI test. If no Watch runtime/device is available, the log and job summary explicitly report the UI check as skipped. Discovery errors and actual test failures fail CI; they are never reported as a skip. A successful job with skipped UI does not establish simulator coverage.
+The script discovers available Apple Watch simulators and selects a device from the newest installed Watch runtime. When available, it runs native Boss Rally navigation, pause, resume and Home checks, plus offline Privacy/Support scrolling, readable addresses and settings preservation. Each test has a 240-second default and 360-second maximum allowance, including the full policy scroll on a small Watch. If no Watch runtime/device is available, the log and job summary explicitly report the UI check as skipped. Discovery errors and actual test failures fail CI; they are never reported as a skip. A successful job with skipped UI does not establish simulator coverage.
 
 Run the same route locally with full Xcode:
 
@@ -23,3 +23,9 @@ Official sources checked October 1, 2026:
 - [macOS 26 runner image manifest](https://github.com/actions/runner-images/blob/main/images/macos/macos-26-arm64-Readme.md), currently listing default Xcode 26.6 and watchOS 26.5 SDKs. Runner images evolve; each job records its actual Xcode version.
 
 Review hosted check results before relying on them for branch protection. Repository visibility, license, protection, alerts and confidential vulnerability reporting are owner-managed GitHub settings.
+
+## Website validation and deployment
+
+When a Watch runtime is available, hosted UI validation covers each boss plus the native offline Privacy/Support navigation, readable URLs, and settings preservation. The source validation also checks the static website at its `/PickleBlast/` project path, local resources, issue routes, metadata limits, and synchronized offline privacy text. GitHub Pages publishes the existing `main` branch `/docs` folder with HTTPS enforcement. No separate hosting service, signing secret, or self-hosted runner is required. The curated docs tree contains only public documentation, website assets, and small submission drafts; archives and diagnostic evidence stay local.
+
+After pushing reviewed changes, verify the actual Watch validation and Pages workflow results, then open the [homepage](https://fcw1987.github.io/PickleBlast/), [privacy](https://fcw1987.github.io/PickleBlast/privacy/), and [support](https://fcw1987.github.io/PickleBlast/support/) routes without authentication. A successful workflow does not alone establish that the published content is correct.

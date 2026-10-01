@@ -1,0 +1,53 @@
+{
+  "app_source_commit": "42bdfd137927220730ccfdd0a7aed6bd796e8f8f",
+  "version": "1.0",
+  "build": "4",
+  "configuration": "Release",
+  "toolchain": "Xcode 27.0 (27A266a)",
+  "device": "Apple Watch Ultra 4 (49mm) simulator",
+  "runtime": "watchOS 27.0",
+  "method": "Native XCTest screenshots of ordinary app navigation and gameplay; no scripted gameplay, validation fixtures or diagnostic overlays. Screens are simulator captures, not physical-device photographs.",
+  "test": "PickleBlastWatchUITests/testBossRallySelectEachOpponentPauseResumeAndHome",
+  "website_processing": "Lossless PNG IDAT recompression only; dimensions, color data and decoded image bytes unchanged. Store files are the unmodified screenshot exports.",
+  "captures": [
+    {
+      "id": "boss-rally",
+      "description": "Boss Rally against The Poacher, after the ordinary Pause/Resume countdown.",
+      "captured_at_utc": "2026-10-01T22:18:51.646000+00:00",
+      "store_path": "screenshots/boss-rally.png",
+      "website_path": "../images/boss-rally.png",
+      "sha256": "9b48dac4d1d132445fcc3babbd7a0f1fe9e26860d21e048931c3c12a36b28934",
+      "website_sha256": "944db3cd728dac68152a7c28c5377769618057bac375030ac0d6fc23b5231c64",
+      "width": 422,
+      "height": 514,
+      "store_bytes": 269999,
+      "website_bytes": 228217
+    },
+    {
+      "id": "opponents",
+      "description": "Boss Rally selection, showing All Three and the beginning of The Wall card.",
+      "captured_at_utc": "2026-10-01T22:18:25.625000+00:00",
+      "store_path": "screenshots/opponents.png",
+      "website_path": "../images/opponents.png",
+      "sha256": "a22d1ec881868733c276ff081564c3929c42659e4823c1ff7737345979656655",
+      "website_sha256": "c058275cde72ef224498f4841f9f64042d1b14899311207c8b3fa0810b49f496",
+      "width": 422,
+      "height": 514,
+      "store_bytes": 31706,
+      "website_bytes": 27319
+    },
+    {
+      "id": "arcade",
+      "description": "Arcade at the first target wave.",
+      "captured_at_utc": "2026-10-01T22:18:56.009000+00:00",
+      "store_path": "screenshots/arcade.png",
+      "website_path": "../images/arcade.png",
+      "sha256": "5ce9677f327852a56f67a1cbf147ed5e6a97260d26fad536a90cdf6ac0170ac8",
+      "website_sha256": "8f1d74a1df15d018b93555617f8ba5ef4fc624890fa5904e2bf7e9ac0a5da54d",
+      "width": 422,
+      "height": 514,
+      "store_bytes": 270848,
+      "website_bytes": 229121
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+PickleBlast is a standalone Apple Watch game, with no iPhone companion. No account or demo login is required. Gameplay works offline; there are no ads or in-app purchases.
+
+Turn the Digital Crown to move horizontally, or drag across the court. Meet the incoming ball and the player returns it automatically. Contact position controls return direction; physical wrist swinging is not a control.
+
+From Home, choose Boss Rally, then The Wall, The Banger, The Poacher, or All Three. Matches are first to three points with two saves per match. All Three faces Wall, Banger, then Poacher in order after wins. Arcade is a separate Home option with three target waves and a Wall finale.
+
+Tap Pause at the top of gameplay for Resume, Home, or Restart. After an interruption, choose Resume. Home > Settings contains Crown sensitivity, Haptics, Privacy, Support, and app version/build. Privacy includes the full bundled policy for offline reading. Privacy and Support also show their public website addresses. The app provides native reading and visible addresses because direct website opening is unavailable in the tested Watch environment. A browser on another device can visit those addresses; gameplay and native help do not require another device.
+
+Ordinary support uses the public GitHub Issues channel linked from the Support page. Posting requires a GitHub account; reading the help and privacy policy does not. Settings and records are stored locally.

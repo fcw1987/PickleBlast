@@ -3,6 +3,12 @@ description: Suggest a feature for PickleBlast.
 title: ""
 labels: []
 body:
+  - type: markdown
+    attributes:
+      value: >-
+        GitHub Issues are public and posting requires a GitHub account. Please leave
+        out personal details and private information. Suggestions are welcome; code,
+        artwork, and pull request contributions are not accepted.
   - type: textarea
     id: problem
     attributes:

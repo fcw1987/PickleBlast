@@ -8,4 +8,6 @@ This notice covers PickleBlast's game-specific creative materials, including cha
 
 Without prior written authorization from the relevant rights holder, no permission is granted to extract, copy, modify, redistribute, publish, sublicense, sell, use these materials in another project, or create derivative works from them.
 
+Use of assets as included in an authorized distributed copy of PickleBlast is governed by that copy's applicable end user license. This does not grant permission to extract or reuse the assets or branding outside that authorized use.
+
 This notice does not claim rights in Apple-owned system symbols, frameworks, or trademarks. Any third-party material identified separately in the repository remains governed by its own license or terms and is not relicensed here.

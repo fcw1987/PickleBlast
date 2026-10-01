@@ -16,6 +16,10 @@ python3 scripts/generate_project.py --check
 python3 scripts/check_public_tree.py
 python3 scripts/test_public_tree.py
 python3 scripts/check_docs.py
+python3 scripts/check_site.py
+python3 scripts/test_site.py
+python3 scripts/sync_privacy.py --check
+python3 scripts/test_sync_privacy.py
 python3 scripts/sync_boss_policy.py --check
 if xcodebuild -version > .build/validation/xcode-version.log 2>&1; then
   xcodebuild -project PickleBlast.xcodeproj -scheme PickleBlast -configuration Release -destination 'generic/platform=watchOS' -derivedDataPath .build/DerivedData CODE_SIGNING_ALLOWED=NO clean build 2>&1 | tee .build/validation/watchos-build.log

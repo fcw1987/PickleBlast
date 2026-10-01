@@ -1,0 +1,39 @@
+name: Support question
+description: Ask for help using PickleBlast.
+body:
+  - type: markdown
+    attributes:
+      value: >-
+        GitHub Issues are public and posting requires a GitHub account. Please read
+        https://fcw1987.github.io/PickleBlast/support/ first. Do not include personal
+        details, credentials, account information, serial numbers, device identifiers,
+        or unredacted logs. For a security vulnerability, use private vulnerability
+        reporting instead of this form.
+  - type: textarea
+    id: question
+    attributes:
+      label: What do you need help with?
+      description: Describe what you tried and what happened. Include the game mode if relevant.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: PickleBlast version and build (optional)
+      description: Find these in Settings under Information.
+    validations:
+      required: false
+  - type: input
+    id: watch
+    attributes:
+      label: Watch model and watchOS version (optional)
+      description: The model name and OS version are enough; no serial number or device identifier.
+    validations:
+      required: false
+  - type: textarea
+    id: screenshot
+    attributes:
+      label: Screenshot (optional)
+      description: Remove personal information before attaching an image. No full device logs are needed.
+    validations:
+      required: false

@@ -16,7 +16,7 @@ write_summary() {
       printf '### PickleBlast Watch validation: %s\n\n' "$result"
       printf -- '- Xcode: `%s`\n' "$XCODE_VERSION"
       printf -- '- Required source and unsigned generic Debug/Release builds: %s\n' "$REQUIRED_STATUS"
-      printf -- '- Optional native Watch UI check: %s\n' "$UI_STATUS"
+      printf -- '- Optional native Watch UI checks: %s\n' "$UI_STATUS"
       printf -- '- Signing: disabled. Build products/results stay in ignored `.build`; no artifacts uploaded.\n'
     } >> "$SUMMARY_PATH"
   fi
@@ -73,8 +73,10 @@ xcodebuild -project PickleBlast.xcodeproj -scheme PickleBlast -configuration Deb
   -derivedDataPath .build/CI/DerivedData \
   -resultBundlePath ".build/CI/watch-ui-$$.xcresult" -collect-test-diagnostics never \
   -parallel-testing-enabled NO -test-timeouts-enabled YES \
-  -default-test-execution-time-allowance 120 \
-  -maximum-test-execution-time-allowance 240 \
+  -default-test-execution-time-allowance 240 \
+  -maximum-test-execution-time-allowance 360 \
   -only-testing:PickleBlastWatchUITests/PickleBlastWatchUITests/testBossRallySelectEachOpponentPauseResumeAndHome \
+  -only-testing:PickleBlastWatchUITests/PickleBlastWatchUITests/testPrivacyAndSupportScrollBackPreserveSettings \
+  -only-testing:PickleBlastWatchUITests/PickleBlastWatchUITests/testPrivacyAndSupportShowReadableAddressesWithoutWebLaunchControls \
   CODE_SIGNING_ALLOWED=NO test
 UI_STATUS="passed"

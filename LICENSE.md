@@ -8,6 +8,8 @@ This repository is made available for viewing, reading, study, discussion, and e
 
 Without prior written authorization from the copyright holder, no permission is granted to reproduce the software beyond ordinary repository access; use, execute, modify, publish, distribute, sublicense, sell, commercialize, incorporate it into another product, or create derivative works from it, for commercial or noncommercial purposes.
 
+Authorized copies distributed through the App Store or another authorized channel are governed by their applicable end user license. This repository license does not restrict the use of those copies as permitted by that end user license, and obtaining an authorized copy does not grant permission to reuse the repository source, assets, or branding.
+
 No patent rights are granted. No rights to the PickleBlast name, trademarks, or branding are granted. Those rights remain reserved.
 
 If the repository is made public, actions that GitHub permits on its platform, including viewing or forking there, remain subject to GitHub's Terms of Service. They do not grant additional permission to use, modify, redistribute, commercialize, or create derivative works from the software.

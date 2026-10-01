@@ -1,7 +1,9 @@
-# Contributing
+# Feedback and contributions
 
-PickleBlast is not accepting code contributions, artwork contributions, or pull requests. Unsolicited code or asset submissions are not accepted and may be closed without review.
+Bug reports, feature requests, and support questions are welcome through [GitHub Issues](https://github.com/fcw1987/PickleBlast/issues/new/choose). See [Support](SUPPORT.md) for the matching forms and troubleshooting.
 
-GitHub Issues may be used to report bugs, request features, or describe compatibility problems. Please do not include passwords, signing material, account details, device identifiers, or private logs. Use the issue templates to provide only the information needed to understand a report.
+PickleBlast does not accept code contributions, artwork contributions, or pull requests. GitHub may still display controls to create a pull request; that does not change this acceptance policy. Unsolicited code or asset submissions may be closed without review.
 
-This policy does not grant permission to use or modify the source or artwork. See [Source license](LICENSE.md) and [Asset license](ASSET_LICENSE.md).
+Issues are public and posting requires a GitHub account. Share only information needed to understand the report. Do not include personal details, credentials, account information, device identifiers, or private logs. For vulnerabilities, use the separate private route in [Security](SECURITY.md).
+
+Feedback does not grant source or artwork reuse rights or promise a fix or future feature. See [Source license](LICENSE.md) and [Asset license](ASSET_LICENSE.md).

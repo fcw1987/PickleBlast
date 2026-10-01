@@ -2,6 +2,8 @@
 
 **Neon pickleball, made for Apple Watch.** Move with the Digital Crown, return automatically, and play quick rallies against three distinct bosses.
 
+[Website](https://fcw1987.github.io/PickleBlast/) · [Privacy](https://fcw1987.github.io/PickleBlast/privacy/) · [Support](https://fcw1987.github.io/PickleBlast/support/)
+
 <a href="docs/images/boss-rally.png"><img src="docs/images/boss-rally.png" alt="A live Boss Rally on Apple Watch, with the ball crossing the neon court." width="142"></a>
 <a href="docs/images/opponents.png"><img src="docs/images/opponents.png" alt="The Boss Rally selection screen with the All Three option and The Wall." width="142"></a>
 <a href="docs/images/arcade.png"><img src="docs/images/arcade.png" alt="Arcade mode during a neon target wave on Apple Watch." width="142"></a>
@@ -52,7 +54,7 @@ The current development build is 1.0 (4). PickleBlast has not been released thro
 
 Use GitHub Issues to report bugs or request features. The project does not accept code or artwork contributions or pull requests; see [Contributing](CONTRIBUTING.md). Report security concerns privately as described in [Security](SECURITY.md), never in a public issue.
 
-PickleBlast is **source available, not open source**. The source is provided for viewing, study, discussion, and evaluation. No permission is granted for personal or commercial use, execution, modification, redistribution, derivative works, republishing, or incorporation into another project without prior written authorization. Artwork, characters, animations, name, and branding are also all rights reserved. See [Source license](LICENSE.md), [Asset license](ASSET_LICENSE.md), [Privacy](PRIVACY.md), and [Artwork and runtime assets](docs/ART_ASSETS.md).
+PickleBlast is **source available, not open source**. The source is provided for viewing, study, discussion, and evaluation. Repository access does not grant permission for personal or commercial use, execution, modification, redistribution, derivative works, republishing, or incorporation into another project without prior written authorization. Authorized distributed copies are governed by their applicable end user license. Artwork, characters, animations, name, and branding are also all rights reserved. See [Source license](LICENSE.md), [Asset license](ASSET_LICENSE.md), [Privacy](PRIVACY.md), and [Artwork and runtime assets](docs/ART_ASSETS.md).
 
 ## Guides
 

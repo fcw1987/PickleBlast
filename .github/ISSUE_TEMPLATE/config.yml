@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Read the support guide
+    url: https://fcw1987.github.io/PickleBlast/support/
+    about: Controls, settings, troubleshooting, and public support information.
+  - name: Report a security vulnerability privately
+    url: https://github.com/fcw1987/PickleBlast/security/advisories/new
+    about: Security reports only. Do not post exploit details in public issues.

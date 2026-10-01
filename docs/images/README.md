@@ -1,9 +1,9 @@
 # Native Watch screenshots
 
-These 422 × 514 RGB PNGs were captured from ordinary app runs on the watchOS 27 Apple Watch Ultra 4 simulator. They show the shipped artwork and interface without scripted gameplay or diagnostic overlays.
+These 422 × 514 RGB PNGs were captured October 1, 2026 from ordinary Release app runs on the watchOS 27 Apple Watch Ultra 4 (49mm) simulator, version 1.0 (build 4). The clean app source is `42bdfd137927220730ccfdd0a7aed6bd796e8f8f`. They show the shipped artwork and interface without scripted gameplay or diagnostic overlays.
 
-- `boss-rally.png`: The Poacher rally after Pause/Resume.
-- `opponents.png`: Boss Rally selection with All Three and The Wall card.
+- `boss-rally.png`: The Poacher rally after the ordinary Pause/Resume countdown.
+- `opponents.png`: Boss Rally selection with All Three and the beginning of The Wall card.
 - `arcade.png`: Arcade's first target wave.
 
-They are simulator screenshots, not physical-device captures or a finalized App Store screenshot set. All images are covered by [ASSET_LICENSE.md](../../ASSET_LICENSE.md).
+These website copies use lossless PNG recompression without changing dimensions or image pixels. Unmodified store originals are in [app_store/screenshots](../app_store/screenshots/); the [capture manifest](../app_store/screenshot_manifest.json) records exact timestamps, dimensions, file hashes and provenance. They are real simulator screenshots, not physical-device captures. The owner reviews the final listing selection before upload. All images are covered by [ASSET_LICENSE.md](../../ASSET_LICENSE.md).

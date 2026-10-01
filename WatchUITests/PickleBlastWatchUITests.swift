@@ -845,7 +845,7 @@ final class PickleBlastWatchUITests: XCTestCase {
     @discardableResult
     private func reveal(_ target: XCUIElement, in app: XCUIApplication,
                         failIfHidden: Bool = true) -> Bool {
-        let needsFullGeometry = ["settings.haptics", "settings.sensitivity", "pause.restart"].contains(target.identifier)
+        let needsFullGeometry = ["home.settings", "settings.haptics", "settings.sensitivity", "pause.restart"].contains(target.identifier)
         for _ in 0..<8 {
             if target.exists {
                 if !needsFullGeometry && target.isHittable { return true }
