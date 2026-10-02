@@ -20,14 +20,14 @@ require(info['CFBundleSupportedPlatforms']==['WatchOS'], 'Not a Watch device bun
 privacy=plistlib.loads((app/'PrivacyInfo.xcprivacy').read_bytes())
 require(privacy==plistlib.loads((root/'WatchApp/PrivacyInfo.xcprivacy').read_bytes()), 'Privacy manifest differs from source')
 manifest=json.loads((app/'runtime_manifest.json').read_text())
-require(set(manifest['characters'])=={'player','wall','banger','poacher'}, 'Unexpected character selection')
+require(set(manifest['characters'])=={'player','wall','banger','poacher','dinker','lobber'}, 'Unexpected character selection')
 expected={c['atlas']+'.atlasc' for c in manifest['characters'].values()}|{s['atlas']+'.atlasc' for s in manifest['supporting'].values()}
 actual={p.name for p in app.glob('*.atlasc')}
 require(expected==actual, 'Compiled atlas membership differs from manifest')
 files=[p.relative_to(app).as_posix() for p in app.rglob('*') if p.is_file()]
 require(not any(x.endswith(('.swift','.py','.md','.mov','.mp4','.xcresult')) or 'Approved_Art' in x or 'import_audit' in x or 'Tests' in x for x in files), 'Source or development evidence found in bundle')
 strings=subprocess.check_output(['strings',str(app/'PickleBlast')]).decode(errors='replace')
-for keyword in ['--validation-','VALIDATION SCRIPTED','VALIDATION PERFORMANCE','DebugValidation','debugTextureRequests','validation-lifetimes.log','pickleblast.validation','trackLifetime','BossEvaluationPolicy','BossPolicyObservation','BossPlayerPolicy']:
+for keyword in ['--validation-','VALIDATION SCRIPTED','VALIDATION PERFORMANCE','DebugValidation','debugTextureRequests','debugLoadedCharacterAtlases','validation-lifetimes.log','pickleblast.validation','trackLifetime','BossEvaluationPolicy','BossPolicyObservation','BossPlayerPolicy']:
  require(keyword not in strings, 'DEBUG symbol or activation string found: ' + keyword)
 subprocess.run(['codesign','--verify','--deep','--strict',str(app)],check=True,capture_output=True)
 signature=subprocess.run(['codesign','--display','--entitlements','-','--xml',str(app)],check=True,capture_output=True)

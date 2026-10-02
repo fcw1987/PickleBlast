@@ -20,7 +20,7 @@ struct DebugValidation {
         sessionProbes.removeAll { $0.value == nil }
         sceneProbes.removeAll { $0.value == nil }
         textureProbes.removeAll { $0.value == nil }
-        let record = "sequence=\(lifetimeSequence) priorSessions=\(sessionProbes.count) priorScenes=\(sceneProbes.count) priorTextureLibraries=\(textureProbes.count)\n"
+        let record = "sequence=\(lifetimeSequence) priorSessions=\(sessionProbes.count) priorScenes=\(sceneProbes.count) priorTextureLibraries=\(textureProbes.count) selected=\(session.engine.state.bossID.rawValue) characterAtlases=\(session.scene.debugLoadedCharacterAtlases.joined(separator: ","))\n"
         if let directory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
             let path = directory.appendingPathComponent("validation-lifetimes.log")
             do {
@@ -64,11 +64,14 @@ struct DebugValidation {
     static var scripted: Bool { autoplay || policyKind != nil }
     static var realtime: Bool { ProcessInfo.processInfo.arguments.contains("--validation-realtime") }
     static var controls: Bool { ProcessInfo.processInfo.arguments.contains("--validation-controls") }
-    static var startsRun: Bool { fixture != nil || scripted || controls }
+    static var startsRun: Bool {
+        !ProcessInfo.processInfo.arguments.contains("--validation-manual-start")
+            && (fixture != nil || scripted || controls)
+    }
     static var isValidationLaunch: Bool {
         let flags = ["--validation-fixture", "--validation-autoplay", "--validation-realtime",
-                     "--validation-controls", "--validation-lifetimes", "--validation-pause-special", "--validation-series"]
-        return ProcessInfo.processInfo.arguments.contains { flags.contains($0) || $0.hasPrefix("--validation-boss=") || $0.hasPrefix("--validation-policy=") || $0.hasPrefix("--validation-seed=") }
+                     "--validation-controls", "--validation-lifetimes", "--validation-pause-special", "--validation-series", "--validation-manual-start"]
+        return ProcessInfo.processInfo.arguments.contains { flags.contains($0) || $0.hasPrefix("--validation-boss=") || $0.hasPrefix("--validation-policy=") || $0.hasPrefix("--validation-seed=") || $0.hasPrefix("--validation-pause-lob=") }
     }
     static func snapshot(_ name: String) -> (GameState, [GameEvent]) {
         let tuning = GameTuning()
@@ -161,9 +164,19 @@ struct DebugValidation {
     static func log(_ message: String) { FileHandle.standardOutput.write(Data((message + "\n").utf8)) }
 
     private var specialPauseUsed = false
-    mutating func shouldPauseForSpecial(_ events: [GameEvent]) -> Bool {
-        guard !specialPauseUsed,
-              ProcessInfo.processInfo.arguments.contains("--validation-pause-special"),
+    mutating func shouldPauseForSpecial(_ events: [GameEvent], state: GameState) -> Bool {
+        guard !specialPauseUsed else { return false }
+        if let argument = ProcessInfo.processInfo.arguments.first(where: { $0.hasPrefix("--validation-pause-lob=") }),
+           let flight = state.rallyShot?.lobFlight {
+            let phase = String(argument.dropFirst("--validation-pause-lob=".count))
+            let threshold = ["rise": 0.15, "apex": 0.50, "descent": 0.85][phase]
+            if let threshold, flight.fraction >= threshold {
+                specialPauseUsed = true
+                Self.log("VALIDATION SPECIAL INTERRUPTION lob \(phase) fraction=\(flight.fraction)")
+                return true
+            }
+        }
+        guard ProcessInfo.processInfo.arguments.contains("--validation-pause-special"),
               events.contains(.bossPowerTelegraph) else { return false }
         specialPauseUsed = true
         Self.log("VALIDATION SPECIAL INTERRUPTION powerWindup")
@@ -198,7 +211,7 @@ struct DebugValidation {
             for event in events {
                 switch event {
                 case .paddleContact, .bossContact, .bossPoint, .opponentPoint, .ballRecovered,
-                     .bossPowerTelegraph, .bossPowerContact, .bossPoachCommitment, .bossPoachRecovery, .bossMatchEnded, .runEnded:
+                     .bossPowerTelegraph, .bossPowerContact, .bossPoachCommitment, .bossPoachRecovery, .rallyShotLaunched, .bossMatchEnded, .runEnded:
                     Self.log("VALIDATION POLICY t=\(engine.state.simulationTime) policy=\(kind.rawValue) event=\(event) points=\(engine.state.playerRallyPoints)-\(engine.state.opponentRallyPoints) returns=\(engine.state.currentRallyReturns) bossX=\(engine.state.boss?.x ?? 0)")
                 default: break
                 }

@@ -53,17 +53,18 @@ enum RallyShotPlanner {
                          max(tuning.playerMargin, playerX + side * offset + trailing))
         let sourceSpeed = contact.speed.isFinite && contact.speed > 0
             ? contact.speed : tuning.initialBallSpeed
+        let ordinarySpeed = comparableOrdinarySpeed(sourceSpeed: sourceSpeed, bossID: bossID, tuning: tuning)
+        let paceSource = opponent.ordinarySpeedCeiling.map { min(sourceSpeed, max(tuning.initialBallSpeed, $0)) } ?? sourceSpeed
         let speed: Double
         if drive {
-            speed = min(tuning.maximumBallSpeed,
-                        max(0, sourceSpeed * max(1, opponent.powerSpeedMultiplier)))
+            speed = powerSpeed(sourceSpeed: sourceSpeed, bossY: bossY, radius: contact.radius, tuning: tuning)
         } else if purpose == .changeOfPace {
             // One slower return must not compound indefinitely. The next
             // ordinary contact restores the base pace below.
             speed = min(tuning.maximumBallSpeed,
-                        max(tuning.initialBallSpeed * 0.85, sourceSpeed * 0.90))
+                        max(tuning.initialBallSpeed * 0.85, paceSource * 0.90))
         } else {
-            speed = min(tuning.maximumBallSpeed, max(tuning.initialBallSpeed, sourceSpeed))
+            speed = ordinarySpeed
         }
         let startY = bossY - contact.radius - tuning.collisionEpsilon
         let contactX = contact.position.x.isFinite ? contact.position.x : CourtGeometry.centerX
@@ -105,6 +106,25 @@ enum RallyShotPlanner {
                              laneSide: lane(for: contactX), purpose: .control)
     }
 
+    static func comparableOrdinarySpeed(sourceSpeed: Double, bossID: BossID, tuning: GameTuning) -> Double {
+        let base = min(tuning.maximumBallSpeed, max(tuning.initialBallSpeed, sourceSpeed))
+        if let ceiling = tuning.rallyOpponentConfiguration(for: bossID).ordinarySpeedCeiling {
+            return min(base, max(tuning.initialBallSpeed, ceiling))
+        }
+        return base
+    }
+
+    /// Reserve response time before contact. A conservative vertical-flight bound
+    /// covers every planned diagonal and the existing receiving-angle assistance.
+    static func powerSpeed(sourceSpeed: Double, bossY: Double, radius: Double, tuning: GameTuning) -> Double {
+        let policy = tuning.rallyBanger
+        let ordinary = comparableOrdinarySpeed(sourceSpeed: sourceSpeed, bossID: .banger, tuning: tuning)
+        let response = max(tuning.fixedStep, policy.minimumPowerResponseTime)
+        let distance = max(0, bossY - tuning.playerY - 2 * radius - tuning.collisionEpsilon)
+        let safe = max(0, distance / response - max(0, policy.speedGrowthPerSecond) * response)
+        return min(tuning.maximumBallSpeed, min(ordinary * max(1, policy.powerSpeedMultiplier), safe))
+    }
+
     private static func chosenPurpose(bossID: BossID, unit: Double,
                                       powered: Bool, balanced: Bool) -> RallyShotPurpose {
         if !balanced { return .control }
@@ -114,6 +134,8 @@ enum RallyShotPlanner {
         case .wall: thresholds = (0.40, 0.55, 0.90)
         case .banger: thresholds = (0.25, 0.40, 0.80)
         case .poacher: thresholds = (0.25, 0.40, 0.85)
+        case .dinker: thresholds = (0.40, 0.40, 0.90)
+        case .lobber: thresholds = (0.35, 0.35, 0.90)
         }
         if unit < thresholds.0 { return .control }
         if unit < thresholds.1 { return .changeOfPace }

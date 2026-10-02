@@ -95,19 +95,25 @@ struct RootView: View {
 }
 
 private enum BossAppearance {
+    // This authored sequence remains the original three opponents.
+    static let series: [BossID] = [.wall, .banger, .poacher]
     static func title(_ id: BossID) -> String {
         switch id {
         case .wall: return "THE WALL"
         case .banger: return "THE BANGER"
         case .poacher: return "THE POACHER"
+        case .dinker: return "THE DINKER"
+        case .lobber: return "THE LOBBER"
         }
     }
 
     static func cue(_ id: BossID) -> String {
         switch id {
-        case .wall: return "Move the Wall, then change sides"
-        case .banger: return "Read the drive, place the return"
-        case .poacher: return "Bait the step, use the open side"
+        case .wall: return "Steady coverage. Change the angle."
+        case .banger: return "Power drives. Place the counter."
+        case .poacher: return "Reads a side. Use the opening."
+        case .dinker: return "Soft resets. Stay patient, then place."
+        case .lobber: return "High arcs. Follow the descent."
         }
     }
 
@@ -116,6 +122,8 @@ private enum BossAppearance {
         case .wall: return Neon.orange
         case .banger: return Neon.magenta
         case .poacher: return Neon.lime
+        case .dinker: return Neon.cyan
+        case .lobber: return Neon.magenta
         }
     }
 }
@@ -155,14 +163,19 @@ private struct BossSelectionView: View {
                 .accessibilityIdentifier("boss.select.allThree")
                 ForEach(BossID.allCases, id: \.self) { boss in
                     Button { select(.bossRally(boss)) } label: {
-                        VStack(alignment: .leading, spacing: 5) {
-                            Text(BossAppearance.title(boss))
-                                .font(.system(size: 18, weight: .black, design: .rounded))
-                                .foregroundStyle(BossAppearance.color(boss))
-                            Text(BossAppearance.cue(boss))
-                                .font(.caption2)
-                                .foregroundStyle(.white)
-                                .fixedSize(horizontal: false, vertical: true)
+                        HStack(spacing: 5) {
+                            ApprovedBossImage(id: boss)
+                                .frame(width: 35, height: 44)
+                                .accessibilityHidden(true)
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(BossAppearance.title(boss))
+                                    .font(.system(size: 14, weight: .black, design: .rounded))
+                                    .foregroundStyle(BossAppearance.color(boss))
+                                Text(BossAppearance.cue(boss))
+                                    .font(.caption2)
+                                    .foregroundStyle(.white)
+                                    .fixedSize(horizontal: false, vertical: true)
+                            }
                         }
                         .frame(maxWidth: .infinity, minHeight: 76, alignment: .leading)
                         .padding(.horizontal, 10)
@@ -171,7 +184,7 @@ private struct BossSelectionView: View {
                             .stroke(BossAppearance.color(boss), lineWidth: 1))
                     }
                     .buttonStyle(.plain)
-                    .accessibilityLabel("Challenge \(BossAppearance.title(boss))")
+                    .accessibilityLabel("Challenge \(BossAppearance.title(boss)). \(BossAppearance.cue(boss))")
                     .accessibilityIdentifier("boss.select.\(boss.rawValue)")
                 }
                 Button("Back", action: back).accessibilityIdentifier("boss.select.back")
@@ -192,7 +205,7 @@ struct HowToPlayView: View {
         ("square.grid.3x2", "Clear three dense waves. Every target breaks in one hit."),
         ("heart.fill", "Arcade gives two free ball recoveries per stage before a miss costs a life."),
         ("figure.pickleball", "Boss Rally is first to three points. Choose one opponent or All Three to face Wall, Banger, then Poacher. You get two saves per match. R counts rally returns; S shows saves."),
-        ("bolt.fill", "The Wall covers steadily. The Banger's power drive leaves an opening. The Poacher commits to one side."),
+        ("bolt.fill", "The Wall covers steadily. The Banger drives harder. The Poacher commits to a side. The Dinker changes pace. The Lobber sends high arcs into your normal receiving area."),
         ("pause.fill", "Tap Pause at the top to take a break, restart, or return Home. After an interruption, choose Resume.")
     ]
     var body: some View {
@@ -288,6 +301,7 @@ private struct WatchSceneSurface: WKInterfaceObjectRepresentable {
 struct RunView: View {
     @StateObject private var session: GameSession
     @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     #if os(watchOS)
     @Environment(\.isLuminanceReduced) private var luminanceReduced
     @FocusState private var crownFocused: Bool
@@ -301,8 +315,8 @@ struct RunView: View {
         case .arcade: return "Arcade."
         case let .bossRally(id): return "Boss Rally. \(BossAppearance.title(id))."
         case .bossSeries:
-            let match = (BossID.allCases.firstIndex(of: session.engine.state.bossID) ?? 0) + 1
-            return "Boss Rally. All Three. Match \(match) of \(BossID.allCases.count). \(BossAppearance.title(session.engine.state.bossID))."
+            let match = (BossAppearance.series.firstIndex(of: session.engine.state.bossID) ?? 0) + 1
+            return "Boss Rally. All Three. Match \(match) of \(BossAppearance.series.count). \(BossAppearance.title(session.engine.state.bossID))."
         }
     }
 
@@ -372,6 +386,7 @@ struct RunView: View {
             }
         }
         .onChange(of: scenePhase) { _, _ in updateDisplayActivity() }
+        .onChange(of: reduceMotion) { _, value in session.scene.reduceMotion = value }
         .onChange(of: session.renderingPaused) { _, _ in focusCrown() }
         #if os(watchOS)
         .onChange(of: luminanceReduced) { _, _ in updateDisplayActivity() }
@@ -380,6 +395,7 @@ struct RunView: View {
     }
 
     private func resize(_ size: CGSize, insets: EdgeInsets) {
+        session.scene.reduceMotion = reduceMotion
         session.resize(size, safeTop: insets.top, safeBottom: insets.bottom,
                        safeLeading: insets.leading, safeTrailing: insets.trailing)
     }
@@ -553,7 +569,7 @@ struct ResultsView: View {
                     .foregroundStyle(session.engine.state.won ? Neon.magenta : Neon.cyan)
                 if isSeries {
                     let wins = session.engine.state.completedBossMatches.filter(\.won).count
-                    Text("\(wins) OF \(BossID.allCases.count) BOSSES DEFEATED")
+                    Text("\(wins) OF \(BossAppearance.series.count) BOSSES DEFEATED")
                         .font(.caption.bold())
                         .foregroundStyle(Neon.cyan)
                         .accessibilityIdentifier("results.seriesProgress")
@@ -619,6 +635,8 @@ struct ResultsView: View {
 /// One cached decode per menu asset, using the same supplied atlas resources as SpriteKit.
 private enum MenuArt {
     static let library = TextureLibrary()
+    static let bossImages: [BossID: CGImage] = Dictionary(uniqueKeysWithValues:
+        BossID.allCases.map { ($0, library.opponentThumbnail($0.rawValue)) })
     static let images: [String: CGImage] = Dictionary(uniqueKeysWithValues:
         ["ball", "wordmark", "uiPlay", "uiPause", "uiRestart", "uiSettings", "uiClose", "uiCrown"].map {
             ($0, library.supporting($0).cgImage())
@@ -627,4 +645,15 @@ private enum MenuArt {
 private struct ApprovedImage: View {
     let key: String
     var body: some View { Image(decorative: MenuArt.images[key]!, scale: 2).resizable().interpolation(.high) }
+}
+
+/// One approved idle frame per opponent; motion atlases are released after decoding.
+private struct ApprovedBossImage: View {
+    let id: BossID
+    var body: some View {
+        Image(decorative: MenuArt.bossImages[id]!, scale: 2)
+            .resizable()
+            .interpolation(.high)
+            .aspectRatio(contentMode: .fit)
+    }
 }

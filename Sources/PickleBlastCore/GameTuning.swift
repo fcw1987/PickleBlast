@@ -73,6 +73,8 @@ public struct GameTuning: Equatable, Sendable {
     public var rallyWall: RallyOpponentConfiguration = .wall
     public var rallyBanger: RallyOpponentConfiguration = .banger
     public var rallyPoacher: RallyOpponentConfiguration = .poacher
+    public var rallyDinker: RallyOpponentConfiguration = .dinker
+    public var rallyLobber: RallyOpponentConfiguration = .lobber
     public var rallyPointReadyDuration: Double = 1.0
     /// Experimental contact-only movement influence. Disabled for the playable build.
     public var rallyMotionInfluenceEnabled: Bool = false
@@ -85,6 +87,8 @@ public struct GameTuning: Equatable, Sendable {
         case .wall: return boss
         case .banger: return banger
         case .poacher: return poacher
+        case .dinker: return .named("The Dinker")
+        case .lobber: return .named("The Lobber")
         }
     }
     public func rallyOpponentConfiguration(for id: BossID) -> RallyOpponentConfiguration {
@@ -92,6 +96,8 @@ public struct GameTuning: Equatable, Sendable {
         case .wall: return rallyWall
         case .banger: return rallyBanger
         case .poacher: return rallyPoacher
+        case .dinker: return rallyDinker
+        case .lobber: return rallyLobber
         }
     }
     public func comboMultiplier(for chain: Int) -> Int {
@@ -130,13 +136,32 @@ public struct RallyOpponentConfiguration: Equatable, Sendable {
     public var minimumBalanceMobility: Double = 0.76
     public var powerCooldownReturns: Int = 3
     public var powerLeadTime: Double = 0.25
-    public var powerSpeedMultiplier: Double = 1.16
+    public var powerSpeedMultiplier: Double = 1.40
+    public var minimumPowerSpeedRatio: Double = 1.12
+    public var minimumPowerResponseTime: Double = 0.90
+    /// Only Banger normal contacts use this ceiling; a drive cannot compound.
+    public var ordinarySpeedCeiling: Double? = nil
     public var speedGrowthPerSecond: Double = 0.16
     public var poachHistoryLength: Int = 3
     public var poachMinimumConfidence: Int = 2
     public var poachLeadTime: Double = 0.30
     public var poachCommitmentOffset: Double = 2.8
     public var poachCooldownReturns: Int = 2
+    public var poachHoldDuration: Double = 2.0
+    public var poachRecoveryDuration: Double = 0.35
+    public var poachBalanceDuration: Double = 0.20
+    public var poachLaneThreshold: Double = 1.2
+    public var poachMinimumTravel: Double = 0.75
+    public var specialLeadTime: Double = 0.22
+    public var specialRecoveryDuration: Double = 0.55
+    public var specialMinimumInterval: Int = 3
+    public var specialMaximumInterval: Int = 5
+    public var softSpeedRatio: Double = 0.70
+    public var softMaximumTravelDuration: Double = 2.15
+    public var softMinimumSpeed: Double = 16
+    public var lobDurationRatio: Double = 1.30
+    public var lobMaximumTravelDuration: Double = 2.10
+    public var lobPeakHeight: Double = 5.0
     public init(maximumLateralSpeed: Double, lateralAcceleration: Double,
                 lateralBraking: Double, observationDelay: Double,
                 decisionPeriod: Double, projectionError: Double) {
@@ -153,9 +178,11 @@ public struct RallyOpponentConfiguration: Equatable, Sendable {
               decisionPeriod: 0.09, projectionError: 0.18)
     }
     public static var banger: Self {
-        .init(maximumLateralSpeed: 8.8, lateralAcceleration: 29,
-              lateralBraking: 35, observationDelay: 0.20,
-              decisionPeriod: 0.10, projectionError: 0.24)
+        var value = Self(maximumLateralSpeed: 8.8, lateralAcceleration: 29,
+                         lateralBraking: 35, observationDelay: 0.20,
+                         decisionPeriod: 0.10, projectionError: 0.24)
+        value.ordinarySpeedCeiling = 30
+        return value
     }
     public static var poacher: Self {
         var value = Self(maximumLateralSpeed: 9.4, lateralAcceleration: 31,
@@ -163,6 +190,14 @@ public struct RallyOpponentConfiguration: Equatable, Sendable {
                          decisionPeriod: 0.08, projectionError: 0.28)
         value.poachCommitmentOffset = 3.0
         return value
+    }
+    public static var dinker: Self {
+        .init(maximumLateralSpeed: 7.8, lateralAcceleration: 26, lateralBraking: 32,
+              observationDelay: 0.20, decisionPeriod: 0.09, projectionError: 0.22)
+    }
+    public static var lobber: Self {
+        .init(maximumLateralSpeed: 7.6, lateralAcceleration: 25, lateralBraking: 31,
+              observationDelay: 0.21, decisionPeriod: 0.09, projectionError: 0.22)
     }
 }
 
@@ -194,6 +229,10 @@ public struct BossConfiguration: Equatable, Sendable {
     public var poachRecoveryDuration: Double = 0
     public var poachRecoveryMovementSpeed: Double = 0
     public init() {}
+
+    static func named(_ name: String) -> BossConfiguration {
+        var value = BossConfiguration(); value.name = name; return value
+    }
 
     public static var banger: BossConfiguration {
         var value = BossConfiguration()

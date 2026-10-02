@@ -13,6 +13,7 @@ import shutil
 import struct
 import subprocess
 import tempfile
+from functools import lru_cache
 import zlib
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -30,9 +31,19 @@ CLIPS = {"idle": (72, 1.5, True, None), "move_left": (32, .64, True, None),
 CHARACTERS = {"player": ("Player/Runtime128/Player.atlas", "player_animation_manifest.json", "Player"),
               "wall": ("Bosses/Runtime128/BossWall.atlas", "boss_animation_manifest.json", "BossWall"),
               "banger": ("Bosses/Runtime128/BossBanger.atlas", "boss_animation_manifest.json", "BossBanger"),
-              "poacher": ("Bosses/Runtime128/BossPoacher.atlas", "boss_animation_manifest.json", "BossPoacher")}
+              "poacher": ("Bosses/Runtime128/BossPoacher.atlas", "boss_animation_manifest.json", "BossPoacher"),
+              "dinker": ("Bosses/Runtime128/BossDinker.atlas", "boss_animation_manifest.json", "BossDinker"),
+              "lobber": ("Bosses/Runtime128/BossLobber.atlas", "boss_animation_manifest.json", "BossLobber")}
 ANCHOR = [.5, .12109375]
 CANVAS = [512, 512]
+TRACKED_PADDLE_SEEDS = {
+    # Centers were read from each approved character's own frame pixels.
+    # Contact clips seed at their authored contact frame; other clips seed at
+    # the first frame so the paddle is tracked in both playback directions.
+    "dinker": {"idle": (41, 73), "move_left": (41, 73), "move_right": (41, 73),
+               "forehand": (41, 73), "backhand": (81, 73), "block": (54, 73)},
+    "lobber": {"idle": (40, 73), "move_left": (40, 73), "move_right": (40, 73),
+               "forehand": (40, 73), "backhand": (80, 73), "block": (53, 73)}}
 FIXTURES = ROOT / "scripts/fixtures/art_import"
 MAX_JSON_BYTES = 4 * 1024 * 1024
 MAX_PNG_BYTES = 16 * 1024 * 1024
@@ -339,6 +350,173 @@ def derived_boss_frame(source, character, clip, index, template, images):
             "wrist": template["wrist"], "bounds": bounds}, {"maximumShift128": math.hypot(*delta), "alignedCoreOverlap": overlap}
 
 
+@lru_cache(maxsize=12)
+def tracked_paddle_centers(images, character, clip, contact_index):
+    """Track the embedded paddle from that character's own pixels, never a Wall pose map.
+
+    The first idle image was visually calibrated per approved character. Subsequent
+    centers follow a small pixel patch around the face, using only adjacent frames.
+    A color check catches missing or replaced paddles even when a flat image would
+    otherwise produce a deceptively perfect match.
+    """
+    seed = TRACKED_PADDLE_SEEDS[character][clip]
+    palette = {
+        "dinker": lambda r, g, b, a: a > 100 and g > r + 10 and b > r + 15 and g > 50,
+        "lobber": lambda r, g, b, a: a > 100 and r > g + 10 and b > g + 20 and r > 50,
+    }[character]
+    radius, search = 7, 6
+
+    def accent_count(image, center):
+        x0, y0 = center
+        count = 0
+        for y in range(y0 - 5, y0 + 6):
+            for x in range(x0 - 5, x0 + 6):
+                offset = (y * 128 + x) * 4
+                if palette(*image[offset:offset + 4]):
+                    count += 1
+        return count
+
+    def match_score(first, second, center, candidate):
+        x0, y0 = center
+        x1, y1 = candidate
+        total = 0
+        sample_offsets = range(-radius, radius + 1, 2)
+        for dy in sample_offsets:
+            for dx in sample_offsets:
+                first_offset = ((y0 + dy) * 128 + x0 + dx) * 4
+                second_offset = ((y1 + dy) * 128 + x1 + dx) * 4
+                first_alpha, second_alpha = first[first_offset + 3], second[second_offset + 3]
+                total += 2 * abs(first_alpha - second_alpha)
+                visible = min(first_alpha, second_alpha) / 255
+                total += sum(abs(first[first_offset + channel] - second[second_offset + channel])
+                             for channel in range(3)) * visible
+        return total / (len(sample_offsets) ** 2)
+
+    anchor_index = contact_index if contact_index is not None else 0
+    centers = [None] * len(images)
+    centers[anchor_index] = seed
+    scores = [0.0] * len(images)
+    accents = [0] * len(images)
+
+    def signature(image, center):
+        count = accent_count(image, center)
+        require(count >= 1, f"{character}/{clip}: tracked paddle lost its approved color signature")
+        return count
+
+    accents[anchor_index] = signature(images[anchor_index], seed)
+    directions = (range(anchor_index + 1, len(images)), range(anchor_index - 1, -1, -1))
+    for indices in directions:
+        for index in indices:
+            previous_index = index - 1 if index > anchor_index else index + 1
+            previous = images[previous_index]
+            current = images[index]
+            center = centers[previous_index]
+            candidates = []
+            for dx in range(-search, search + 1):
+                for dy in range(-search, search + 1):
+                    candidate = (center[0] + dx, center[1] + dy)
+                    if radius <= candidate[0] < 128 - radius and radius <= candidate[1] < 128 - radius:
+                        candidates.append((match_score(previous, current, center, candidate), candidate))
+            score, selected = min(candidates)
+            require(score <= 260, f"{character}/{clip}/{index + 1:03}: approved paddle tracking lost image registration ({score:.1f})")
+            require(24 <= selected[0] <= 104 and 48 <= selected[1] <= 94,
+                    f"{character}/{clip}: paddle left its verified pixel envelope")
+            centers[index] = selected
+            scores[index] = score
+            accents[index] = signature(current, selected)
+    return tuple(centers), tuple(scores), tuple(accents)
+
+
+def detected_wrist(image, center, context):
+    """Find the warm skin pixels at the hand joined to the embedded paddle."""
+    x0, y0 = center
+    candidates = set()
+    for y in range(max(0, y0 - 24), min(128, y0 + 25)):
+        for x in range(max(0, x0 - 24), min(128, x0 + 25)):
+            offset = (y * 128 + x) * 4
+            r, g, b, alpha = image[offset:offset + 4]
+            if alpha > 100 and (x - x0) ** 2 + (y - y0) ** 2 <= 576 \
+                    and r > g * 1.12 and g > b * 1.1 and r > 65 and g > 35 and b < 190:
+                candidates.add((x, y))
+    components = []
+    while candidates:
+        seed = min(candidates)
+        candidates.remove(seed)
+        component, queue = {seed}, [seed]
+        while queue:
+            x, y = queue.pop()
+            for dx in (-1, 0, 1):
+                for dy in (-1, 0, 1):
+                    neighbor = (x + dx, y + dy)
+                    if (dx or dy) and neighbor in candidates:
+                        candidates.remove(neighbor)
+                        component.add(neighbor)
+                        queue.append(neighbor)
+        if len(component) >= 2:
+            components.append(component)
+    if not components:
+        # A few approved poses fully cover the hand with the paddle grip. The
+        # attachment point remains the character-specific visible paddle center.
+        return [x0 * 4, y0 * 4]
+    points = min(components, key=lambda component: (
+        (sum(x for x, _ in component) / len(component) - x0) ** 2
+        + (sum(y for _, y in component) / len(component) - y0) ** 2,
+        -len(component)))
+    return [sum(x for x, _ in points) / len(points) * 4,
+            sum(y for _, y in points) / len(points) * 4]
+
+
+def tracked_boss_frames(source, character, clip, spec, directory):
+    """Build clip metadata from the approved character images and that character's timing."""
+    names = [f"boss_{character}_{clip}_{index + 1:03}.png" for index in range(CLIPS[clip][0])]
+    require(spec["files"] == names, f"{character}/{clip}: invalid filename/index")
+    timestamps = spec["timestamps_seconds"]
+    count, duration, loop, contact = CLIPS[clip]
+    require(spec["duration_seconds"] == duration and spec["loop"] is loop,
+            f"{character}/{clip}: duration or loop contract differs")
+    require(spec["contact_index_zero_based"] == contact,
+            f"{character}/{clip}: contact index differs")
+    require(len(timestamps) == count and all(isinstance(t, (int, float)) and not isinstance(t, bool)
+            and math.isfinite(t) for t in timestamps) and timestamps[0] == 0
+            and all(a < b for a, b in zip(timestamps, timestamps[1:])),
+            f"{character}/{clip}: timestamps must increase strictly from zero")
+    require(timestamps[-1] < duration if loop else timestamps[-1] == duration,
+            f"{character}/{clip}: timestamp endpoint does not match loop/duration")
+    require(spec["contact_time_seconds"] == (None if contact is None else timestamps[contact]),
+            f"{character}/{clip}: contact time/index mismatch")
+    stride = (-26 if clip == "move_left" else 26) if clip.startswith("move_") else None
+    if stride is not None:
+        require(spec["cycle_travel_source_pixels"] == stride,
+                f"{character}/{clip}: stride differs")
+    images = []
+    for name in names:
+        path = source / directory / name
+        require(path.is_file(), f"Missing required frame: {path}")
+        image = png_pixels(path)
+        require(image[:3] == (128, 128, 4), f"{character}/{clip}: required runtime PNG is not 128x128 RGBA")
+        images.append(bytes(image[3]))
+    centers, scores, accents = tracked_paddle_centers(tuple(images), character, clip, contact)
+    frames = []
+    for index, (name, timestamp, image, center) in enumerate(zip(names, timestamps, images, centers)):
+        alpha = image[3::4]
+        alpha_points = [(pixel % 128, pixel // 128) for pixel, value in enumerate(alpha) if value]
+        require(bool(alpha_points), f"{character}/{clip}: empty approved frame: {name}")
+        bounds = [min(x for x, _ in alpha_points) * 4, min(y for _, y in alpha_points) * 4,
+                  (max(x for x, _ in alpha_points) + 1) * 4,
+                  (max(y for _, y in alpha_points) + 1) * 4]
+        frames.append({"name": Path(name).stem, "timestamp": timestamp,
+                       "paddleCenter": [center[0] * 4, center[1] * 4],
+                       "wrist": detected_wrist(image, center, f"{character}/{clip}/{name}"),
+                       "bounds": bounds})
+    return {"duration": duration, "loop": loop, "contactIndex": contact,
+            "strideSourcePixels": stride, "frames": frames}, {
+                "maximumTrackingError": max(scores, default=0),
+                "meanTrackingError": sum(scores) / len(scores) if scores else 0,
+                "minimumAccentPixels": min(accents),
+                "calibratedPixelAnchor": list(TRACKED_PADDLE_SEEDS[character][clip]),
+                "minimumAccentPixels": min(accents)}
+
+
 def add_derived_bosses(source, result, mappings):
     """The handoff has no per-frame attachment JSON for these bosses.
 
@@ -384,6 +562,37 @@ def add_derived_bosses(source, result, mappings):
                 "maximumShift128": max(m["maximumShift128"] for m in measurements),
                 "minimumAlignedCoreOverlap": min(m["alignedCoreOverlap"] for m in measurements)})
         require({p.name for p in (source / directory).glob("*.png")} == expected, f"{character}: runtime atlas contains unlisted/missing frames")
+        result[character] = data
+
+    # Dinker and Lobber exports do not include the per-frame attachment JSON
+    # supplied for Wall. Track each approved character's paddle in its own
+    # images and keep the original v4.2 timestamps and contact indices.
+    for character in ("dinker", "lobber"):
+        directory, _, atlas = CHARACTERS[character]
+        source_boss = manifest["bosses"][character]
+        require(source_boss["name"] == "The " + character.title()
+                and source_boss["atlas"] == atlas + ".atlas",
+                f"{character}: approved character identity differs")
+        clips = source_boss["animations"]
+        require(set(clips) == set(CLIPS), f"{character}: required clip set differs")
+        data = {"atlas": atlas, "canvasSize": CANVAS, "anchor": ANCHOR, "clips": {}}
+        expected = set()
+        for clip in CLIPS:
+            spec = clips[clip]
+            context = f"{character}/{clip}"
+            legacy = f"Docs/Frames/{character}/{clip}.json"
+            require(spec["metadata"] == legacy, f"{context}: unexpected metadata mapping")
+            animation, tracking = tracked_boss_frames(source, character, clip, spec, directory)
+            data["clips"][clip] = animation
+            expected.update(frame["name"] + ".png" for frame in animation["frames"])
+            mappings.append({"character": character, "clip": clip, "legacyMetadata": legacy,
+                "sourceMetadata": f"Docs/boss_animation_manifest.json#/bosses/{character}/animations/{clip}",
+                "sourceMetadataSHA256": digest(source / "Docs/boss_animation_manifest.json"),
+                "sourceDirectory": directory, "atlas": atlas,
+                "registration": "own-image paddle-template tracking from the character's calibrated pixel anchor; own detected hand pixels and alpha bounds",
+                **tracking})
+        require({p.name for p in (source / directory).glob("*.png")} == expected,
+                f"{character}: runtime atlas contains unlisted/missing frames")
         result[character] = data
 
 
@@ -548,7 +757,7 @@ def managed_path_sets():
 
 def install_plan(staged, destination, paths, previous_paths):
     require(isinstance(paths, list) and isinstance(previous_paths, list), "Managed resource paths must be lists")
-    require(len(paths) <= 1500 and len(previous_paths) <= 1500, "Too many managed resource paths")
+    require(len(paths) <= 2500 and len(previous_paths) <= 2500, "Too many managed resource paths")
     current = [relative_resource_path(path) for path in paths]
     previous = [relative_resource_path(path) for path in previous_paths]
     require(len(set(current)) == len(current) and len(set(previous)) == len(previous), "Duplicate managed resource path")

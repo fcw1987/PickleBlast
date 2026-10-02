@@ -152,7 +152,7 @@ struct BossRallySessionTests {
         #expect(session.preferences.bossRecord(for: .poacher).wins == 1)
     }
 
-    @Test("Thirty Boss Rally defeats and rematches keep Arcade score isolated and release on Home")
+    @Test("Repeated Boss Rally defeats and rematches keep Arcade score isolated and release on Home")
     func repeatedRallyRematchAndExit() {
         let suite = "PickleBlast-boss-repeat-\(UUID().uuidString)"
         let defaults = UserDefaults(suiteName: suite)!

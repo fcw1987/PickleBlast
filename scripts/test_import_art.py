@@ -32,8 +32,8 @@ class SourceContractTests(unittest.TestCase):
 
     def test_complete_pack_maps_selected_bosses_with_exact_contact_frames(self):
         characters, mappings = art.character_manifest(self.source)
-        self.assertEqual(set(characters), {"player", "wall", "banger", "poacher"})
-        self.assertEqual(len(mappings), 24)
+        self.assertEqual(set(characters), {"player", "wall", "banger", "poacher", "dinker", "lobber"})
+        self.assertEqual(len(mappings), 36)
         player = characters["player"]
         wall = characters["wall"]
         self.assertEqual(player["anchor"], [.5, .12109375])
@@ -66,10 +66,42 @@ class SourceContractTests(unittest.TestCase):
             self.assertTrue(all("image-derived" in m["registration"] for m in entries))
             self.assertTrue(all(m["maximumShift128"] <= 6 and m["minimumAlignedCoreOverlap"] >= .5 for m in entries))
 
+    def test_dinker_and_lobber_contacts_use_their_own_pixel_registration(self):
+        characters, mappings = art.character_manifest(self.source)
+        expected = {
+            "dinker": {"forehand": [164, 292], "backhand": [324, 292], "block": [216, 292]},
+            "lobber": {"forehand": [160, 292], "backhand": [320, 292], "block": [212, 292]},
+        }
+        for boss, contacts in expected.items():
+            self.assertEqual(characters[boss]["canvasSize"], [512, 512])
+            self.assertEqual(characters[boss]["anchor"], [.5, .12109375])
+            self.assertEqual(sum(len(clip["frames"]) for clip in characters[boss]["clips"].values()), 271)
+            for clip, paddle_center in contacts.items():
+                animation = characters[boss]["clips"][clip]
+                contact = animation["frames"][animation["contactIndex"]]
+                wall = characters["wall"]["clips"][clip]["frames"][animation["contactIndex"]]
+                self.assertEqual(contact["paddleCenter"], paddle_center)
+                self.assertNotEqual(contact["paddleCenter"], wall["paddleCenter"])
+                self.assertEqual(contact["timestamp"], wall["timestamp"])
+            entries = [item for item in mappings if item["character"] == boss]
+            self.assertEqual(len(entries), 6)
+            self.assertTrue(all("own-image" in item["registration"] for item in entries))
+            self.assertTrue(all(item["minimumAccentPixels"] > 0 for item in entries))
+            self.assertTrue(all(item["sourceMetadata"].startswith(
+                f"Docs/boss_animation_manifest.json#/bosses/{boss}/animations/") for item in entries))
+
     def test_new_boss_missing_paddle_cannot_silently_inherit_wall_contact(self):
-        path = self.source / "Bosses/Runtime128/BossBanger.atlas/boss_banger_idle_001.png"
-        art.write_png(path, 128, 128, 4, bytes([255, 0, 0, 255]) * (128 * 128))
-        self.rejects("cannot identify approved paddle core")
+        for boss in ("banger", "dinker", "lobber"):
+            with self.subTest(boss=boss):
+                path = self.source / f"Bosses/Runtime128/Boss{boss.title()}.atlas/boss_{boss}_idle_001.png"
+                original = path.read_bytes()
+                try:
+                    art.write_png(path, 128, 128, 4, bytes([255, 0, 0, 255]) * (128 * 128))
+                    message = ("tracked paddle lost its approved color signature" if boss in ("dinker", "lobber")
+                               else "cannot identify approved paddle core")
+                    self.rejects(message)
+                finally:
+                    path.write_bytes(original)
 
     def test_new_boss_filename_cannot_escape_approved_atlas(self):
         self.mutate("boss_animation_manifest.json", lambda d: d["bosses"]["banger"]["animations"]["idle"]["files"].__setitem__(0, "../../other.png"))
@@ -162,15 +194,17 @@ class GeneratedResourcesTests(unittest.TestCase):
         after = {str(path.relative_to(self.source)): art.digest(path) for path in self.source.rglob("*") if path.is_file()}
         self.assertEqual(after, self.source_hashes)
         images = [item for item in self.audit["resources"] if item["kind"] == "character"]
-        self.assertEqual(len(images), 1084)
+        self.assertEqual(len(images), 1626)
         self.assertTrue(all(item["sourceSHA256"] == item["sha256"] for item in images))
-        self.assertEqual(sum(item["estimatedDecodedRGBABytes"] for item in images), 71_041_024)
+        self.assertEqual(sum(item["estimatedDecodedRGBABytes"] for item in images), 106_561_536)
 
     def test_resources_exclude_unselected_resolutions_and_future_content(self):
         included = {item["source"] for item in self.audit["resources"]}
         self.assertNotIn("Targets/Objects/target_powerup.png", included)
         self.assertNotIn("Ball/ball_power.png", included)
-        self.assertFalse(any("Master256" in path or "Body.atlas" in path or "BossDinker.atlas" in path for path in included))
+        self.assertTrue(any(path.startswith("Bosses/Runtime128/BossDinker.atlas/") for path in included))
+        self.assertTrue(any(path.startswith("Bosses/Runtime128/BossLobber.atlas/") for path in included))
+        self.assertFalse(any("Master256" in path or "Body.atlas" in path for path in included))
         self.assertEqual(len(self.manifest["supporting"]), 49)
         self.assertIn("Targets/Objects/target_powerup.png", self.audit["omittedOptionalPNGs"])
 

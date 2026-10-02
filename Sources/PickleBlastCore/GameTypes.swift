@@ -24,7 +24,9 @@ public enum GameStage: Equatable, Sendable {
 }
 
 public enum BossID: String, CaseIterable, Codable, Hashable, Sendable {
-    case wall, banger, poacher
+    case wall, banger, poacher, dinker, lobber
+    /// The accepted three-match run remains independent of the selectable roster.
+    public static let seriesOrder: [BossID] = [.wall, .banger, .poacher]
 }
 
 public enum GameMode: Equatable, Sendable {
@@ -88,6 +90,7 @@ public struct BossMatchResult: Equatable, Sendable {
 public enum BossSide: String, Equatable, Sendable { case left, right }
 public enum BossSpecialPhase: String, Equatable, Sendable {
     case idle, powerWindup, powerRecovery, poachCommitment, poachRecovery
+    case softWindup, softRecovery, lobWindup, lobRecovery
 }
 
 public enum SwingSide: String, Equatable, Sendable { case forehand, backhand, block }
@@ -161,6 +164,8 @@ public struct BossState: Equatable, Sendable {
     public var specialRemaining: Double
     public var committedSide: BossSide?
     public var committedTargetX: Double?
+    /// Expected completed-shot lane, distinct from the early movement offset.
+    public var committedReadX: Double?
     public var specialTriggeredForReturn: Bool
     public init(id: BossID = .wall, x: Double = 10, movementTarget: Double = 10,
                 reactionRemaining: Double = 0, points: Int = 0, opponentPoints: Int = 0,
@@ -169,7 +174,7 @@ public struct BossState: Equatable, Sendable {
                 lastObservedTime: Double? = nil, predictedInterceptX: Double? = nil,
                 reachableLeftX: Double? = nil, reachableRightX: Double? = nil,
                 specialPhase: BossSpecialPhase = .idle, specialRemaining: Double = 0,
-                committedSide: BossSide? = nil, committedTargetX: Double? = nil,
+                committedSide: BossSide? = nil, committedTargetX: Double? = nil, committedReadX: Double? = nil,
                 specialTriggeredForReturn: Bool = false) {
         self.id = id; self.x = x; self.movementTarget = movementTarget
         self.reactionRemaining = reactionRemaining; self.points = points
@@ -182,6 +187,7 @@ public struct BossState: Equatable, Sendable {
         self.specialPhase = specialPhase
         self.specialRemaining = specialRemaining; self.committedSide = committedSide
         self.committedTargetX = committedTargetX
+        self.committedReadX = committedReadX
         self.specialTriggeredForReturn = specialTriggeredForReturn
     }
 }
@@ -193,6 +199,7 @@ public struct GameState: Equatable, Sendable {
     public var playerX: Double = CourtGeometry.centerX
     public var playerAnimation: PlayerAnimation = .ready
     public var ball: BallState?
+    public var rallyShot: RallyShotState?
     public var targets: [TargetState] = []
     public var boss: BossState?
     public var score: Int = 0
@@ -235,6 +242,8 @@ public enum GameEvent: Equatable, Sendable {
     case lifeLost(remaining: Int)
     case waveCleared(number: Int)
     case bossIncoming
+    case rallyShotPrepared(rallyID: UInt64, shotID: UInt64, kind: RallyShotKind)
+    case rallyShotLaunched(rallyID: UInt64, shotID: UInt64, kind: RallyShotKind)
     case bossContact(x: Double)
     case bossPowerTelegraph
     case bossPowerContact(x: Double)

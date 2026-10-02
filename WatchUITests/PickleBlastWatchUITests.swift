@@ -536,7 +536,7 @@ final class PickleBlastWatchUITests: XCTestCase {
     @MainActor
     func testBossRallySelectEachOpponentPauseResumeAndHome() throws {
         let app = launchHome()
-        for id in ["wall", "banger", "poacher"] {
+        for id in ["wall", "banger", "poacher", "dinker", "lobber"] {
             let rally = app.buttons["home.bossRally"]
             reveal(rally, in: app)
             rally.tap()
@@ -570,6 +570,34 @@ final class PickleBlastWatchUITests: XCTestCase {
         _ = startRun(app)
         XCTAssertTrue((element("game.court", in: app).value as? String ?? "").contains("Arcade"))
         capture("ordinary-arcade-after-boss-selection", app: app)
+    }
+
+    @MainActor
+    func testCrownFocusAfterSelectingEachBoss() throws {
+        // Freeze simulation only; selection scrolling and both Crown directions
+        // use the native controls and the authoritative position binding.
+        let app = launchHome(arguments: ["--validation-controls", "--validation-manual-start"])
+        for id in ["wall", "banger", "poacher", "dinker", "lobber"] {
+            app.buttons["home.bossRally"].tap()
+            let choice = app.buttons["boss.select.\(id)"]
+            reveal(choice, in: app); choice.tap()
+            let court = element("game.court", in: app)
+            XCTAssertTrue(court.waitForExistence(timeout: 5))
+            let initial = try playerX(court)
+            XCUIDevice.shared.rotateDigitalCrown(delta: 0.125, velocity: 3)
+            waitForPlayer(court, description: "Crown focuses gameplay after selecting \(id)") {
+                $0 > initial + 0.05
+            }
+            let moved = try playerX(court)
+            XCUIDevice.shared.rotateDigitalCrown(delta: -0.125, velocity: 3)
+            waitForPlayer(court, description: "Crown reverses after selecting \(id)") {
+                $0 < moved - 0.05
+            }
+            app.buttons["game.pause"].tap()
+            let home = app.buttons["pause.home"]
+            reveal(home, in: app); home.tap()
+            XCTAssertTrue(app.buttons["home.play"].waitForExistence(timeout: 5))
+        }
     }
 
     @MainActor
@@ -681,6 +709,69 @@ final class PickleBlastWatchUITests: XCTestCase {
     @MainActor func testScriptedWallRallyVictoryRematchAndChooseOpponent() throws { try scriptedBossVictory("wall") }
     @MainActor func testScriptedBangerRallyVictoryRematchAndChooseOpponent() throws { try scriptedBossVictory("banger") }
     @MainActor func testScriptedPoacherRallyVictoryRematchAndChooseOpponent() throws { try scriptedBossVictory("poacher") }
+    @MainActor func testScriptedDinkerRallyVictoryRematchAndChooseOpponent() throws { try scriptedBossVictory("dinker") }
+    @MainActor func testScriptedLobberRallyVictoryRematchAndChooseOpponent() throws { try scriptedBossVictory("lobber") }
+
+    /// Normal menu navigation with a bounded, delayed public-input controller.
+    /// Run under simctl recordVideo for real-time, clean ability comparisons;
+    /// this is scripted input, never a claim of human play or difficulty.
+    @MainActor
+    func testRealtimeFiveBossAbilityRecording() throws {
+        let app = launchHome(arguments: ["--validation-policy=neutral", "--validation-realtime",
+                                        "--validation-manual-start", "--validation-seed=2958360576"])
+        for id in ["wall", "banger", "poacher", "dinker", "lobber"] {
+            app.buttons["home.bossRally"].tap()
+            let choice = app.buttons["boss.select.\(id)"]
+            reveal(choice, in: app); choice.tap()
+            let court = element("game.court", in: app)
+            XCTAssertTrue(court.waitForExistence(timeout: 5))
+            XCTAssertTrue((court.value as? String ?? "").lowercased().contains(id))
+            capture("realtime-\(id)-start", app: app)
+            let deadline = Date().addingTimeInterval(42)
+            while Date() < deadline && !element("results", in: app).exists {
+                Thread.sleep(forTimeInterval: 1)
+            }
+            capture("realtime-\(id)-end", app: app)
+            if element("results", in: app).exists {
+                let home = app.buttons["results.home"]
+                reveal(home, in: app); home.tap()
+            } else {
+                app.buttons["game.pause"].tap()
+                let home = app.buttons["pause.home"]
+                reveal(home, in: app); home.tap()
+            }
+            XCTAssertTrue(app.buttons["home.play"].waitForExistence(timeout: 5))
+        }
+    }
+
+    @MainActor
+    func testLobRiseApexDescentPauseResumeAndHome() throws {
+        for phase in ["rise", "apex", "descent"] {
+            let app = XCUIApplication()
+            app.launchArguments = ["--validation-boss=lobber", "--validation-policy=neutral",
+                                   "--validation-realtime", "--validation-seed=2958360576",
+                                   "--validation-pause-lob=\(phase)"]
+            app.launchEnvironment = [:]
+            app.launch()
+            let resume = app.buttons["pause.resume"]
+            XCTAssertTrue(resume.waitForExistence(timeout: 40), "No real lob reached \(phase)")
+            capture("lob-paused-\(phase)", app: app)
+            Thread.sleep(forTimeInterval: 2)
+            XCTAssertTrue(resume.exists)
+            resume.tap()
+            let court = element("game.court", in: app)
+            let resumed = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
+                let status = court.value as? String ?? ""
+                return court.exists && !status.contains("Paused") && !status.contains("Resume countdown")
+            }, object: nil)
+            XCTAssertEqual(XCTWaiter.wait(for: [resumed], timeout: 5), .completed)
+            capture("lob-resumed-\(phase)", app: app)
+            app.buttons["game.pause"].tap()
+            let home = app.buttons["pause.home"]
+            reveal(home, in: app); home.tap()
+            XCTAssertTrue(app.buttons["home.play"].waitForExistence(timeout: 5))
+        }
+    }
 
     @MainActor
     func testPowerPreparationPauseResumeAndHome() throws {
@@ -714,7 +805,7 @@ final class PickleBlastWatchUITests: XCTestCase {
         let app = launchHome()
         capture("stress-home-initial", app: app)
         for cycle in 0..<12 {
-            let mode = ["arcade", "wall", "banger", "poacher", "allThree"][cycle % 5]
+            let mode = ["arcade", "wall", "banger", "poacher", "dinker", "lobber", "allThree"][cycle % 7]
             if mode == "arcade" {
                 _ = startRun(app)
             } else {
@@ -738,7 +829,7 @@ final class PickleBlastWatchUITests: XCTestCase {
     func testModeHomeLifetimesWithoutRepeatedScreenshots() throws {
         let app = launchHome(arguments: ["--validation-lifetimes"])
         for cycle in 0..<24 {
-            let mode = ["arcade", "wall", "banger", "poacher", "allThree"][cycle % 5]
+            let mode = ["arcade", "wall", "banger", "poacher", "dinker", "lobber", "allThree"][cycle % 7]
             if mode == "arcade" { _ = startRun(app) }
             else {
                 app.buttons["home.bossRally"].tap()

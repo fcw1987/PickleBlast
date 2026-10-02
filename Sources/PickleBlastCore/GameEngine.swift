@@ -37,6 +37,11 @@ public final class GameEngine {
     private var rallyLastPoachReturn = -100
     private var rallyBalanceRemaining = 0.0
     private var rallyLastShotSide = 0
+    private var rallyIdentity: UInt64 = 0
+    private var shotIdentity: UInt64 = 0
+    private var rallyNextSoftReturn = 3
+    private var rallyNextLobReturn = 3
+    private var rallySpecialTelegraphTime: Double?
     private var playerMotionSamples: [PlayerMotionSample] = []
 
     public var activeBossConfiguration: BossConfiguration { tuning.bossConfiguration(for: state.bossID) }
@@ -68,6 +73,7 @@ public final class GameEngine {
     public func reset(seed: UInt64? = nil) {
         if let seed { initialSeed = seed }
         generator = SeededGenerator(seed: initialSeed)
+        rallyIdentity = 0; shotIdentity = 0
         bossMatchStartScore = 0; bossMatchResolved = false
         accumulator = 0; targetContacts.removeAll(keepingCapacity: true)
         swingSide = nil; swingElapsed = 0; missRemaining = 0
@@ -122,12 +128,16 @@ public final class GameEngine {
             playerMotionSamples.removeAll(keepingCapacity: true)
             clearRallyObservations()
             rallyPowerTelegraphTime = nil
+            rallySpecialTelegraphTime = nil
             if state.boss?.specialPhase == .powerWindup
-                || state.boss?.specialPhase == .poachCommitment {
+                || state.boss?.specialPhase == .poachCommitment
+                || state.boss?.specialPhase == .softWindup
+                || state.boss?.specialPhase == .lobWindup {
                 state.boss?.specialPhase = .idle
                 state.boss?.specialRemaining = 0
                 state.boss?.committedSide = nil
                 state.boss?.committedTargetX = nil
+                state.boss?.committedReadX = nil
                 let heldX = state.boss?.x ?? CourtGeometry.centerX
                 state.boss?.movementTarget = heldX
             }
@@ -188,6 +198,10 @@ public final class GameEngine {
             noProgressTime += delta
             if mode.isBossRally { recordPlayerMotion() }
             if state.stage.isBoss { updateBoss(delta, events: &events) }
+            if state.rallyShot?.lobFlight != nil {
+                advanceLob(delta, events: &events)
+                return
+            }
             if var ball = state.ball {
                 ball.velocity = limitedVelocity(ball.velocity)
                 if state.stage.isBoss {
@@ -260,6 +274,11 @@ public final class GameEngine {
         state.ball = BallState(position: .init(x: CourtGeometry.centerX, y: launchY),
                                velocity: .init(x: 0, y: -min(tuning.initialBallSpeed, tuning.maximumBallSpeed)),
                                radius: tuning.ballRadius)
+        if mode.isBossRally {
+            rallyIdentity &+= 1
+            recordRallyShot(kind: .normal, requestedSpeed: min(tuning.initialBallSpeed, tuning.maximumBallSpeed),
+                            ball: state.ball!, events: &events)
+        }
         state.rallyTime = 0
         incomingGuided = false; noProgressTime = 0; stallRedirected = false
         targetContacts.removeAll(keepingCapacity: true)
@@ -271,6 +290,7 @@ public final class GameEngine {
 
     private func prepareRally(duration: Double? = nil, events: inout [GameEvent]) {
         state.ball = nil
+        state.rallyShot = nil
         state.rallyTime = 0
         state.currentRallyReturns = 0
         incomingGuided = false; noProgressTime = 0; stallRedirected = false
@@ -289,6 +309,7 @@ public final class GameEngine {
             state.boss?.specialRemaining = 0
             state.boss?.committedSide = nil
             state.boss?.committedTargetX = nil
+            state.boss?.committedReadX = nil
             state.boss?.specialTriggeredForReturn = false
             state.boss?.lateralVelocity = 0
             state.boss?.lastShotPurpose = nil
@@ -350,6 +371,7 @@ public final class GameEngine {
         if !won { resolveBossMatch(won: false, events: &events) }
         state.won = won
         state.ball = nil
+        state.rallyShot = nil
         state.playerAnimation = won ? .victory : .miss
         changePhase(.results, duration: 0, events: &events)
         events.append(.runEnded(won: won, score: state.score))
@@ -402,6 +424,7 @@ public final class GameEngine {
         clearRallyObservations()
         rallyFlightError = 0
         rallyPowerTelegraphTime = nil
+        rallySpecialTelegraphTime = nil
         rallyPendingPlayerLane = nil
         rallyBalanceRemaining = 0
         playerMotionSamples.removeAll(keepingCapacity: true)
@@ -410,6 +433,8 @@ public final class GameEngine {
             rallyLastPowerReturn = -100
             rallyLastPoachReturn = -100
             rallyLastShotSide = 0
+            rallyNextSoftReturn = max(3, tuning.rallyDinker.specialMinimumInterval)
+            rallyNextLobReturn = max(3, tuning.rallyLobber.specialMinimumInterval)
         }
     }
 
@@ -459,17 +484,19 @@ public final class GameEngine {
         let geometry = activeBossConfiguration
         recordRallyObservation(ball)
         rallyBalanceRemaining = max(0, rallyBalanceRemaining - delta)
-        if boss.specialPhase != .idle, boss.specialPhase != .powerWindup {
+        if boss.specialPhase != .idle, boss.specialPhase != .powerWindup,
+           boss.specialPhase != .softWindup, boss.specialPhase != .lobWindup {
             boss.specialRemaining = max(0, boss.specialRemaining - delta)
             if boss.specialRemaining <= 1e-10 {
                 if boss.specialPhase == .poachCommitment {
                     boss.specialPhase = .poachRecovery
-                    boss.specialRemaining = 0.35
+                    boss.specialRemaining = policy.poachRecoveryDuration
                     events.append(.bossPoachRecovery)
                 } else {
                     boss.specialPhase = .idle
                     boss.committedSide = nil
                     boss.committedTargetX = nil
+                    boss.committedReadX = nil
                 }
             }
         }
@@ -496,28 +523,52 @@ public final class GameEngine {
                     boss.reachableLeftX = interval.lowerBound
                     boss.reachableRightX = interval.upperBound
                     let reachable = clamp(landing, interval.lowerBound, interval.upperBound)
-                    if boss.specialPhase == .poachCommitment,
-                       let committed = boss.committedTargetX,
-                       abs(landing - committed) > geometry.halfWidth + 1.0 {
-                        boss.specialPhase = .poachRecovery
-                        boss.specialRemaining = 0.35
-                        events.append(.bossPoachRecovery)
+                    if boss.specialPhase == .poachCommitment, let committed = boss.committedTargetX {
+                        // The early step intentionally offsets the learned lane.
+                        // Judge the read against that lane, not the step's far edge.
+                        let read = boss.committedReadX ?? committed
+                        if abs(landing - read) > geometry.halfWidth + 1.0 {
+                            boss.specialPhase = .poachRecovery
+                            boss.specialRemaining = policy.poachRecoveryDuration
+                            events.append(.bossPoachRecovery)
+                        } else if boss.committedReadX != nil {
+                            // A correct anticipation has served its purpose once
+                            // this new shot is visible after the real delay. Resume
+                            // ordinary interception without announcing a failed read.
+                            boss.specialPhase = .idle
+                            boss.specialRemaining = 0
+                            boss.committedSide = nil
+                            boss.committedTargetX = nil
+                            boss.committedReadX = nil
+                        }
                     }
-                    boss.movementTarget = reachable
+                    if boss.specialPhase == .poachCommitment, let committed = boss.committedTargetX {
+                        boss.movementTarget = committed
+                    } else { boss.movementTarget = reachable }
                     if boss.id == .banger, boss.specialPhase == .idle,
                        boss.returnCount + 1 >= 2,
                        boss.returnCount + 1 - rallyLastPowerReturn >= policy.powerCooldownReturns,
-                       observation.ball.position.y >= tuning.receivingBoundaryY,
                        remainingFlight >= policy.powerLeadTime + tuning.fixedStep,
                        abs(landing - boss.x) <= max(geometry.halfWidth + 1.0,
                                                     policy.maximumLateralSpeed * remainingFlight),
                        rallyBalanceRemaining <= 0.05,
-                       predicted.velocity.length * policy.powerSpeedMultiplier
-                           <= tuning.maximumBallSpeed + 1e-9 {
+                       powerEligible(sourceSpeed: predicted.velocity.length, bossY: geometry.y, radius: ball.radius) {
                         boss.specialPhase = .powerWindup
                         boss.specialTriggeredForReturn = true
                         rallyPowerTelegraphTime = state.simulationTime
                         events.append(.bossPowerTelegraph)
+                        events.append(.rallyShotPrepared(rallyID: activeRallyID, shotID: shotIdentity &+ 1, kind: .power))
+                    }
+                    if (boss.id == .dinker || boss.id == .lobber), boss.specialPhase == .idle,
+                       boss.returnCount + 1 >= (boss.id == .dinker ? rallyNextSoftReturn : rallyNextLobReturn),
+                       remainingFlight >= policy.specialLeadTime + tuning.fixedStep,
+                       abs(landing - boss.x) <= max(geometry.halfWidth + 1.0, policy.maximumLateralSpeed * remainingFlight),
+                       rallyBalanceRemaining <= 0.05 {
+                        let kind: RallyShotKind = boss.id == .dinker ? .soft : .lob
+                        boss.specialPhase = kind == .soft ? .softWindup : .lobWindup
+                        boss.specialTriggeredForReturn = true
+                        rallySpecialTelegraphTime = state.simulationTime
+                        events.append(.rallyShotPrepared(rallyID: activeRallyID, shotID: shotIdentity &+ 1, kind: kind))
                     }
                 } else if observation.ball.velocity.y < 0,
                           boss.specialPhase != .poachCommitment {
@@ -599,30 +650,37 @@ public final class GameEngine {
         guard boss.returnCount - rallyLastPoachReturn >= policy.poachCooldownReturns else { return }
         let recent = Array(rallyCompletedLanes.suffix(max(1, policy.poachHistoryLength)))
         guard recent.count >= max(2, policy.poachMinimumConfidence) else { return }
-        let left = recent.filter { $0 < CourtGeometry.centerX - 1.2 }.count
-        let right = recent.filter { $0 > CourtGeometry.centerX + 1.2 }.count
+        let left = recent.filter { $0 < CourtGeometry.centerX - policy.poachLaneThreshold }.count
+        let right = recent.filter { $0 > CourtGeometry.centerX + policy.poachLaneThreshold }.count
         let side: BossSide
         if left >= policy.poachMinimumConfidence, left > right { side = .left }
         else if right >= policy.poachMinimumConfidence, right > left { side = .right }
         else { return }
         let direction = side == .left ? -1.0 : 1.0
         let halfWidth = activeBossConfiguration.halfWidth
-        let average = recent.reduce(0, +) / Double(recent.count)
+        let matching = recent.filter {
+            side == .left ? $0 < CourtGeometry.centerX - policy.poachLaneThreshold
+                : $0 > CourtGeometry.centerX + policy.poachLaneThreshold
+        }
+        let average = matching.reduce(0, +) / Double(matching.count)
         let desired = average + direction * policy.poachCommitmentOffset
         let target = clamp(clamp(desired,
                                  boss.x - policy.poachCommitmentOffset,
                                  boss.x + policy.poachCommitmentOffset),
                            halfWidth, CourtGeometry.width - halfWidth)
-        guard abs(target - boss.x) >= 0.75 else { return }
+        // Already being farther into that side needs ordinary recovery, not an
+        // opposite-direction step carrying the learned side's arrow.
+        guard (target - boss.x) * direction >= policy.poachMinimumTravel else { return }
         boss.specialPhase = .poachCommitment
-        boss.specialRemaining = 2.0
+        boss.specialRemaining = policy.poachHoldDuration
         boss.committedSide = side
         boss.committedTargetX = target
+        boss.committedReadX = average
         boss.movementTarget = target
         boss.specialTriggeredForReturn = true
         state.boss = boss
         rallyLastPoachReturn = boss.returnCount
-        rallyBalanceRemaining = max(rallyBalanceRemaining, 0.20)
+        rallyBalanceRemaining = max(rallyBalanceRemaining, policy.poachBalanceDuration)
         events.append(.bossPoachCommitment(side: side, targetX: target))
     }
 
@@ -720,44 +778,7 @@ public final class GameEngine {
                 if ball.position.y <= tuning.receivingBoundaryY { guideReceiving(&ball) }
                 events.append(.wallContact)
             case .player:
-                noteProgress()
-                incomingGuided = false
-                resetTargetChain(events: &events)
-                if state.stage.isBoss {
-                    state.currentRallyReturns += 1
-                    state.longestRallyReturns = max(state.longestRallyReturns, state.currentRallyReturns)
-                    state.currentBossMatchLongestRallyReturns = max(
-                        state.currentBossMatchLongestRallyReturns, state.currentRallyReturns)
-                    state.boss?.specialTriggeredForReturn = false
-                }
-                let offset = (ball.position.x - state.playerX) / tuning.playerHalfWidth
-                let centered = abs(offset) <= tuning.centeredContactFraction
-                let side: SwingSide = centered ? .block : (offset >= 0 ? .forehand : .backhand)
-                ball.velocity = playerReturnVelocity(contactX: ball.position.x,
-                                                     speed: ball.speed)
-                if mode.isBossRally {
-                    let id = state.bossID
-                    let apparent = clamp(offset * tuning.maximumOutgoingApparentAngle
-                        + rallyMotionAngle(), -tuning.maximumOutgoingApparentAngle,
-                        tuning.maximumOutgoingApparentAngle)
-                    ball.velocity = ReceivingTrajectory.outgoing(apparentAngle: apparent,
-                        at: .init(x: ball.position.x, y: tuning.playerY + ball.radius),
-                        speed: min(tuning.maximumBallSpeed, ball.speed),
-                        projectionSlopeFactor: tuning.receivingProjectionSlopeFactor)
-                    let policy = tuning.rallyOpponentConfiguration(for: id)
-                    rallyPendingPlayerLane = RallyBallProjection.arrival(of:
-                        BallState(position: .init(x: ball.position.x,
-                                                  y: tuning.playerY + ball.radius + tuning.collisionEpsilon),
-                                  velocity: ball.velocity, radius: ball.radius),
-                        atY: activeBossConfiguration.y - ball.radius, tuning: tuning,
-                        speedGrowth: policy.speedGrowthPerSecond)?.position.x
-                    rallyFlightError = generator.signed() * policy.projectionError
-                    playerMotionSamples.removeAll(keepingCapacity: true)
-                }
-                ball.position.y = tuning.playerY + ball.radius + tuning.collisionEpsilon
-                swingSide = side; swingElapsed = 0
-                state.playerAnimation = contactAnimation(side)
-                events.append(.paddleContact(x: ball.position.x, side: side, centered: centered))
+                returnPlayerBall(&ball, events: &events)
             case .target(let index):
                 noteProgress()
                 ball.velocity = reflected(ball.velocity, normal: contact.normal)
@@ -792,6 +813,10 @@ public final class GameEngine {
             case .boss:
                 let config = activeBossConfiguration
                 let powered: Bool
+                var shotKind: RallyShotKind = .normal
+                var elevated: LobFlightState?
+                var requestedShotSpeed = ball.speed
+                var ordinaryReturnSpeed: Double?
                 if mode.isBossRally {
                     let id = state.bossID
                     let policy = tuning.rallyOpponentConfiguration(for: id)
@@ -799,7 +824,7 @@ public final class GameEngine {
                         && rallyPowerTelegraphTime.map {
                             state.simulationTime - $0 + 1e-10 >= policy.powerLeadTime
                         } == true
-                        && ball.speed * policy.powerSpeedMultiplier <= tuning.maximumBallSpeed + 1e-9
+                        && powerEligible(sourceSpeed: ball.speed, bossY: config.y, radius: ball.radius)
                         && rallyBalanceRemaining <= 0.05
                         && abs(state.boss?.lateralVelocity ?? 0)
                            <= policy.maximumLateralSpeed * 0.70
@@ -816,15 +841,46 @@ public final class GameEngine {
                         observedVelocity = clamp((observed.playerX - older.playerX)
                             / (observed.time - older.time), -10, 10)
                     } else { observedVelocity = 0 }
+                    let incomingContact = ball
                     let shot = RallyShotPlanner.choose(contact: ball, bossY: config.y,
                         bossID: id, observedPlayerX: observedX,
                         observedPlayerVelocity: observedVelocity,
                         previousLandingSide: rallyLastShotSide, variation: generator.unit(),
                         powered: powered, balanced: balanced, tuning: tuning)
                     ball.velocity = shot.velocity
+                    shotKind = powered ? .power : .normal
+                    requestedShotSpeed = powered
+                        ? RallyShotPlanner.comparableOrdinarySpeed(sourceSpeed: incomingContact.speed, bossID: id, tuning: tuning)
+                          * policy.powerSpeedMultiplier : shot.velocity.length
+                    let prepared = (id == .dinker && state.boss?.specialPhase == .softWindup)
+                        || (id == .lobber && state.boss?.specialPhase == .lobWindup)
+                    let specialReady = prepared && balanced
+                        && rallySpecialTelegraphTime.map {
+                            state.simulationTime - $0 + 1e-10 >= policy.specialLeadTime
+                        } == true
+                        && abs(ball.position.x - (state.boss?.x ?? ball.position.x)) <= config.halfWidth * 0.80
+                    if specialReady, id == .dinker {
+                        let start = Vector2(x: incomingContact.position.x, y: config.y - ball.radius - tuning.collisionEpsilon)
+                        let forecast = RallyBallProjection.arrival(of: BallState(position: start, velocity: shot.velocity, radius: ball.radius),
+                            atY: tuning.playerY + ball.radius, tuning: tuning, speedGrowth: policy.speedGrowthPerSecond)
+                        if let forecast {
+                            let speed = DinkerShotPolicy.speed(ordinarySpeed: shot.velocity.length,
+                                ordinaryTravelTime: forecast.time, tuning: tuning)
+                            if speed < shot.velocity.length * 0.90 {
+                                ball.velocity = shot.velocity * (speed / shot.velocity.length)
+                                shotKind = .soft; requestedShotSpeed = shot.velocity.length * policy.softSpeedRatio
+                                ordinaryReturnSpeed = shot.velocity.length
+                            }
+                        }
+                    } else if specialReady, id == .lobber {
+                        elevated = lobFlight(contact: incomingContact, plan: shot, bossY: config.y)
+                        ball.velocity = elevated!.velocity
+                        shotKind = .lob; requestedShotSpeed = ball.speed
+                        ordinaryReturnSpeed = shot.velocity.length
+                    }
                     rallyLastShotSide = shot.laneSide
                     state.boss?.lastShotPurpose = shot.purpose
-                    state.boss?.plannedReceivingX = shot.landingX
+                    state.boss?.plannedReceivingX = elevated?.receivingX ?? shot.landingX
                     if let completed = rallyPendingPlayerLane {
                         rallyCompletedLanes.append(completed)
                         if rallyCompletedLanes.count > 4 { rallyCompletedLanes.removeFirst() }
@@ -857,40 +913,35 @@ public final class GameEngine {
                         state.boss?.specialPhase = .powerRecovery
                         state.boss?.specialRemaining = policy.balanceDuration
                         events.append(.bossPowerContact(x: ball.position.x))
+                    } else if shotKind == .soft || shotKind == .lob {
+                        rallyBalanceRemaining = policy.specialRecoveryDuration
+                        state.boss?.specialPhase = shotKind == .soft ? .softRecovery : .lobRecovery
+                        state.boss?.specialRemaining = policy.specialRecoveryDuration
+                        let minimum = max(3, policy.specialMinimumInterval)
+                        let maximum = max(minimum, policy.specialMaximumInterval)
+                        let interval = minimum + Int(generator.unit() * Double(maximum - minimum + 1))
+                        if shotKind == .soft { rallyNextSoftReturn = (state.boss?.returnCount ?? 0) + interval }
+                        else { rallyNextLobReturn = (state.boss?.returnCount ?? 0) + interval }
                     } else {
                         state.boss?.specialPhase = .idle
                         state.boss?.specialRemaining = 0
                     }
                     rallyPowerTelegraphTime = nil
+                    rallySpecialTelegraphTime = nil
+                    recordRallyShot(kind: shotKind, requestedSpeed: requestedShotSpeed, ball: ball, lob: elevated, ordinaryReturnSpeed: ordinaryReturnSpeed, events: &events)
                     if id == .poacher { considerPoachCommitment(events: &events) }
+                    if elevated != nil {
+                        state.ball = ball
+                        if remaining > 1e-10 { advanceLob(remaining, events: &events) }
+                        return
+                    }
                 } else if powered {
                     state.boss?.specialPhase = .powerRecovery
                     state.boss?.specialRemaining = max(0, config.powerRecoveryDuration)
                     events.append(.bossPowerContact(x: ball.position.x))
                 }
             case .miss:
-                resetTargetChain(events: &events)
-                state.playerAnimation = .miss
-                missRemaining = tuning.missAnimationDuration
-                swingSide = nil
-                if state.recoveriesRemaining > 0 {
-                    state.recoveriesRemaining -= 1
-                    events.append(.ballRecovered(remaining: state.recoveriesRemaining))
-                    prepareRally(duration: tuning.recoveryReadyDuration, events: &events)
-                } else if mode.isBossRally {
-                    state.boss?.opponentPoints += 1
-                    events.append(.opponentPoint(points: state.boss?.opponentPoints ?? 0))
-                    if (state.boss?.opponentPoints ?? 0) >= activeBossConfiguration.pointsToWin {
-                        finish(won: false, events: &events)
-                    } else {
-                        prepareRally(duration: tuning.rallyPointReadyDuration, events: &events)
-                    }
-                } else {
-                    state.lives = max(0, state.lives - 1)
-                    events.append(.lifeLost(remaining: state.lives))
-                    if state.lives == 0 { finish(won: false, events: &events) }
-                    else { prepareRally(events: &events) }
-                }
+                missPlayerBall(events: &events)
                 return
             case .bossPoint:
                 noteProgress()
@@ -926,6 +977,137 @@ public final class GameEngine {
         }
         // A degenerate dense-contact step drops its unprocessed remainder safely.
         state.ball = ball
+    }
+
+    private var activeRallyID: UInt64 { max(1, rallyIdentity) }
+
+    private func recordRallyShot(kind: RallyShotKind, requestedSpeed: Double, ball: BallState,
+                                 lob: LobFlightState? = nil, ordinaryReturnSpeed: Double? = nil, events: inout [GameEvent]) {
+        shotIdentity &+= 1
+        state.rallyShot = RallyShotState(rallyID: activeRallyID, shotID: shotIdentity, kind: kind,
+            requestedSpeed: requestedSpeed, realizedSpeed: ball.speed, ordinaryReturnSpeed: ordinaryReturnSpeed, lobFlight: lob)
+        events.append(.rallyShotLaunched(rallyID: activeRallyID, shotID: shotIdentity, kind: kind))
+    }
+
+    private func powerEligible(sourceSpeed: Double, bossY: Double, radius: Double) -> Bool {
+        let ordinary = RallyShotPlanner.comparableOrdinarySpeed(sourceSpeed: sourceSpeed, bossID: .banger, tuning: tuning)
+        return RallyShotPlanner.powerSpeed(sourceSpeed: sourceSpeed, bossY: bossY, radius: radius, tuning: tuning)
+            >= ordinary * max(1, tuning.rallyBanger.minimumPowerSpeedRatio) + 1e-9
+    }
+
+    private func returnPlayerBall(_ ball: inout BallState, events: inout [GameEvent]) {
+        if mode.isBossRally, let shot = state.rallyShot, shot.kind == .soft || shot.kind == .lob,
+           let restore = shot.ordinaryReturnSpeed, ball.speed > 0 {
+            ball.velocity = ball.velocity * (min(tuning.maximumBallSpeed, max(0, restore)) / ball.speed)
+        }
+        noteProgress()
+        incomingGuided = false
+        resetTargetChain(events: &events)
+        if state.stage.isBoss {
+            state.currentRallyReturns += 1
+            state.longestRallyReturns = max(state.longestRallyReturns, state.currentRallyReturns)
+            state.currentBossMatchLongestRallyReturns = max(
+                state.currentBossMatchLongestRallyReturns, state.currentRallyReturns)
+            state.boss?.specialTriggeredForReturn = false
+        }
+        let offset = (ball.position.x - state.playerX) / tuning.playerHalfWidth
+        let centered = abs(offset) <= tuning.centeredContactFraction
+        let side: SwingSide = centered ? .block : (offset >= 0 ? .forehand : .backhand)
+        ball.velocity = playerReturnVelocity(contactX: ball.position.x,
+                                             speed: ball.speed)
+        if mode.isBossRally {
+            let id = state.bossID
+            let apparent = clamp(offset * tuning.maximumOutgoingApparentAngle
+                + rallyMotionAngle(), -tuning.maximumOutgoingApparentAngle,
+                tuning.maximumOutgoingApparentAngle)
+            ball.velocity = ReceivingTrajectory.outgoing(apparentAngle: apparent,
+                at: .init(x: ball.position.x, y: tuning.playerY + ball.radius),
+                speed: min(tuning.maximumBallSpeed, ball.speed),
+                projectionSlopeFactor: tuning.receivingProjectionSlopeFactor)
+            let policy = tuning.rallyOpponentConfiguration(for: id)
+            rallyPendingPlayerLane = RallyBallProjection.arrival(of:
+                BallState(position: .init(x: ball.position.x,
+                                          y: tuning.playerY + ball.radius + tuning.collisionEpsilon),
+                          velocity: ball.velocity, radius: ball.radius),
+                atY: activeBossConfiguration.y - ball.radius, tuning: tuning,
+                speedGrowth: policy.speedGrowthPerSecond)?.position.x
+            rallyFlightError = generator.signed() * policy.projectionError
+            playerMotionSamples.removeAll(keepingCapacity: true)
+        }
+        ball.position.y = tuning.playerY + ball.radius + tuning.collisionEpsilon
+        swingSide = side; swingElapsed = 0
+        state.playerAnimation = contactAnimation(side)
+        events.append(.paddleContact(x: ball.position.x, side: side, centered: centered))
+        if mode.isBossRally { recordRallyShot(kind: .normal, requestedSpeed: ball.speed, ball: ball, events: &events) }
+    }
+
+    private func missPlayerBall(events: inout [GameEvent]) {
+        resetTargetChain(events: &events)
+        state.playerAnimation = .miss
+        missRemaining = tuning.missAnimationDuration
+        swingSide = nil
+        if state.recoveriesRemaining > 0 {
+            state.recoveriesRemaining -= 1
+            events.append(.ballRecovered(remaining: state.recoveriesRemaining))
+            prepareRally(duration: tuning.recoveryReadyDuration, events: &events)
+        } else if mode.isBossRally {
+            state.boss?.opponentPoints += 1
+            events.append(.opponentPoint(points: state.boss?.opponentPoints ?? 0))
+            if (state.boss?.opponentPoints ?? 0) >= activeBossConfiguration.pointsToWin {
+                finish(won: false, events: &events)
+            } else {
+                prepareRally(duration: tuning.rallyPointReadyDuration, events: &events)
+            }
+        } else {
+            state.lives = max(0, state.lives - 1)
+            events.append(.lifeLost(remaining: state.lives))
+            if state.lives == 0 { finish(won: false, events: &events) }
+            else { prepareRally(events: &events) }
+        }
+    }
+
+    /// The single core ball follows the committed ground segment. Its elevated
+    /// phase can never enter ordinary collision handling before descent arrival.
+    private func advanceLob(_ delta: Double, events: inout [GameEvent]) {
+        guard var shot = state.rallyShot, var lob = shot.lobFlight, var ball = state.ball else { return }
+        let travel = min(delta, lob.remainingDuration)
+        lob.elapsed = min(lob.duration, lob.elapsed + travel)
+        ball.position = lob.groundPosition
+        ball.velocity = lob.velocity
+        shot.lobFlight = lob
+        state.rallyShot = shot
+        state.ball = ball
+        guard lob.remainingDuration <= 1e-10 else { return }
+        // Height is exactly zero at this analytic crossing. The accepted paddle
+        // region alone decides the hit; the ground marker is never a collider.
+        if abs(ball.position.x - state.playerX) <= tuning.playerHalfWidth + ball.radius {
+            returnPlayerBall(&ball, events: &events)
+            state.ball = ball
+            let remainder = max(0, delta - travel)
+            if remainder > 1e-10 { advanceBall(remainder, events: &events) }
+        } else {
+            missPlayerBall(events: &events)
+        }
+    }
+
+    private func lobFlight(contact: BallState, plan: RallyShotPlan, bossY: Double) -> LobFlightState {
+        let policy = tuning.rallyLobber
+        let origin = Vector2(x: contact.position.x, y: bossY - contact.radius - tuning.collisionEpsilon)
+        let planeY = tuning.playerY + contact.radius
+        let desired = Vector2(x: clamp(plan.landingX, tuning.playerMargin, CourtGeometry.width - tuning.playerMargin), y: planeY)
+        let raw = desired - origin
+        let ordinarySpeed = RallyShotPlanner.comparableOrdinarySpeed(sourceSpeed: contact.speed, bossID: .lobber, tuning: tuning)
+        let direction = ReceivingTrajectory.constrained(raw, at: origin,
+            maximumApparentAngle: tuning.maximumIncomingApparentAngle,
+            projectionSlopeFactor: tuning.receivingProjectionSlopeFactor)
+        let destinationX = origin.x + direction.x * ((planeY - origin.y) / direction.y)
+        let destination = Vector2(x: clamp(destinationX, tuning.ballRadius, CourtGeometry.width - tuning.ballRadius), y: planeY)
+        let distance = (destination - origin).length
+        let comparable = distance / max(0.001, ordinarySpeed)
+        let cap = max(tuning.fixedStep, policy.lobMaximumTravelDuration)
+        let duration = max(distance / max(0.001, tuning.maximumBallSpeed),
+            min(cap, comparable * max(1, policy.lobDurationRatio)))
+        return LobFlightState(origin: origin, destination: destination, duration: duration, peakHeight: policy.lobPeakHeight)
     }
 
     private func noteProgress() {
@@ -1001,9 +1183,11 @@ public final class GameEngine {
         }
         state.playerAnimation = .ready
         guard state.phase == .playing, let ball = state.ball, ball.velocity.y < 0 else { return }
-        let untilContact = (tuning.playerY + ball.radius - ball.position.y) / ball.velocity.y
+        let untilContact = state.rallyShot?.lobFlight?.remainingDuration
+            ?? ((tuning.playerY + ball.radius - ball.position.y) / ball.velocity.y)
         guard untilContact >= 0, untilContact <= tuning.anticipationDuration else { return }
-        let contactX = ball.position.x + ball.velocity.x * untilContact
+        let contactX = state.rallyShot?.lobFlight?.receivingX
+            ?? (ball.position.x + ball.velocity.x * untilContact)
         guard abs(contactX - state.playerX) <= tuning.playerHalfWidth + ball.radius else { return }
         let forehand = contactX >= state.playerX
         state.playerAnimation = untilContact <= tuning.swingDuration

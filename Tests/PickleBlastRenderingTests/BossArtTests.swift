@@ -50,9 +50,18 @@ struct BossArtTests {
             #expect(boss.children.count == 1, "Approved complete frame includes the connected paddle")
             #expect(boss.physicsBody == nil)
             let sprite = try #require(boss.children.first as? SKSpriteNode)
-            let expectedBossCanvasHeight = 33.0 * sqrt(162.0 / 211.0) / (74.0 / 128.0)
-            #expect(abs(Double(sprite.size.height) - expectedBossCanvasHeight) < 0.001,
-                    "All opponents use the boss billboard scale, not the larger player scale")
+            if id == .dinker || id == .lobber {
+                let frames = art.clips.values.flatMap(\.frames)
+                let top = try #require(frames.map { $0.bounds[1] }.min())
+                let bottom = try #require(frames.map { $0.bounds[3] }.max())
+                let visibleHeight = Double(sprite.size.height) * (bottom - top) / art.canvasSize[1]
+                #expect(abs(visibleHeight - 33.0 * sqrt(162.0 / 211.0)) < 0.001,
+                        "New complete art retains the accepted visible boss height, including its hat")
+            } else {
+                let expectedBossCanvasHeight = 33.0 * sqrt(162.0 / 211.0) / (74.0 / 128.0)
+                #expect(abs(Double(sprite.size.height) - expectedBossCanvasHeight) < 0.001,
+                        "Existing opponents retain the accepted boss billboard canvas")
+            }
             let selectedClip = try #require(boss.art.clips[expectedClip])
             let contactFrame = selectedClip.frames[try #require(selectedClip.contactIndex)]
             #expect(sprite.texture === textures.texture(atlas: art.atlas, name: contactFrame.name),

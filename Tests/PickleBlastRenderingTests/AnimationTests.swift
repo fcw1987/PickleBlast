@@ -29,7 +29,7 @@ struct AnimationTests {
     func sourceContract() throws {
         let runtime = try manifest()
         #expect(runtime.schemaVersion == 1)
-        #expect(Set(runtime.characters.keys) == Set(["player", "wall", "banger", "poacher"]))
+        #expect(Set(runtime.characters.keys) == Set(["player", "wall", "banger", "poacher", "dinker", "lobber"]))
         // Canonical original metadata is tracked independently of the optional
         // private master pack, so this source/runtime regression runs in a ZIP.
         let docs = root.appendingPathComponent("scripts/fixtures/art_import/Docs")

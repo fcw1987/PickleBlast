@@ -6,12 +6,15 @@ import SpriteKit
 public final class PickleBlastScene: SKScene {
     public var onFrame: ((TimeInterval) -> Void)?
     public var debugEnabled = false
+    /// Accessibility changes decoration only; authoritative flight and arrival stay continuous.
+    public var reduceMotion = false
     public private(set) var courtProjection: CourtProjection
     private var safeInsets: (top: CGFloat, bottom: CGFloat, leading: CGFloat, trailing: CGFloat) = (28, 8, 0, 0)
     private let tuning: GameTuning
     private let textures: TextureLibrary
     #if DEBUG
     public var debugTextureLibraryForLifetimeProbe: AnyObject { textures }
+    public var debugLoadedCharacterAtlases: [String] { textures.debugLoadedCharacterAtlases }
     #endif
     private let world = SKNode()
     private let background: SKSpriteNode
@@ -21,6 +24,10 @@ public final class PickleBlastScene: SKScene {
     private let bossCue = SKShapeNode(circleOfRadius: 14)
     private var requestedBossIdentity: String?
     private let ball: SKSpriteNode
+    private let shotTrail = SKShapeNode()
+    private let shotRim = SKShapeNode(circleOfRadius: 5.5)
+    private let lobShadow = SKShapeNode(ellipseOf: CGSize(width: 10, height: 4))
+    private let lobLanding = SKShapeNode()
     private let score = SKLabelNode(fontNamed: "HelveticaNeue-Bold")
     private let opponentScore = SKLabelNode(fontNamed: "HelveticaNeue-Bold")
     private let combo = SKLabelNode(fontNamed: "HelveticaNeue-Bold")
@@ -87,7 +94,22 @@ public final class PickleBlastScene: SKScene {
         bossCue.isHidden = true
         CrispVector.prepare(bossCue)
         world.addChild(bossCue)
+        ball.name = "gameplayBall"
         world.addChild(ball)
+        for (node, name, order) in [(shotTrail, "shotTrail", 9.5),
+                                    (shotRim, "shotRim", 9.8),
+                                    (lobShadow, "lobGroundShadow", 3.7),
+                                    (lobLanding, "lobLandingCue", 3.6)] {
+            node.name = name
+            node.zPosition = order
+            node.lineWidth = 1.2
+            node.fillColor = .clear
+            node.isHidden = true
+            CrispVector.prepare(node)
+            world.addChild(node)
+        }
+        lobShadow.strokeColor = Neon.white.withAlphaComponent(0.65)
+        lobLanding.strokeColor = Neon.cyan.withAlphaComponent(0.65)
         // Ball stays above the approved character so center blocks never hide its departure.
         // Effects remain below both; no artwork controls game geometry.
         player.zPosition = 9
@@ -272,16 +294,7 @@ public final class PickleBlastScene: SKScene {
             }
             lastLives = state.lives
         }
-        ball.isHidden = state.ball == nil || state.phase == .celebration
-        if let ballState = state.ball {
-            let projected = courtProjection.screenPoint(for: ballState.position)
-            ball.position = CGPoint(x: projected.x, y: projected.y)
-            let depthScale = courtProjection.width(atLogicalY: ballState.position.y) / courtProjection.nearWidth
-            let diameter = max(8, 10 * sqrt(size.width / 211) * depthScale)
-            let side = diameter / textures.manifest.supporting["ball"]!.visibleFraction
-            ball.size = CGSize(width: side, height: side)
-            ball.zRotation = CGFloat(visualTime * 3.0)
-        }
+        renderBall(state)
         court.alpha = visualTime < pulseUntil ? 0.6 + 0.4 * sin((pulseUntil - visualTime) * 32) : 1
         for index in effects.indices { effects[index].update(time: visualTime) }
         let clearProgress = (visualTime - clearEffectBegan) / 0.8
@@ -455,6 +468,8 @@ public final class PickleBlastScene: SKScene {
                              lift: (visibleBall?.y ?? bossConfiguration.y - tuning.ballRadius) - bossConfiguration.y + tuning.ballRadius)
                 let shotColor: SKColor
                 if poweredContact { shotColor = Neon.orange }
+                else if state.rallyShot?.kind == .soft { shotColor = Neon.cyan }
+                else if state.rallyShot?.kind == .lob { shotColor = Neon.white }
                 else if state.mode.isBossRally {
                     switch state.boss?.lastShotPurpose {
                     case .some(.control), .none: shotColor = Neon.magenta
@@ -465,14 +480,11 @@ public final class PickleBlastScene: SKScene {
                 } else { shotColor = Neon.magenta }
                 impact(at: Vector2(x: x, y: bossConfiguration.y - tuning.ballRadius),
                        color: shotColor, time: visualTime, tint: state.mode != .arcade)
-            case .bossPowerTelegraph:
-                show("POWER DRIVE", until: visualTime + 0.55)
-            case .bossPowerContact:
-                show("POWER SHOT", until: visualTime + 0.45)
-            case let .bossPoachCommitment(side, _):
-                show(side == .left ? "POACH LEFT" : "POACH RIGHT", until: visualTime + 0.55)
-            case .bossPoachRecovery:
-                show("OPEN SIDE", until: visualTime + 0.55)
+            case .bossPowerTelegraph, .bossPowerContact, .bossPoachCommitment, .bossPoachRecovery,
+                 .rallyShotPrepared, .rallyShotLaunched:
+                // Preparation, direction and flight cues read the same committed
+                // state as gameplay; active contact never carries a large label.
+                break
             case let .bossPoint(points):
                 if state.mode.isBossRally {
                     pulseUntil = visualTime + 0.35
@@ -529,7 +541,7 @@ public final class PickleBlastScene: SKScene {
     }
 
     private func renderBossCue(_ bossState: BossState?, phase: GamePhase) {
-        guard let bossState, phase != .blackout, phase != .results,
+        guard let bossState, phase == .playing,
               bossState.specialPhase != .idle else {
             bossCue.isHidden = true
             return
@@ -542,16 +554,96 @@ public final class PickleBlastScene: SKScene {
         switch bossState.specialPhase {
         case .powerWindup:
             bossCue.strokeColor = Neon.orange
-            bossCue.alpha = 0.55 + 0.25 * sin(visualTime * 24)
+            bossCue.alpha = 0.8
         case .poachCommitment:
             bossCue.strokeColor = Neon.magenta
-            bossCue.alpha = 0.55 + 0.25 * sin(visualTime * 18)
-        case .powerRecovery, .poachRecovery:
-            bossCue.strokeColor = Neon.lime
-            bossCue.alpha = 0.45 + 0.15 * sin(visualTime * 12)
+            bossCue.alpha = 0.8
+        case .softWindup:
+            bossCue.strokeColor = Neon.cyan
+            bossCue.alpha = 0.8
+        case .lobWindup:
+            bossCue.strokeColor = Neon.white
+            bossCue.alpha = 0.8
+        case .powerRecovery, .poachRecovery, .softRecovery, .lobRecovery:
+            bossCue.isHidden = true
+            return
         case .idle: break
         }
+        let path = CGMutablePath()
+        path.addEllipse(in: CGRect(x: -14, y: -14, width: 28, height: 28))
+        if bossState.specialPhase == .poachCommitment, let side = bossState.committedSide {
+            // The arrow follows the core's actual commitment, never the player's
+            // later input or a renderer prediction.
+            let direction = side == .left ? -1.0 : 1.0
+            path.move(to: CGPoint(x: direction * 3, y: 0))
+            path.addLine(to: CGPoint(x: direction * 11, y: 0))
+            path.move(to: CGPoint(x: direction * 7, y: 4))
+            path.addLine(to: CGPoint(x: direction * 11, y: 0))
+            path.addLine(to: CGPoint(x: direction * 7, y: -4))
+        } else if bossState.specialPhase == .softWindup {
+            path.move(to: CGPoint(x: -7, y: -4))
+            path.addLine(to: CGPoint(x: 7, y: -4))
+        } else if bossState.specialPhase == .lobWindup {
+            path.move(to: CGPoint(x: -5, y: 0))
+            path.addQuadCurve(to: CGPoint(x: 5, y: 0), control: CGPoint(x: 0, y: 12))
+        }
+        CrispVector.replacePath(of: bossCue, with: path)
         bossCue.isHidden = false
+    }
+
+    private func renderBall(_ state: GameState) {
+        ball.isHidden = state.ball == nil || state.phase == .celebration
+        for node in [shotTrail, shotRim, lobShadow, lobLanding] { node.isHidden = true }
+        guard let ballState = state.ball else { return }
+        let ground = courtProjection.screenPoint(for: ballState.position)
+        let diameter = 2 * LobScreenProjection.ballRadius(at: ballState.position, projection: courtProjection)
+        let side = diameter / textures.manifest.supporting["ball"]!.visibleFraction
+        ball.size = CGSize(width: side, height: side)
+        ball.zRotation = reduceMotion ? 0 : CGFloat(visualTime * 3.0)
+        var visible = ground
+        let activeShot = state.mode.isBossRally && state.phase == .playing ? state.rallyShot : nil
+        if let flight = activeShot?.lobFlight {
+            visible = LobScreenProjection.ballPoint(ground: ground, flight: flight,
+                projection: courtProjection, radius: diameter / 2)
+            lobShadow.position = CGPoint(x: ground.x, y: ground.y)
+            lobShadow.alpha = 0.55 + 0.25 * (1 - flight.heightFraction)
+            CrispVector.setVisualScale(sqrt(size.width / 211), on: lobShadow)
+            lobShadow.isHidden = false
+            let destination = courtProjection.screenPoint(for: flight.destination)
+            lobLanding.position = CGPoint(x: destination.x, y: destination.y)
+            let landingPath = CGMutablePath()
+            landingPath.move(to: CGPoint(x: -3, y: 0))
+            landingPath.addLine(to: CGPoint(x: 3, y: 0))
+            landingPath.move(to: CGPoint(x: 0, y: -3))
+            landingPath.addLine(to: CGPoint(x: 0, y: 3))
+            CrispVector.replacePath(of: lobLanding, with: landingPath)
+            lobLanding.isHidden = false
+        }
+        ball.position = CGPoint(x: visible.x, y: visible.y)
+        guard let kind = activeShot?.kind, kind != .normal else { return }
+        let color = kind == .power ? Neon.orange : (kind == .soft ? Neon.cyan : Neon.white)
+        shotRim.strokeColor = color
+        shotRim.position = ball.position
+        shotRim.alpha = 0.8
+        CrispVector.setVisualScale(diameter / 10, on: shotRim)
+        shotRim.isHidden = kind == .lob
+        guard !reduceMotion, kind == .power || kind == .soft else { return }
+        // A fixed short stroke samples authoritative velocity. It does not keep
+        // another ball, run an action, or retain a previous shot's path.
+        let behind = courtProjection.screenPoint(for: ballState.position - ballState.velocity * 0.025)
+        let direction = behind - ground
+        guard direction.length > 0.0001 else { return }
+        let length = kind == .power ? 13.0 : 5.0
+        let end = visible + direction * (length / direction.length)
+        let path = CGMutablePath()
+        path.move(to: CGPoint(x: visible.x + direction.x / direction.length * diameter * 0.45,
+                             y: visible.y + direction.y / direction.length * diameter * 0.45))
+        path.addLine(to: CGPoint(x: end.x, y: end.y))
+        CrispVector.replacePath(of: shotTrail, with: path)
+        shotTrail.strokeColor = color
+        shotTrail.lineWidth = (kind == .power ? 1.8 : 1.2) * CrispVector.resolution
+        shotTrail.alpha = kind == .power ? 0.8 : 0.65
+        shotTrail.isHidden = false
     }
 
     private func renderCascade(_ pool: CelebrationPool, visible: Bool) {
@@ -636,12 +728,19 @@ public final class PickleBlastScene: SKScene {
     private func prediction(state: GameState, x: Double, plane: Double, front: Bool) -> (clip: String, arrival: Double, offset: Double)? {
         guard state.phase == .playing, let ball = state.ball,
               front ? ball.velocity.y > 0 : ball.velocity.y < 0 else { return nil }
-        let arrival = (plane - ball.position.y) / ball.velocity.y
+        let arrival: Double
+        let landing: Double
+        if !front, let flight = state.rallyShot?.lobFlight {
+            arrival = flight.remainingDuration
+            landing = flight.receivingX
+        } else {
+            arrival = (plane - ball.position.y) / ball.velocity.y
+            let span = CourtGeometry.width - 2 * ball.radius
+            var folded = (ball.position.x + ball.velocity.x * arrival - ball.radius).truncatingRemainder(dividingBy: 2 * span)
+            if folded < 0 { folded += 2 * span }
+            landing = ball.radius + (folded <= span ? folded : 2 * span - folded)
+        }
         guard arrival >= 0, arrival < 0.4 else { return nil }
-        let span = CourtGeometry.width - 2 * ball.radius
-        var folded = (ball.position.x + ball.velocity.x * arrival - ball.radius).truncatingRemainder(dividingBy: 2 * span)
-        if folded < 0 { folded += 2 * span }
-        let landing = ball.radius + (folded <= span ? folded : 2 * span - folded)
         let offset = landing - x
         let bossHalfWidth = tuning.bossConfiguration(for: state.bossID).halfWidth
         guard abs(offset) <= (front ? bossHalfWidth : tuning.playerHalfWidth) + ball.radius else { return nil }

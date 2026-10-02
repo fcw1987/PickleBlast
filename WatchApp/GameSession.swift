@@ -254,7 +254,7 @@ final class GameSession: ObservableObject {
         events = engine.update(delta: delta)
         #endif
         #if DEBUG
-        if validation.shouldPauseForSpecial(events) { pause() }
+        if validation.shouldPauseForSpecial(events, state: engine.state) { pause() }
         #endif
         if previousPlayerX != engine.state.playerX || wasCountingDown != (engine.state.resumeCountdown > 0) {
             inputRevision &+= 1

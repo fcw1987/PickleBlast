@@ -17,6 +17,7 @@ final class CharacterNode: SKNode {
     private var logicalPosition = Vector2.zero
     private var projection: CourtProjection?
     private var lastFrameName: String?
+    private var bossVisibleFraction = 74.0 / 128
     var art: CharacterArt { textures.character(identity) }
 
     init(frontFacing: Bool, textures: TextureLibrary, tuning: GameTuning = GameTuning()) {
@@ -42,6 +43,16 @@ final class CharacterNode: SKNode {
         release()
         identity = selected
         sprite.anchorPoint = CGPoint(x: art.anchor[0], y: art.anchor[1])
+        bossVisibleFraction = 74.0 / 128
+        if identity == "dinker" || identity == "lobber" {
+            // New approved frames can have a taller hat or stance. Size their
+            // complete square canvas once from the fixed alpha union so the
+            // visible character retains the accepted 33-point footprint.
+            let frames = art.clips.values.flatMap(\.frames)
+            let top = frames.map { $0.bounds[1] }.min() ?? 0
+            let bottom = frames.map { $0.bounds[3] }.max() ?? art.canvasSize[1]
+            bossVisibleFraction = min(1, max(1 / art.canvasSize[1], (bottom - top) / art.canvasSize[1]))
+        }
     }
     func advance(x: Double, planeY: Double, delta: Double, frozen: Bool,
                  prediction: (clip: String, arrival: Double, offset: Double)?,
@@ -54,7 +65,7 @@ final class CharacterNode: SKNode {
             let visibleHeight = (identity == "player" ? Self.playerVisibleHeight : 33.0) * displayFactor
             // Fixed alpha unions of the supplied Runtime128 pack, never a
             // per-frame crop/recenter. Keep the complete square canvas.
-            let visibleFraction = (identity == "player" ? 82.0 : 74.0) / 128
+            let visibleFraction = identity == "player" ? 82.0 / 128 : bossVisibleFraction
             let canvas = visibleHeight / visibleFraction
             sprite.size = CGSize(width: canvas, height: canvas)
             // Motion travel is in logical feet. Convert the billboard's point

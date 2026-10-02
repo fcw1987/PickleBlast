@@ -18,6 +18,10 @@ public final class TextureLibrary {
     var debugCachedTextureCount: Int { cached.count }
     var debugCachedTextureKeys: Set<String> { Set(cached.keys) }
     var debugLoadedAtlasCount: Int { atlases.count }
+    var debugLoadedCharacterAtlases: [String] {
+        let characters = Set(manifest.characters.values.map(\.atlas))
+        return atlases.keys.filter { characters.contains($0) }.sorted()
+    }
     #endif
     public lazy var ball: SKTexture = supporting("ball")
 
@@ -79,6 +83,16 @@ public final class TextureLibrary {
         let art = self.character(character)
         let animation = art.clips[clip]!
         return texture(atlas: art.atlas, name: animation.frames[animation.frameIndex(at: elapsed)].name)
+    }
+    /// Selection uses the canonical idle pose without retaining full opponent atlases.
+    public func opponentThumbnail(_ identity: String) -> CGImage {
+        guard let art = manifest.characters[identity], let idle = art.clips["idle"],
+              let frame = idle.frames.first else {
+            preconditionFailure("Missing required opponent thumbnail: \(identity)")
+        }
+        let image = texture(atlas: art.atlas, name: frame.name).cgImage()
+        releaseCharacter(identity)
+        return image
     }
     public func supporting(_ key: String) -> SKTexture {
         guard let asset = manifest.supporting[key] else { preconditionFailure("Missing required supporting asset: \(key)") }

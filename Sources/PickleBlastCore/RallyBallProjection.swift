@@ -15,7 +15,18 @@ public enum RallyBallProjection {
     public static func arrival(of observed: BallState, atY planeY: Double,
                                tuning: GameTuning, speedGrowth: Double,
                                receivingAlreadyGuided: Bool = false,
-                               horizon: Double = 4) -> Arrival? {
+                               horizon: Double = 4, lobFlight: LobFlightState? = nil) -> Arrival? {
+        if let lob = lobFlight {
+            let current = lob.groundPosition
+            let velocity = lob.velocity
+            guard planeY.isFinite, horizon.isFinite, horizon > 0, velocity.y < 0 else { return nil }
+            let time = (planeY - current.y) / velocity.y
+            guard time >= -tuning.collisionEpsilon, time <= min(horizon, lob.remainingDuration) + tuning.collisionEpsilon else { return nil }
+            let atReceiving = planeY == lob.destination.y
+            return Arrival(position: atReceiving ? lob.destination : current + velocity * max(0, time), velocity: velocity,
+                time: atReceiving ? lob.remainingDuration : max(0, time), sideReflections: 0,
+                receivingCorrected: planeY <= tuning.receivingBoundaryY)
+        }
         guard observed.position.x.isFinite, observed.position.y.isFinite,
               observed.velocity.x.isFinite, observed.velocity.y.isFinite,
               planeY.isFinite, horizon.isFinite, horizon > 0,
