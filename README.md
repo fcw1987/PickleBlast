@@ -1,6 +1,6 @@
 # PickleBlast
 
-**Neon pickleball, made for Apple Watch.** Move with the Digital Crown, return automatically, and play quick rallies against three distinct bosses.
+**Neon pickleball, made for Apple Watch.** Move with the Digital Crown, return automatically, and play quick rallies against five distinct bosses.
 
 [Website](https://fcw1987.github.io/PickleBlast/) · [Privacy](https://fcw1987.github.io/PickleBlast/privacy/) · [Support](https://fcw1987.github.io/PickleBlast/support/)
 
@@ -14,7 +14,7 @@ These are captures of the actual app in the watchOS 27.0 simulator. They show th
 
 Turn the Digital Crown or drag on the court to move. Your player returns the ball automatically; your position shapes the shot. The court glows against a true-black background, with a neon OLED-focused look.
 
-**Boss Rally** is the main mode. Play The Wall, The Banger, and The Poacher one at a time, or challenge all three in sequence. Each match is first to three points, with two saves. The Wall rewards placement, The Banger presses the pace, and The Poacher adapts to your shot tendencies. Your wins, best score, and longest rally for each boss stay on your Watch.
+**Boss Rally** is the main mode. Choose The Wall, The Banger, The Poacher, The Dinker, or The Lobber individually. The original All Three sequence remains Wall → Banger → Poacher. Each match is first to three points, with two saves. The Wall rewards placement, The Banger presses the pace, and The Poacher commits to a side from your shot tendencies. The Dinker mixes in soft resets; The Lobber sends elevated shots back to your normal receiving area. Your wins, best score, and longest rally for each boss stay on your Watch.
 
 **Arcade** offers three target waves followed by a final rally against The Wall. Your best score is stored locally.
 

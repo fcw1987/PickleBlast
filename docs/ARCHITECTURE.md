@@ -14,6 +14,10 @@
 
 All Three advances Wall → Banger → Poacher after wins. Records persist once per completed match; run score accumulates. New matches reset points and two saves; a loss ends the sequence. Individual matches and Arcade retain separate results and records.
 
+## Special flights
+
+Boss Rally tags prepared and launched shots with rally/shot identifiers. The core owns their selection, cooldown, response bounds and recovery. Rendering follows those decisions. Dinker changes contact speed on the existing trajectory. Lobber stores one committed ground segment, simulation elapsed time, bounded duration and continuous height in `RallyShotState`. Analytic arrival reaches zero elevation before the ordinary paddle hit/miss decision; no shadow or SpriteKit node can cause contact. A successful soft/lob return restores ordinary pace and clears elevated state. Pause freezes the flight clock, and rally/mode transitions clear transient state.
+
 ## Scene ownership and lifecycle
 
 One session and stable scene own each run. The Watch surface wraps `WKInterfaceSKScene` in `WKInterfaceObjectRepresentable`, requests 30 FPS, and presents `nil` on permanent dismantling. This public initializer is deprecated; the known warning is retained because the previous SpriteView integration accumulated scenes in native repeated-run measurements. The host-only path still uses SpriteView. A replacement requires native disposal evidence.

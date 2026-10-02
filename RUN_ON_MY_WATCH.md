@@ -31,7 +31,7 @@ xcodebuild -project PickleBlast.xcodeproj -scheme PickleBlast \
   -configuration Release -destination 'generic/platform=watchOS' \
   -derivedDataPath .build/PhysicalRelease clean build
 python3 scripts/audit_release.py \
-  .build/PhysicalRelease/Build/Products/Release-watchos/PickleBlast.app --expected-build 4
+  .build/PhysicalRelease/Build/Products/Release-watchos/PickleBlast.app --expected-build 5
 python3 scripts/measure_resources.py \
   .build/PhysicalRelease/Build/Products/Release-watchos/PickleBlast.app
 ```
@@ -58,7 +58,7 @@ For iterative work, open `PickleBlast.xcodeproj`, select **PickleBlast** and the
 ## Direct on-wrist checks
 
 - Confirm existing records, Crown sensitivity, and haptic preference survive the update.
-- Play individual rallies against The Wall, The Banger, and The Poacher. Automatic returns, receiving assistance, court/background, and approved animation should retain their accepted feel.
+- Play individual rallies against The Wall, The Banger, The Poacher, The Dinker, and The Lobber. Automatic returns, receiving assistance, court/background, and approved animation should retain their accepted feel.
 - In Boss Rally, deliberately miss: the first two saves preserve points; a later miss awards the opponent a point. A match ends at three points. Pause and Resume do not refill saves.
 - Choose All Three. A win advances Wall to Banger to Poacher, each starting with two saves; a loss ends the sequence, and Retry starts at Wall.
 - Check center and edge contact for one visible paddle, aligned ball departure, immediate Crown reversal at the boundary, and unchanged sensitivity.

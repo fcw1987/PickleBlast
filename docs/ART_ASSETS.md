@@ -1,16 +1,16 @@
 # Artwork and runtime assets
 
-The app bundles the player, The Wall, The Banger and The Poacher, plus the arena background, ball, targets, effects, interface graphics, wordmark and app icon. Court lines are drawn in code. All project artwork is covered by [ASSET_LICENSE.md](../ASSET_LICENSE.md); repository access does not permit reuse.
+The app bundles the player, The Wall, The Banger, The Poacher, The Dinker and The Lobber, plus the arena background, ball, targets, effects, interface graphics, wordmark and app icon. Court lines are drawn in code. All project artwork is covered by [ASSET_LICENSE.md](../ASSET_LICENSE.md); repository access does not permit reuse.
 
 ## Runtime contract
 
-`WatchApp/Art/runtime_manifest.json` selects exactly 1,084 character frames: 271 per character across idle, left/right movement, forehand, backhand and block. The 128 × 128 PNGs preserve the original frame order and timing. Forehand/backhand contact uses frame 20 and block uses frame 16 (zero-based). Registration metadata uses a 512 × 512 source canvas and anchor `[0.5, 0.12109375]`.
+`WatchApp/Art/runtime_manifest.json` selects exactly 1,626 character frames: 271 per character across idle, left/right movement, forehand, backhand and block. The 128 × 128 PNGs preserve the original frame order and timing. Forehand/backhand contact uses frame 20 and block uses frame 16 (zero-based). Registration metadata uses a 512 × 512 source canvas and anchor `[0.5, 0.12109375]`.
 
-Whole-frame translation aligns each character's embedded paddle to the authoritative ball contact. Bounds, wrist and paddle coordinates control presentation only. Never use them as a second collision model or add a second visible paddle. Each boss has its own attachment metadata.
+Whole-frame translation aligns each character's embedded paddle to the authoritative ball contact. Bounds, wrist and paddle coordinates control presentation only. Never use them as a second collision model or add a second visible paddle. Each boss has its own attachment metadata. Dinker and Lobber registration is validated against their own approved pixels and shared clip timestamps.
 
 There are 49 supporting textures across the Arena, Pickleball, Targets, Effects, UI and Brand atlases, and 16 icon PNGs in the asset catalog. Dynamic names and manifest membership are verified by the importer; absence of a literal filename in Swift does not prove a texture is unused. Only the current player's and selected opponent's character atlases need to stay cached.
 
-The Xcode resource phase contains the ten runtime atlases, runtime manifest, icon catalog and privacy manifest. `import_audit.json` stores hashes for source integrity verification and is deliberately excluded from the app bundle. Test fixtures, background masters, screenshots, tools and documentation are also excluded from the bundle.
+The Xcode resource phase contains the twelve runtime atlases, runtime manifest, icon catalog and privacy manifest. `import_audit.json` stores hashes for source integrity verification and is deliberately excluded from the app bundle. Test fixtures, background masters, screenshots, tools and documentation are also excluded from the bundle.
 
 ## Verification and maintenance
 

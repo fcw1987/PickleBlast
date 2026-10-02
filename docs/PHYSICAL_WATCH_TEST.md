@@ -10,6 +10,7 @@ Check on the Watch:
 - Existing Crown sensitivity, drag parity and immediate boundary reversal.
 - Touch Pause in Arcade, individual bosses and All Three. Resume freezes/rebases, Home exits, Restart resets the run.
 - Readable contacts and opponent movement; saves award no point; matches end at three. All Three advances after wins and stops on loss.
+- Dinker rhythm without long waits; Lobber rise/descent and contact timing; Banger drive contrast; Poacher side intent. Play with haptics off as well.
 - HUD/system-indicator clearance, animations, target clearances and contact alignment.
 - Interruption/wrist-down pause, settings/records after relaunch and repeated replay/Home cycles.
 - Sustained play for haptic comfort, warmth and battery. Simulator metrics cannot substitute.

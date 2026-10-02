@@ -8,9 +8,13 @@ The [build guide](BUILD_AND_TEST.md) documents individual commands, simulator se
 
 Host tests cover court geometry, swept collisions, Crown boundary reversal, receiving assistance, scoring, two-save match rules, first-to-three outcomes, All Three transitions, lifecycle, corrupt local data recovery, rendering registration and resource lifetime. Importer tests cover canonical fixtures, manifests, PNG bounds, integrity, and filesystem safety.
 
-The native Watch suite covers Home, Settings persistence, Crown movement, all three opponents, Arcade, Pause/Resume/Restart, interruptions, results, rematch, app icon, and repeated scene lifetimes. Run it serially on a larger and smaller available Watch simulator. Tests labeled scripted use controlled input or accelerated simulation; they establish rules and reachability, not human difficulty or enjoyment.
+The native Watch suite covers Home, Settings persistence, Crown movement, all five opponents, Arcade, Pause/Resume/Restart, interruptions, results, rematch, app icon, and repeated scene lifetimes. Run it serially on a larger and smaller available Watch simulator. Tests labeled scripted use controlled input or accelerated simulation; they establish rules and reachability, not human difficulty or enjoyment.
 
 A fresh source copy must pass without optional art masters, local signing, historical source folders or pre-existing build outputs. Compare gameplay source and runtime asset hashes when making packaging-only changes.
+
+Ability tests measure actual flight pace, response time, cooldowns, active recovery, and the Lobber’s single analytic contact across callback cadences and interruptions. Saved-format fixtures preserve the original three record keys while initializing new opponents independently.
+
+For clean real-time simulator recordings, `testRealtimeFiveBossAbilityRecording` navigates the normal selection screen with a delayed, bounded public-input controller. Capture the simulator with `simctl io … recordVideo`; keep recordings local and label them scripted. Compare ordinary and special shots on both display sizes.
 
 ## Human and distribution checks
 

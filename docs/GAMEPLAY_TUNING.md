@@ -18,9 +18,13 @@
 | Wall speed / acceleration / braking / observation delay | 7.2 ft/s / 24 ft/s² / 30 ft/s² / 0.20 s |
 | Banger | 8.8 / 29 / 35 / 0.20 |
 | Poacher | 9.4 / 31 / 36 / 0.17 |
-| Rally speed growth | 0.16 ft/s² within the 46 ft/s cap |
-| Banger drive | 1.16 multiplier within cap, ≥0.25 s preparation, mobile 0.45 s recovery |
-| Poacher commitment | Two matching completed lanes, ≤3 ft displacement, delayed correction |
+| Ordinary Rally speed growth | 0.16 ft/s² within the 46 ft/s cap |
+| Banger drive | 1.40 × comparable ordinary pace, ≥0.25 s preparation, ≥0.90 s response interval, mobile 0.45 s recovery |
+| Banger ordinary return ceiling | 30 ft/s; drives remain within the global 46 ft/s cap and do not compound |
+| Dinker soft reset | 0.70 × ordinary pace, ≥16 ft/s, ≤2.15 s incoming flight; 3–5 eligible-return interval |
+| Lobber arc | 1.30 × ordinary flight duration, ≤2.10 s, direct ground path and 5 ft logical peak before screen bounds |
+| New-boss preparation / recovery | ≥0.22 s / mobile 0.55 s; ordinary pace resumes at player contact |
+| Poacher commitment | Two matching completed lanes, target within 3 ft, delayed confirmation or active wrong-read recovery |
 | Optional through-contact shaping | Disabled |
 
 Receiving guidance applies at swept y=22 entry and relevant lower-area reflections, preserving speed/position. Upper-court ricochets remain unrestricted by that cap. Outgoing placement uses normalized contact offset and the projection-aware limit. Artwork never changes collisions.
@@ -28,3 +32,5 @@ Receiving guidance applies at swept y=22 entry and relevant lower-area reflectio
 Small/medium/large paddles award 100/225/400 on destruction; baskets 175. Cleanup uses base awards without multiplying or incrementing chains. Wave bonuses are 250; boss points 500 and victory 1,000. The controlled full Arcade replay scores 60,225; this is not a predicted human score.
 
 The Wall rewards placement, Banger stays mobile in recovery, and Poacher commits from observed tendencies. Arcade's Wall policy remains isolated. All Three resets points/saves per new opponent and keeps accumulated run score. Existing records and sensitivity units remain intact; historical scores are retained even where older rules differed. Human difficulty, comfort and enjoyment remain physical judgments.
+
+Dinker and Lobber each keep ordinary exchanges between signature shots. Their shot clocks advance only with simulation time. Lob ground velocity is committed at launch after receiving constraints; its height reaches zero before automatic contact. These are initial physical-review tuning values, not claims of human difficulty or enjoyment.

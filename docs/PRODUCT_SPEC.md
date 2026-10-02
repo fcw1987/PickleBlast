@@ -6,10 +6,12 @@ PickleBlast is a standalone, offline Apple Watch game. SwiftUI owns menus, Sprit
 
 - Move with the Digital Crown or drag across the court. Returns are automatic; contact position determines placement.
 - Arcade has three authored waves of 36, 48 and 58 one-hit targets, reachable backfield ricochets, consecutive-hit multipliers, and The Wall finale. Three lives persist through the run; each stage starts with two free recoveries. The last four targets clear in a finishing chain after a legitimate destruction.
-- Boss Rally offers The Wall, The Banger and The Poacher individually, plus All Three in that order. Each match is first to three, without win-by-two. Two free saves apply to the whole match and award no point. Later player misses award the boss a point; genuine boss misses award the player a point.
+- Boss Rally offers The Wall, The Banger, The Poacher, The Dinker and The Lobber individually. All Three remains Wall → Banger → Poacher. Each match is first to three, without win-by-two. Two free saves apply to the whole match and award no point. Later player misses award the boss a point; genuine boss misses award the player a point.
 - All Three starts the next match after a win with the ordinary ready interval, new 0–0 score and two saves. A loss ends the sequence; Retry starts at The Wall. The final win uses the normal celebration.
 - Pause offers Resume, Home and Restart. Interruptions and reduced-luminance ineligibility freeze the run. Resume rebases time and uses a countdown.
 - Sensitivity, haptics, Arcade best and per-opponent best score/wins/longest rally persist locally. No account, phone companion, multiplayer or online service exists.
+
+The Dinker occasionally sends a softer low return, then ordinary pace resumes at the player’s automatic contact. The Lobber commits a direct ground path and elevated arc, descending at that same receiving line. Banger drives retain a safe response interval; Poacher’s directional cue follows its committed target.
 
 ## Invariants
 
