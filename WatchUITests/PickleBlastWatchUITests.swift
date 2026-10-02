@@ -937,7 +937,8 @@ final class PickleBlastWatchUITests: XCTestCase {
     private func reveal(_ target: XCUIElement, in app: XCUIApplication,
                         failIfHidden: Bool = true) -> Bool {
         let needsFullGeometry = ["home.settings", "settings.haptics", "settings.sensitivity", "pause.restart"].contains(target.identifier)
-        for _ in 0..<8 {
+        // Five opponent cards need more short drags on the 40 mm display.
+        for _ in 0..<16 {
             if target.exists {
                 if !needsFullGeometry && target.isHittable { return true }
                 if target.frame.height > 0 && target.frame.maxY <= app.frame.maxY - 4 && target.frame.minY >= 52 { return true }
