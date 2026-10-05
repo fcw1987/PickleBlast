@@ -1,0 +1,74 @@
+{
+  "baselineCommit": "e45c612bcfc44922aa4897b42c16085b225eab6a",
+  "candidateCommit": "0b39a0ca4cc95cd5b8a2d7e7f8d4089857479644",
+  "method": "Three alternating fresh Release host processes per version, 26 held scene fixtures. CPU:120 warmup,1800 unpaced updates. Separate offscreen:60 SpriteKit render+CGImage readbacks per fixture. Same helper and PNG fallback; excludes compiled Watch atlas load, core/SwiftUI, displayed-frame timing and physical Watch GPU/RAM/energy/heat.",
+  "paired-cpu": {
+    "baseline": {
+      "runs": 3,
+      "aggregateCPUms": 0.02840238600840213,
+      "arcadeCPUms": 0.07818294539902126,
+      "endRSSMiB": 75.796875,
+      "endRSSRangeMiB": [
+        63.078125,
+        75.890625
+      ],
+      "firstSceneConstructionMs": 22.40699999674689,
+      "sparseNodes": 192,
+      "denseNodes": 308
+    },
+    "candidate": {
+      "runs": 3,
+      "aggregateCPUms": 0.029558579051684544,
+      "arcadeCPUms": 0.08424036457452327,
+      "endRSSMiB": 62.9375,
+      "endRSSRangeMiB": [
+        62.40625,
+        75.3125
+      ],
+      "firstSceneConstructionMs": 20.475666664424352,
+      "sparseNodes": 192,
+      "denseNodes": 308
+    }
+  },
+  "paired-offscreen": {
+    "baseline": {
+      "runs": 3,
+      "aggregateCPUms": 0.028492801835905746,
+      "arcadeCPUms": 0.07840722218235088,
+      "endRSSMiB": 112.125,
+      "endRSSRangeMiB": [
+        105.015625,
+        112.328125
+      ],
+      "firstSceneConstructionMs": 21.013874997152016,
+      "sparseNodes": 192,
+      "denseNodes": 308,
+      "offscreenReadbackMs": 18.08607120750448
+    },
+    "candidate": {
+      "runs": 3,
+      "aggregateCPUms": 0.02985643696673732,
+      "arcadeCPUms": 0.08313185176019841,
+      "endRSSMiB": 109.8125,
+      "endRSSRangeMiB": [
+        109.75,
+        111.640625
+      ],
+      "firstSceneConstructionMs": 22.44520833482966,
+      "sparseNodes": 192,
+      "denseNodes": 308,
+      "offscreenReadbackMs": 18.111322035306678
+    }
+  },
+  "bundle": {
+    "beforeBytes": 18386670,
+    "afterBytes": 21317593,
+    "deltaBytes": 2930923
+  },
+  "compiledAtlasRGBA": {
+    "beforeBytes": 34007748,
+    "afterBytes": 34055052,
+    "deltaBytes": 47304
+  },
+  "helperSHA256": "96f7c2573c988da2fe70617f660f293c4b37c7818ed51c90e9e4a8ac706589ef"
+}

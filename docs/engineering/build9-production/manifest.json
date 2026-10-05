@@ -1,0 +1,72 @@
+{
+  "runtimeCommit": "0b39a0ca4cc95cd5b8a2d7e7f8d4089857479644",
+  "baselineCommit": "e45c612bcfc44922aa4897b42c16085b225eab6a",
+  "version": "1.0(9)",
+  "images": [
+    {
+      "file": "images/icon-comparison.png",
+      "bytes": 1127484,
+      "sha256": "14f15a0fee6a758cae19dfb764021b5cb0e58ff116022e3ee42d6b17a707a09c"
+    },
+    {
+      "file": "images/native-icon.png",
+      "bytes": 17292,
+      "sha256": "d6009b4ddfd835006cd1fc6d85aa7760f9982fbe84dc121d2c4219ef722b9bef"
+    },
+    {
+      "file": "images/native-small-arcade.png",
+      "bytes": 180996,
+      "sha256": "22b20776e13ae480361a096f770ec4cd7bc2c30c20586239ba63f05069516019"
+    },
+    {
+      "file": "images/native-large-wave1.png",
+      "bytes": 292747,
+      "sha256": "d5071d6fc70c410baa495b3a258f6da7c1367395ea615ed4a87b1234cc9b1fb3"
+    },
+    {
+      "file": "images/native-large-wave2.png",
+      "bytes": 299180,
+      "sha256": "e24ebb5f0cfec19479e81ab345254408027240922137698e0e7ffac3542f6eb5"
+    },
+    {
+      "file": "images/native-large-wave3.png",
+      "bytes": 300752,
+      "sha256": "2339432a82c63c0989d896352c31e491d488dede95531d6a7ac5be9187001a4b"
+    },
+    {
+      "file": "images/native-older10-arcade.png",
+      "bytes": 265908,
+      "sha256": "65dfdfbe126bddbe65c44e1104a555c2457bc0d8a38bf479f95211d2b31b2cdd"
+    },
+    {
+      "file": "images/host-before-small-wave1.png",
+      "bytes": 210414,
+      "sha256": "f370702779ce7a54bf94a283492e44bd5994065b5e6a717aec48199cad2a9a72"
+    },
+    {
+      "file": "images/host-after-small-wave1.png",
+      "bytes": 212894,
+      "sha256": "8ef580de815e8a0631d98b82747329a7e8eb89561cc60fd03f1b120bf59b0090"
+    },
+    {
+      "file": "images/host-before-large-basket.png",
+      "bytes": 349778,
+      "sha256": "91ded3b9ef03b6fcee0c88293a9b33aa54d27ec6981ca0118d3e03c002cfb6ce"
+    },
+    {
+      "file": "images/host-after-large-basket.png",
+      "bytes": 359128,
+      "sha256": "8b505f5ab3de9bb3cf8ada10c6eb06165becb19554f189e637d485a7603b975b"
+    },
+    {
+      "file": "images/host-small-feedback.gif",
+      "bytes": 559035,
+      "sha256": "78d3ca19d88934529dcfc8ac4dadd96244b8c8427036989bba6e5d75e04da73f"
+    },
+    {
+      "file": "images/host-small-reduced-motion.gif",
+      "bytes": 545429,
+      "sha256": "f0eb77768bfdd3312131a3f8242a4efc9700bc923d8f728bd24daca6715a0951"
+    }
+  ]
+}
