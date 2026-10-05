@@ -1,6 +1,6 @@
 # Native Watch screenshots
 
-These 422 × 514 RGB PNGs were captured October 1, 2026 from ordinary Release app runs on the watchOS 27 Apple Watch Ultra 4 (49mm) simulator, version 1.0 (build 4). The clean app source is `42bdfd137927220730ccfdd0a7aed6bd796e8f8f`. They show the shipped artwork and interface without scripted gameplay or diagnostic overlays.
+These 422 × 514 RGB PNGs were captured October 1, 2026 from ordinary Release app runs on the watchOS 27 Apple Watch Ultra 4 (49mm) simulator, version 1.0 (build 4). The clean app source is `42bdfd137927220730ccfdd0a7aed6bd796e8f8f`. These are historical build 4 images without scripted gameplay or diagnostic overlays. They predate the five-boss roster and build 6 presentation/navigation and are not current-candidate acceptance evidence. Replacement captures are pending.
 
 - `boss-rally.png`: The Poacher rally after the ordinary Pause/Resume countdown.
 - `opponents.png`: Boss Rally selection with All Three and the beginning of The Wall card.

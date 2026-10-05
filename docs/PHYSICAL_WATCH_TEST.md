@@ -6,10 +6,12 @@ Privately record source commit, configuration, version/build, executable hash an
 
 Check on the Watch:
 
-- Ordinary app-icon launch; Arcade returns, movement at both edges and dense waves.
+- Ordinary app-icon launch; Boss Rally first on Home and Arcade below it. Confirm five individual opponent choices and Back navigation.
+- Arcade returns, movement at both edges and dense waves.
 - Existing Crown sensitivity, drag parity and immediate boundary reversal.
-- Touch Pause in Arcade, individual bosses and All Three. Resume freezes/rebases, Home exits, Restart resets the run.
-- Readable contacts and opponent movement; saves award no point; matches end at three. All Three advances after wins and stops on loss.
+- Touch Pause in Arcade and every individual boss, including after Play Next. Resume freezes/rebases, Home exits, Restart resets the selected match.
+- Readable contacts and opponent movement; saves award no point; matches end at three. Play Next appears only after wins, advances Wall → Banger → Poacher → Dinker → Lobber and resets score/saves. Lobber ends the list without a loop.
+- Repeat Rematch/Retry, Choose Opponent, Back, Home and Pause/Resume after several matches; check records update once per completed match.
 - Dinker rhythm without long waits; Lobber rise/descent and contact timing; Banger drive contrast; Poacher side intent. Play with haptics off as well.
 - HUD/system-indicator clearance, animations, target clearances and contact alignment.
 - Interruption/wrist-down pause, settings/records after relaunch and repeated replay/Home cycles.

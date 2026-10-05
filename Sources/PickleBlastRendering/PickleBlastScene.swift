@@ -18,7 +18,9 @@ public final class PickleBlastScene: SKScene {
     #endif
     private let world = SKNode()
     private let background: SKSpriteNode
-    private let court = SKNode()
+    private let court = NightArenaCourt()
+    private let playerGround = SKShapeNode(ellipseOf: CGSize(width: 21, height: 3.6))
+    private let bossGround = SKShapeNode(ellipseOf: CGSize(width: 16, height: 2.8))
     private let player: CharacterNode
     private let boss: CharacterNode
     private let bossCue = SKShapeNode(circleOfRadius: 14)
@@ -37,6 +39,8 @@ public final class PickleBlastScene: SKScene {
     private let message = SKLabelNode(fontNamed: "HelveticaNeue-Bold")
     private let submessage = SKLabelNode(fontNamed: "HelveticaNeue-Medium")
     private let hud = SKNode()
+    private let hudBacking = SKShapeNode()
+    private let hudAccent = SKShapeNode()
     private let celebrationLayer = SKNode()
     private var hearts: [SKSpriteNode] = []
     private var targetNodes: [Int: TargetNode] = [:]
@@ -81,10 +85,20 @@ public final class PickleBlastScene: SKScene {
         addChild(world)
         background.name = "decorativeBackground"
         background.zPosition = -10
-        background.alpha = 0.50
+        background.alpha = 0.34
         world.addChild(background)
         world.addChild(court)
         buildCourt()
+        for (node, name, color) in [(playerGround, "playerGrounding", Neon.cyan),
+                                     (bossGround, "bossGrounding", Neon.magenta)] {
+            node.name = name
+            node.zPosition = 0.5
+            node.fillColor = color.withAlphaComponent(0.10)
+            node.strokeColor = color.withAlphaComponent(0.30)
+            node.lineWidth = 0.55
+            CrispVector.prepare(node)
+            world.addChild(node)
+        }
         world.addChild(player)
         world.addChild(boss)
         bossCue.name = "bossSpecialCue"
@@ -120,6 +134,18 @@ public final class PickleBlastScene: SKScene {
         ball.size = CGSize(width: tuning.ballRadius * 3.2 / textures.manifest.supporting["ball"]!.visibleFraction, height: tuning.ballRadius * 3.2 / textures.manifest.supporting["ball"]!.visibleFraction)
         addChild(hud)
         hud.zPosition = 20
+        hudBacking.name = "hudBlackBacking"
+        hudBacking.zPosition = -2
+        hudBacking.fillColor = Neon.black
+        hudBacking.strokeColor = Neon.cyan.withAlphaComponent(0.18)
+        hudBacking.lineWidth = 0.5
+        hud.addChild(hudBacking)
+        hudAccent.name = "hudAccent"
+        hudAccent.zPosition = -1
+        hudAccent.strokeColor = Neon.cyan.withAlphaComponent(0.65)
+        hudAccent.lineWidth = 0.7
+        CrispVector.prepare(hudAccent)
+        hud.addChild(hudAccent)
         score.horizontalAlignmentMode = .left
         score.verticalAlignmentMode = .center
         score.fontSize = 15
@@ -245,6 +271,12 @@ public final class PickleBlastScene: SKScene {
         renderBossCue(state.boss, phase: state.phase)
         // Resolve impact positions before removing destroyed target nodes.
         consume(events, state: state)
+        // Contact registration translates the complete sprite inside its node.
+        // Grounding follows that visible foot anchor, including a reaching pose;
+        // it does not move, retime or add children to the approved character.
+        positionGrounding(playerGround, beneath: player, offset: -1.2)
+        positionGrounding(bossGround, beneath: boss, offset: -0.8)
+        bossGround.isHidden = boss.isHidden
         syncTargets(state.targets)
         world.isHidden = state.phase == .blackout
         hud.isHidden = state.phase == .blackout
@@ -295,7 +327,7 @@ public final class PickleBlastScene: SKScene {
             lastLives = state.lives
         }
         renderBall(state)
-        court.alpha = visualTime < pulseUntil ? 0.6 + 0.4 * sin((pulseUntil - visualTime) * 32) : 1
+        court.markingAlpha = visualTime < pulseUntil ? 0.6 + 0.4 * sin((pulseUntil - visualTime) * 32) : 1
         for index in effects.indices { effects[index].update(time: visualTime) }
         let clearProgress = (visualTime - clearEffectBegan) / 0.8
         clearEffect.isHidden = clearProgress < 0 || clearProgress >= 1 || state.phase == .blackout
@@ -337,6 +369,18 @@ public final class PickleBlastScene: SKScene {
         background.size = CGSize(width: art.pixelSize[0] * scale, height: art.pixelSize[1] * scale)
         background.position = CGPoint(x: visualCenterX, y: size.height / 2)
         buildCourt()
+        let groundingScale = sqrt(size.width / 211)
+        CrispVector.setVisualScale(groundingScale, on: playerGround)
+        CrispVector.setVisualScale(groundingScale, on: bossGround)
+        let panel = CGRect(x: safeInsets.leading + 4, y: courtProjection.hudY - 8,
+                           width: max(1, size.width - safeInsets.leading - safeInsets.trailing - 8), height: 16)
+        hudBacking.path = CGPath(roundedRect: panel, cornerWidth: 5, cornerHeight: 5, transform: nil)
+        let accent = CGMutablePath()
+        for side in [panel.minX + 7, panel.maxX - 24] {
+            accent.move(to: CGPoint(x: side, y: panel.minY))
+            accent.addLine(to: CGPoint(x: side + 17, y: panel.minY))
+        }
+        CrispVector.replacePath(of: hudAccent, with: accent)
         for effect in effects { effect.reproject(courtProjection) }
         let safeX = max(14, size.width * 0.08)
         score.position = CGPoint(x: safeInsets.leading + safeX, y: courtProjection.hudY)
@@ -374,31 +418,13 @@ public final class PickleBlastScene: SKScene {
     }
 
     private func buildCourt() {
-        court.removeAllChildren()
-        let path = CGMutablePath()
-        for line in CourtGeometry.lines {
-            path.move(to: screenPoint(line.start))
-            path.addLine(to: screenPoint(line.end))
-        }
-        let halo = SKShapeNode(path: path)
-        halo.strokeColor = Neon.cyan.withAlphaComponent(0.15)
-        halo.lineWidth = 3.2
-        CrispVector.prepare(halo)
-        court.addChild(halo)
-        let crisp = SKShapeNode(path: path)
-        crisp.strokeColor = Neon.cyan
-        crisp.lineWidth = 0.9
-        CrispVector.prepare(crisp)
-        court.addChild(crisp)
-        let netPath = CGMutablePath()
-        let net = CourtGeometry.net
-        netPath.move(to: screenPoint(net.start))
-        netPath.addLine(to: screenPoint(net.end))
-        let netNode = SKShapeNode(path: netPath)
-        netNode.strokeColor = Neon.cyan.withAlphaComponent(0.8)
-        netNode.lineWidth = 1.3
-        CrispVector.prepare(netNode)
-        court.addChild(netNode)
+        court.layout(projection: courtProjection)
+    }
+
+    private func positionGrounding(_ grounding: SKShapeNode, beneath character: CharacterNode, offset: CGFloat) {
+        let registration = character.children.first?.position ?? .zero
+        grounding.position = CGPoint(x: character.position.x + registration.x,
+                                     y: character.position.y + registration.y + offset)
     }
 
     private func syncTargets(_ targets: [TargetState]) {

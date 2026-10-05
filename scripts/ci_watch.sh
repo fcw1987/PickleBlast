@@ -75,7 +75,9 @@ xcodebuild -project PickleBlast.xcodeproj -scheme PickleBlast -configuration Deb
   -parallel-testing-enabled NO -test-timeouts-enabled YES \
   -default-test-execution-time-allowance 240 \
   -maximum-test-execution-time-allowance 360 \
+  -only-testing:PickleBlastWatchUITests/PickleBlastWatchUITests/testBossRallyHomeOrderRosterAndBack \
   -only-testing:PickleBlastWatchUITests/PickleBlastWatchUITests/testBossRallySelectEachOpponentPauseResumeAndHome \
+  -only-testing:PickleBlastWatchUITests/PickleBlastWatchUITests/testScriptedPlayNextAdvancesAllFiveOpponents \
   -only-testing:PickleBlastWatchUITests/PickleBlastWatchUITests/testPrivacyAndSupportScrollBackPreserveSettings \
   -only-testing:PickleBlastWatchUITests/PickleBlastWatchUITests/testPrivacyAndSupportShowReadableAddressesWithoutWebLaunchControls \
   CODE_SIGNING_ALLOWED=NO test

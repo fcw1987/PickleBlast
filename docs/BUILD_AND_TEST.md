@@ -71,7 +71,7 @@ xcodebuild -project PickleBlast.xcodeproj -scheme PickleBlast \
   -derivedDataPath .build/WatchSimulator CODE_SIGNING_ALLOWED=NO clean build
 ```
 
-These builds need no Apple account. Debug uses `-Onone`; Release uses `-O` and whole-module compilation. The app remains version 1.0, build 5, with its existing bundle identifier and local data domain.
+These builds need no Apple account. Debug uses `-Onone`; Release uses `-O` and whole-module compilation. The polish candidate is version 1.0, build 6, with its existing bundle identifier and local data domain.
 
 Install and launch the Debug product after building it:
 
@@ -104,7 +104,7 @@ xcodebuild -project PickleBlast.xcodeproj -scheme PickleBlast \
   -maximum-test-execution-time-allowance 420 CODE_SIGNING_ALLOWED=NO test
 ```
 
-Use a new result path for every attempt, and repeat on a materially smaller available Watch display. The suite covers ordinary navigation, settings, Crown movement, individual boss selection, rematch, Home, Pause/Resume, interruptions, All Three progression, Arcade, and scene ownership. Inspect actual test results and screenshot attachments; historical counts and test source are not current execution evidence.
+Use a new result path for every attempt, and repeat on a materially smaller available Watch display. The suite covers ordinary navigation, settings, Crown movement, all five individual boss selections, post-win Play Next through the displayed order, end-of-list behavior, rematch, Back/Home, Pause/Resume, interruptions, Arcade, and scene ownership. Legacy series tests exercise internal compatibility only. Inspect actual test results and screenshot attachments; historical counts and test source are not current execution evidence.
 
 Ordinary UI cases use the normal application. Clearly named controlled-input and scripted-run cases use DEBUG-only launch arguments, isolated validation defaults, and public movement controls. Scripted victories establish progression and accounting, not human difficulty or physical performance. Those controllers and diagnostic activation paths are excluded from Release. The host `PickleBlastAppUITests` exercise session logic on macOS and are not Watch UI automation.
 

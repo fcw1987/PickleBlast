@@ -10,9 +10,11 @@
 
 ## Modes
 
-`GameMode` selects Arcade, one `BossID`, or the ordered All Three `RunPlan`. Arcade retains its accepted Wall policy and random path. Boss Rally uses delayed observation, finite acceleration/braking and strategy-specific shot selection. Only real paddle-region crossings produce contact; no invulnerability or scripted surrender extends a match. Optional contact motion influence is disabled.
+Home exposes Arcade and individual `BossID` matches, with Boss Rally first. The shared displayed roster is Wall → Banger → Poacher → Dinker → Lobber. `GameMode` also retains the legacy three-match `RunPlan` for internal compatibility; no public menu starts it. Arcade retains its accepted Wall policy and random path. Boss Rally uses delayed observation, finite acceleration/braking and strategy-specific shot selection. Only real paddle-region crossings produce contact; no invulnerability or scripted surrender extends a match. Optional contact motion influence is disabled.
 
-All Three advances Wall → Banger → Poacher after wins. Records persist once per completed match; run score accumulates. New matches reset points and two saves; a loss ends the sequence. Individual matches and Arcade retain separate results and records.
+A successful individual result can explicitly start the next displayed opponent using Play Next. The session creates a fresh core engine while reusing its scene and input surface; the next match begins with a fresh score, two saves and cleared transient state. Each completed match persists its own opponent record once; Play Next does not carry a series score. The final Lobber result has no next opponent and never wraps. Rematch/Retry keeps the selected opponent.
+
+The retained legacy series advances Wall → Banger → Poacher after wins, accumulates run score and ends on a loss. Its tests preserve compatibility behavior; it is not an advertised play route. Individual matches and Arcade retain separate results and records.
 
 ## Special flights
 

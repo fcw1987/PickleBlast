@@ -1,15 +1,15 @@
 # App Store readiness
 
-Reviewed October 1, 2026 against the official sources linked below. **Preparation is not submission approval.** No App Store Connect record, metadata entry, binary upload, TestFlight invitation, compliance declaration, review submission, or release has been performed in this preparation run. See the [owner upload guide](app_store/README.md) and [English metadata draft](app_store/metadata_en_US.json).
+Reviewed October 1, 2026 against the official sources linked below. **Preparation is not submission approval.** Developer enrollment/payment and account setup remain on hold. The current build 6 polish pass authorizes local development and Watch testing only. No App Store Connect record, metadata entry, binary upload, TestFlight invitation, compliance declaration, review submission, or release has been performed in this preparation run. See the [owner upload guide](app_store/README.md) and [English metadata draft](app_store/metadata_en_US.json).
 
 ## Candidate and engineering evidence
 
-The accepted gameplay baseline is `9e23e4f298c6b065080eea6f811a6a4a9fbd2bb5`. Preparation adds the public website and Settings policy/help surfaces; it does not authorize changes to gameplay, Crown calibration, touch fallback, records, opponents, artwork, or modes. Shipping content is Boss Rally with The Wall, The Banger, The Poacher and All Three, plus Arcade. Dinker and Lobber are not part of this candidate.
+The five-boss feature baseline is `b470aae62a2755e063752bc2ff8598845ba879b3`, version 1.0 (5). The separate version 1.0 (6) polish candidate places Boss Rally first, offers Wall → Banger → Poacher → Dinker → Lobber as individual matches with post-win Play Next, and preserves Arcade. The Lobber ends the displayed list without looping. The legacy three-match sequence has no public menu entry. Build 6 acceptance and measurements must be recorded separately; the historical preparation evidence below does not validate it.
 
 | Item | Verified configuration or required evidence |
 | --- | --- |
 | Product | Standalone watch-only app; `WKApplication` and `WKWatchOnly`, no iPhone companion |
-| Identity | `com.pickleblast.watchapp`; version 1.0, preparation build 4, preserved |
+| Identity | `com.pickleblast.watchapp`; version 1.0, local polish build 6; acceptance pending |
 | Build number | Owner must check prior uploads before selecting a unique submission number; local preparation does not establish the last uploaded number |
 | Native project | Shared PickleBlast scheme, Release archive action, reproducible project generation; personal signing remains ignored and separate |
 | Toolchain | Xcode 27.0 (27A266a), watchOS 27.0 SDK; deployment target remains watchOS 10.0 |
@@ -17,15 +17,15 @@ The accepted gameplay baseline is `9e23e4f298c6b065080eea6f811a6a4a9fbd2bb5`. Pr
 | Gameplay data | App-owned UserDefaults stores sensitivity, haptics, Arcade best and boss records; in-progress run is memory-only |
 | Dependencies | Apple frameworks and local Swift modules only; no analytics, ads, accounts, gameplay backend or third-party runtime SDK |
 | Icons/resources | Existing opaque 1024 × 1024 icon and derived catalog; approved runtime art retained; policy resource must match canonical source |
-| Native policy/help | Settings exposes offline Privacy and Support plus version/build; large and small watchOS 27 simulator checks passed; canonical website addresses remain readable without a dead web-launch control |
-| Archive | Clean-source unsigned Release archive prepared and audited; a separate development-signed Release passed its audit. Distribution signing/validation remains outstanding |
+| Native policy/help | Settings exposes offline Privacy and Support plus version/build and readable website addresses; prior large/small watchOS 27 checks are historical and must be repeated for the accepted candidate |
+| Archive | Prior unsigned/development archive audits are historical. Inspect the exact accepted candidate; distribution signing/validation remains outstanding |
 | Known compiler diagnostic | Existing deprecated public `WKInterfaceSKScene` initializer warning; retained explicit teardown is documented in [Architecture](ARCHITECTURE.md) |
 
 Use [build and test](BUILD_AND_TEST.md) for clean Debug/Release builds, `scripts/validate.sh`, native tests, and archive commands. Do not infer a current pass from this checklist. [Screenshot provenance](app_store/screenshot_manifest.json) identifies the capture build and exact source, while local result bundles and archive evidence remain outside Git. A passing simulator suite does not establish physical Crown feel, haptics, battery use, or full accessibility.
 
-## Validation recorded October 1, 2026
+## Historical build 4 validation recorded October 1, 2026
 
-The native app source and capture revision is `42bdfd137927220730ccfdd0a7aed6bd796e8f8f`. Subsequent preparation changes affect public materials and test tooling. The gameplay core, rendering, tuning, session/save behavior, approved art, bundle identity and privacy manifest match the accepted baseline.
+The native app source and capture revision is `42bdfd137927220730ccfdd0a7aed6bd796e8f8f`. That preparation changed public materials and test tooling. Its gameplay core, rendering, tuning, session/save behavior, approved art, bundle identity and privacy manifest matched the then-accepted baseline. These statements describe build 4 only.
 
 - `scripts/validate.sh` passed: 222 Swift tests, 50 artwork/import regressions, seven public-tree guard tests, 15 website regressions, five policy regressions, project/resource checks, public-file scanning, documentation links, metadata limits, policy consistency and an unsigned generic watchOS Release build.
 - Clean checkout: unsigned generic watchOS Debug and Release builds passed with Xcode 27.0. A local Release archive passed inspection of identity, minimum OS, bundled privacy/policy and ten runtime atlases. Source files, website images and diagnostic controls are absent from the Release product.
@@ -58,7 +58,7 @@ Ordinary public contact is **GitHub Issues only**, for bugs, feature requests, a
 | Age rating | Pickleball sports action, cartoon opponents and effects; no chat, user-generated content inside gameplay, gambling, purchases, ads, health advice or location. External support is optional. | Complete Apple's current questionnaire, inspecting all art and external-link questions; do not invent a rating or select Kids Category. |
 | Categories | Sports-themed paddle game with a separate Arcade mode. | Proposed primary Games; Sports and Arcade game subcategories. Owner confirms available choices. |
 | Rights/EULA | Source available/all rights reserved; approved art and branding remain protected. Authorized distributed copies have separate end-user terms. | Owner confirms content ownership/permissions and listing copyright. Use Apple's standard EULA unless separately choosing a custom one. Never upload the source license as the customer EULA. |
-| Accessibility | Native labels, scrolling text and touch/Crown alternatives exist. Gameplay is real time; no dedicated reduced-motion mode. | Declare only features tested against Apple's criteria. Labels alone do not establish VoiceOver gameplay support. Physical human testing remains required. |
+| Accessibility | Native labels, scrolling text and touch/Crown alternatives exist. Gameplay is real time; the system Reduce Motion preference suppresses decorative motion while preserving flight information. | Declare only features tested against Apple's criteria. Labels alone do not establish VoiceOver gameplay support. Physical human testing remains required. |
 | Account/compliance | Membership, roles, agreements, seller identity and distribution credentials are account-specific. | Owner confirms privately. If Apple presents account-wide trader/compliance questions, answer truthfully; US-only distribution does not answer them automatically. |
 | App Review contact | No private contact values are committed. | Owner enters real required name/email/phone in App Store Connect's private review fields. These do not change the public Issues-only decision. |
 
@@ -78,13 +78,13 @@ These are owner preferences to enter later, not completed App Store settings:
 
 ## Screenshot and final acceptance checklist
 
-Use actual Watch app captures from the chosen build. Apple accepts Watch dimensions 422 × 514, 410 × 502, 416 × 496, 396 × 484, 368 × 448, or 312 × 390, and requires consistent Watch screenshot dimensions across localizations. Upload one to ten PNG/JPEG screenshots. Keep lossless originals separate from optimized website images; never distort captures. Only the current three bosses and Arcade may be shown. [Screenshot specifications](https://developer.apple.com/help/app-store-connect/reference/app-information/screenshot-specifications/) · [Upload formats/count](https://developer.apple.com/help/app-store-connect/manage-app-information/upload-app-previews-and-screenshots/)
+Use actual Watch app captures from the chosen build. Apple accepts Watch dimensions 422 × 514, 410 × 502, 416 × 496, 396 × 484, 368 × 448, or 312 × 390, and requires consistent Watch screenshot dimensions across localizations. Upload one to ten PNG/JPEG screenshots. Keep lossless originals separate from optimized website images; never distort captures. Use only the accepted candidate’s actual five-boss and Arcade interfaces. The recorded build 4 screenshots are historical and require replacement before a build 6 listing is accepted. [Screenshot specifications](https://developer.apple.com/help/app-store-connect/reference/app-information/screenshot-specifications/) · [Upload formats/count](https://developer.apple.com/help/app-store-connect/manage-app-information/upload-app-previews-and-screenshots/)
 
-- [x] Confirm clean Debug/Release builds, required validation and large/small watchOS 27 UI results, including offline policy/help and readable addresses. Older-OS acceptance remains open as described above.
-- [x] Inspect local archive contents and distinguish unsigned packaging from the separately audited development signature.
+- [ ] Confirm clean Debug/Release builds, required validation and large/small UI results for the exact accepted build 6 revision, including offline policy/help and readable addresses. Historical build 4/5 results do not satisfy this item; older-OS acceptance remains open.
+- [ ] Inspect the accepted candidate’s local archive and distinguish unsigned packaging from development and distribution signatures.
 - [ ] Review the distribution privacy report and perform distribution validation with the owner's eligible account.
 - [ ] Complete [physical Watch acceptance](PHYSICAL_WATCH_TEST.md): controls, all bosses, Arcade, pause/interruption, persistence, haptics, readability and sustained play. Include older supported hardware/OS when available.
-- [x] Inspect actual screenshots and icon crop; verify screenshot provenance and metadata character/byte limits. Owner still approves the final listing selection before upload.
+- [ ] Replace historical screenshots with actual accepted-candidate captures, inspect the icon crop, and verify provenance and metadata limits. Owner approves the final listing selection before upload.
 - [ ] Owner rechecks the stable HTTPS routes and issue/security actions immediately before Apple submission; do not submit test reports. Current deployment results are reported separately from the local build evidence.
 - [ ] Resolve account, final privacy/age/rights/export/accessibility answers and private App Review contact details.
 - [ ] Confirm the selected upload build number and, after separate authorization, upload/process it; optionally test that exact build in TestFlight.

@@ -3,9 +3,9 @@
   "locale": "en-US",
   "name": "PickleBlast",
   "subtitle": "Pickleball Boss Rally on Watch",
-  "description": "Take the court on Apple Watch. Turn the Digital Crown to move, meet the incoming ball, and your player returns it automatically. You can also drag across the court. Placement comes from where you meet the ball, with no wrist swinging required.\n\nBOSS RALLY\nChallenge The Wall, The Banger, and The Poacher. Each opponent has a different approach: steady coverage, a powerful drive, or a committed step toward the ball. Play an individual match or choose All Three to face Wall, Banger, then Poacher in order. Matches are first to three points, with two free saves per match.\n\nARCADE\nBreak through three waves of targets, build consecutive-hit multipliers, and face The Wall in the finale. Three lives carry through the run, and each stage gives you two free recoveries.\n\nMADE FOR APPLE WATCH\nAdjust Crown sensitivity and haptics in Settings. Pause, resume, restart, or return Home. Your Arcade best and opponent records stay on your Watch. Gameplay works offline, with no account, phone companion, ads, or in-app purchases.\n\nRequires watchOS 10 or later. Privacy and support information are available in Settings, including an offline privacy policy.",
+  "description": "Take the court on Apple Watch. Turn the Digital Crown to move, meet the incoming ball, and your player returns it automatically. You can also drag across the court. Placement comes from where you meet the ball, with no wrist swinging required.\n\nBOSS RALLY\nChoose The Wall, The Banger, The Poacher, The Dinker, or The Lobber. Read steady coverage, power drives, committed steps, soft resets, and high arcs. After a win, Play Next offers the next boss in that order. The Lobber ends the list; rematch or choose another opponent whenever you like. Matches are first to three points, with two free saves per match.\n\nARCADE\nBreak through three waves of targets, build consecutive-hit multipliers, and face The Wall in the finale. Three lives carry through the run, and each stage gives you two free recoveries.\n\nMADE FOR APPLE WATCH\nAdjust Crown sensitivity and haptics in Settings. Pause, resume, restart, or return Home. Your Arcade best and opponent records stay on your Watch. Gameplay works offline, with no account, phone companion, ads, or in-app purchases.\n\nRequires watchOS 10 or later. Privacy and support information are available in Settings, including an offline privacy policy.",
   "keywords": "pickleball,arcade,paddle,rally,boss,sports,offline,crown,reflex,solo",
-  "promotional_text": "Face The Wall, The Banger, and The Poacher in Boss Rally, or break through Arcade waves. Move with the Digital Crown; returns are automatic.",
+  "promotional_text": "Five bosses, from patient rallies to high arcs. Win and choose Play Next, or tackle Arcade. Move with the Digital Crown; returns are automatic.",
   "primary_category": "Games",
   "game_subcategories": [
     "Sports",
@@ -17,7 +17,7 @@
   "marketing_url": "https://fcw1987.github.io/PickleBlast/",
   "copyright": "2026 fcw1987",
   "version": "1.0",
-  "prepared_build": "4",
+  "prepared_build": "6",
   "bundle_identifier": "com.pickleblast.watchapp",
   "release_plan": {
     "distribution": "Public App Store",
@@ -33,7 +33,7 @@
   "owner_actions": [
     "Confirm app-name availability and category choices in App Store Connect.",
     "Confirm copyright holder and distribution rights.",
-    "Confirm the next unique upload build number from App Store Connect; build 4 is preserved for local preparation.",
+    "Confirm the next unique upload build number from App Store Connect; build 6 is a local development candidate.",
     "Provide required private App Review contact details only in Apple interfaces.",
     "Complete final privacy, age-rating, export-compliance and any account compliance questions."
   ],
