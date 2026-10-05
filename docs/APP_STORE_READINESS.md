@@ -1,15 +1,15 @@
 # App Store readiness
 
-Reviewed October 1, 2026 against the official sources linked below. **Preparation is not submission approval.** Developer enrollment/payment and account setup remain on hold. The current build 6 polish pass authorizes local development and Watch testing only. No App Store Connect record, metadata entry, binary upload, TestFlight invitation, compliance declaration, review submission, or release has been performed in this preparation run. See the [owner upload guide](app_store/README.md) and [English metadata draft](app_store/metadata_en_US.json).
+Reviewed October 1, 2026 against the official sources linked below. **Preparation is not submission approval.** Developer enrollment/payment and account setup remain on hold. Build 10 is physically accepted and authorized for the source/docs merge; distribution and account setup remain on hold. No App Store Connect record, metadata entry, binary upload, TestFlight invitation, compliance declaration, review submission, or release has been performed in this preparation run. See the [owner upload guide](app_store/README.md) and [English metadata draft](app_store/metadata_en_US.json).
 
 ## Candidate and engineering evidence
 
-The five-boss feature baseline is `b470aae62a2755e063752bc2ff8598845ba879b3`, version 1.0 (5). The separate version 1.0 (6) polish candidate places Boss Rally first, offers Wall → Banger → Poacher → Dinker → Lobber as individual matches with post-win Play Next, and preserves Arcade. The Lobber ends the displayed list without looping. The legacy three-match sequence has no public menu entry. Build 6 acceptance and measurements must be recorded separately; the historical preparation evidence below does not validate it.
+The five-boss feature baseline is `b470aae62a2755e063752bc2ff8598845ba879b3`, version 1.0 (5). The accepted version 1.0 (10) build places Boss Rally first, offers Wall → Banger → Poacher → Dinker → Lobber as individual matches with post-win Play Next, and preserves Arcade. The Lobber ends the displayed list without looping. The legacy three-match sequence has no public menu entry. Build 10 source is 36ee3e28d5e116787c57c842d766eb6fad06d540; physical acceptance is recorded, while frame timing, RAM, GPU, heat and battery remain unmeasured. Historical preparation evidence below remains historical.
 
 | Item | Verified configuration or required evidence |
 | --- | --- |
 | Product | Standalone watch-only app; `WKApplication` and `WKWatchOnly`, no iPhone companion |
-| Identity | `com.pickleblast.watchapp`; version 1.0, local polish build 6; acceptance pending |
+| Identity | `com.pickleblast.watchapp`; version 1.0, accepted local build 10; not submitted |
 | Build number | Owner must check prior uploads before selecting a unique submission number; local preparation does not establish the last uploaded number |
 | Native project | Shared PickleBlast scheme, Release archive action, reproducible project generation; personal signing remains ignored and separate |
 | Toolchain | Xcode 27.0 (27A266a), watchOS 27.0 SDK; deployment target remains watchOS 10.0 |
@@ -35,7 +35,7 @@ The native app source and capture revision is `42bdfd137927220730ccfdd0a7aed6bd7
 - Separate development-signed Release: signature, entitlement, profile-validity, resources and absence of diagnostic controls passed local audit. An in-place physical Watch installation attempt was blocked by the device connection service (CoreDevice error 4016). No uninstall, reset or record erasure was performed. This is not physical play acceptance or distribution-signing evidence.
 - The three store originals are real 422 × 514 opaque RGB PNGs from ordinary Release runs. Their [manifest](app_store/screenshot_manifest.json) records source, build, simulator, timestamps and hashes. Website copies are losslessly recompressed with unchanged image data. Independent review verified captures and provenance.
 
-Local result bundles, signing evidence and the unsigned archive remain private. The owner must still review the archive's distribution privacy report, complete physical acceptance and validate the eventual distribution-signed candidate. The existing SpriteKit deprecation and the toolchain's skipped App Intents extraction diagnostic do not prevent these local builds.
+Local result bundles, signing evidence and the unsigned archive remain private. The owner must still review the archive's distribution privacy report, complete distribution-specific physical checks and validate the eventual distribution-signed candidate. The existing SpriteKit deprecation and the toolchain's skipped App Intents extraction diagnostic do not prevent these local builds.
 
 ## Public URLs, support, and privacy
 
@@ -78,9 +78,9 @@ These are owner preferences to enter later, not completed App Store settings:
 
 ## Screenshot and final acceptance checklist
 
-Use actual Watch app captures from the chosen build. Apple accepts Watch dimensions 422 × 514, 410 × 502, 416 × 496, 396 × 484, 368 × 448, or 312 × 390, and requires consistent Watch screenshot dimensions across localizations. Upload one to ten PNG/JPEG screenshots. Keep lossless originals separate from optimized website images; never distort captures. Use only the accepted candidate’s actual five-boss and Arcade interfaces. The recorded build 4 screenshots are historical and require replacement before a build 6 listing is accepted. [Screenshot specifications](https://developer.apple.com/help/app-store-connect/reference/app-information/screenshot-specifications/) · [Upload formats/count](https://developer.apple.com/help/app-store-connect/manage-app-information/upload-app-previews-and-screenshots/)
+Use actual Watch app captures from the chosen build. Apple accepts Watch dimensions 422 × 514, 410 × 502, 416 × 496, 396 × 484, 368 × 448, or 312 × 390, and requires consistent Watch screenshot dimensions across localizations. Upload one to ten PNG/JPEG screenshots. Keep lossless originals separate from optimized website images; never distort captures. Use only the accepted candidate’s actual five-boss and Arcade interfaces. Current local screenshot drafts show actual accepted build 10 navigation/gameplay; recheck final distribution build and localization before submission. [Screenshot specifications](https://developer.apple.com/help/app-store-connect/reference/app-information/screenshot-specifications/) · [Upload formats/count](https://developer.apple.com/help/app-store-connect/manage-app-information/upload-app-previews-and-screenshots/)
 
-- [ ] Confirm clean Debug/Release builds, required validation and large/small UI results for the exact accepted build 6 revision, including offline policy/help and readable addresses. Historical build 4/5 results do not satisfy this item; older-OS acceptance remains open.
+- [ ] Confirm clean Debug/Release builds, required validation and large/small UI results for the exact accepted build 10 revision, including offline policy/help and readable addresses. Historical build 4/5 results do not satisfy this item; older-OS acceptance remains open.
 - [ ] Inspect the accepted candidate’s local archive and distinguish unsigned packaging from development and distribution signatures.
 - [ ] Review the distribution privacy report and perform distribution validation with the owner's eligible account.
 - [ ] Complete [physical Watch acceptance](PHYSICAL_WATCH_TEST.md): controls, all bosses, Arcade, pause/interruption, persistence, haptics, readability and sustained play. Include older supported hardware/OS when available.

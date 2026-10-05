@@ -1,9 +1,5 @@
-# Native Watch screenshots
+# Accepted build 10 screenshots
 
-These 422 × 514 RGB PNGs were captured October 1, 2026 from ordinary Release app runs on the watchOS 27 Apple Watch Ultra 4 (49mm) simulator, version 1.0 (build 4). The clean app source is `42bdfd137927220730ccfdd0a7aed6bd796e8f8f`. These are historical build 4 images without scripted gameplay or diagnostic overlays. They predate the five-boss roster and build 6 presentation/navigation and are not current-candidate acceptance evidence. Replacement captures are pending.
+These actual 422×514 RGB PNGs were captured October 5, 2026 from ordinary native Debug app navigation and gameplay on the watchOS 27 Apple Watch Ultra 4 (49mm) simulator. Version 1.0 (10), runtime source `36ee3e28d5e116787c57c842d766eb6fad06d540`, Xcode 27. No injected game state, concept artwork or diagnostic overlay. The owner separately physically tested and accepted build 10; these are simulator screenshots, not physical-device photographs.
 
-- `boss-rally.png`: The Poacher rally after the ordinary Pause/Resume countdown.
-- `opponents.png`: Boss Rally selection with All Three and the beginning of The Wall card.
-- `arcade.png`: Arcade's first target wave.
-
-These website copies use lossless PNG recompression without changing dimensions or image pixels. Unmodified store originals are in [app_store/screenshots](../app_store/screenshots/); the [capture manifest](../app_store/screenshot_manifest.json) records exact timestamps, dimensions, file hashes and provenance. They are real simulator screenshots, not physical-device captures. The owner reviews the final listing selection before upload. All images are covered by [ASSET_LICENSE.md](../../ASSET_LICENSE.md).
+`boss-rally.png` shows the Lobber after Pause/Resume; `opponents.png` shows the individual list; `arcade.png` shows the first target wave. Website and local store-draft images are identical exports. Exact timestamps, dimensions and hashes are in [screenshot provenance](../app_store/screenshot_manifest.json). No App Store submission has occurred. Previous build 4 captures remain available in git history.

@@ -1,3 +1,5 @@
+> Current accepted app: build 10. Measurements below are historical and remain attributed to their original builds. Build 10 changed only the icon: signed bundle file bytes 21,317,593 → 19,397,546 versus build 9, with all 26 compiled atlas files identical. This does not establish physical Watch RAM, GPU, frame pacing, heat or battery safety.
+
 # Performance and resource maintenance
 
 The renderer requests 30 frames per second. The deterministic game core advances at 120 Hz with bounded catch-up and collision work. Neither setting guarantees a measured frame rate or battery life on every Watch.

@@ -1,54 +1,54 @@
 {
-  "app_source_commit": "42bdfd137927220730ccfdd0a7aed6bd796e8f8f",
+  "app_source_commit": "36ee3e28d5e116787c57c842d766eb6fad06d540",
   "version": "1.0",
-  "build": "4",
-  "configuration": "Release",
+  "build": "10",
+  "configuration": "Debug",
   "toolchain": "Xcode 27.0 (27A266a)",
   "device": "Apple Watch Ultra 4 (49mm) simulator",
   "runtime": "watchOS 27.0",
-  "method": "Native XCTest screenshots of ordinary app navigation and gameplay; no scripted gameplay, validation fixtures or diagnostic overlays. Screens are simulator captures, not physical-device photographs.",
+  "method": "Native XCTest screenshots of ordinary app navigation and gameplay, with no scripted gameplay, injected state or diagnostic overlays. Simulator captures, not physical photographs.",
   "test": "PickleBlastWatchUITests/testBossRallySelectEachOpponentPauseResumeAndHome",
-  "website_processing": "Lossless PNG IDAT recompression only; dimensions, color data and decoded image bytes unchanged. Store files are the unmodified screenshot exports.",
+  "website_processing": "Exact unmodified screenshot exports; website and store PNG bytes identical.",
   "captures": [
     {
       "id": "boss-rally",
-      "description": "Boss Rally against The Poacher, after the ordinary Pause/Resume countdown.",
-      "captured_at_utc": "2026-10-01T22:18:51.646000+00:00",
+      "description": "Ordinary Lobber match after Pause/Resume.",
+      "captured_at_utc": "2026-10-05T19:18:22.334000+00:00",
       "store_path": "screenshots/boss-rally.png",
       "website_path": "../images/boss-rally.png",
-      "sha256": "9b48dac4d1d132445fcc3babbd7a0f1fe9e26860d21e048931c3c12a36b28934",
-      "website_sha256": "944db3cd728dac68152a7c28c5377769618057bac375030ac0d6fc23b5231c64",
+      "sha256": "2a3832630872e843fb28b4cf247dc3f020bf14dd94fbe54dbdf0e4b8f93e0fc3",
+      "website_sha256": "2a3832630872e843fb28b4cf247dc3f020bf14dd94fbe54dbdf0e4b8f93e0fc3",
       "width": 422,
       "height": 514,
-      "store_bytes": 269999,
-      "website_bytes": 228217
+      "store_bytes": 288250,
+      "website_bytes": 288250
     },
     {
       "id": "opponents",
-      "description": "Boss Rally selection, showing All Three and the beginning of The Wall card.",
-      "captured_at_utc": "2026-10-01T22:18:25.625000+00:00",
+      "description": "Individual opponent list beginning with Wall and Banger; no obsolete series action.",
+      "captured_at_utc": "2026-10-05T19:17:29.158000+00:00",
       "store_path": "screenshots/opponents.png",
       "website_path": "../images/opponents.png",
-      "sha256": "a22d1ec881868733c276ff081564c3929c42659e4823c1ff7737345979656655",
-      "website_sha256": "c058275cde72ef224498f4841f9f64042d1b14899311207c8b3fa0810b49f496",
+      "sha256": "a38a39699b7e160fdb9ad7cf1659ce2defafcf935ed33d4417a8101811ae178b",
+      "website_sha256": "a38a39699b7e160fdb9ad7cf1659ce2defafcf935ed33d4417a8101811ae178b",
       "width": 422,
       "height": 514,
-      "store_bytes": 31706,
-      "website_bytes": 27319
+      "store_bytes": 38394,
+      "website_bytes": 38394
     },
     {
       "id": "arcade",
-      "description": "Arcade at the first target wave.",
-      "captured_at_utc": "2026-10-01T22:18:56.009000+00:00",
+      "description": "Ordinary first Arcade wave with original paddle targets.",
+      "captured_at_utc": "2026-10-05T19:18:26.612000+00:00",
       "store_path": "screenshots/arcade.png",
       "website_path": "../images/arcade.png",
-      "sha256": "5ce9677f327852a56f67a1cbf147ed5e6a97260d26fad536a90cdf6ac0170ac8",
-      "website_sha256": "8f1d74a1df15d018b93555617f8ba5ef4fc624890fa5904e2bf7e9ac0a5da54d",
+      "sha256": "c71bc426980b3c741802e34bd1caf96257fa2cf5dd4ba272ebfa76f2e8065c9c",
+      "website_sha256": "c71bc426980b3c741802e34bd1caf96257fa2cf5dd4ba272ebfa76f2e8065c9c",
       "width": 422,
       "height": 514,
-      "store_bytes": 270848,
-      "website_bytes": 229121
+      "store_bytes": 293303,
+      "website_bytes": 293303
     }
   ],
-  "status": "Historical build 4 captures; replacement required for the accepted five-boss build 6 candidate."
+  "status": "Actual accepted build 10 interface. Local store drafts only; no submission."
 }

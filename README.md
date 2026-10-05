@@ -5,16 +5,16 @@
 [Website](https://fcw1987.github.io/PickleBlast/) · [Privacy](https://fcw1987.github.io/PickleBlast/privacy/) · [Support](https://fcw1987.github.io/PickleBlast/support/)
 
 <a href="docs/images/boss-rally.png"><img src="docs/images/boss-rally.png" alt="A live Boss Rally on Apple Watch, with the ball crossing the neon court." width="142"></a>
-<a href="docs/images/opponents.png"><img src="docs/images/opponents.png" alt="Historical build 4 Boss Rally selection screen." width="142"></a>
+<a href="docs/images/opponents.png"><img src="docs/images/opponents.png" alt="Build 10 individual Boss Rally selection screen." width="142"></a>
 <a href="docs/images/arcade.png"><img src="docs/images/arcade.png" alt="Arcade mode during a neon target wave on Apple Watch." width="142"></a>
 
-These historical captures show version 1.0 (4) in the watchOS 27.0 simulator. They predate the five-boss roster and build 6 navigation and presentation; replacement captures are pending. See [screenshot provenance](docs/images/README.md).
+These actual build 10 captures show the accepted interface and B3 court in a watchOS 27 simulator. They are ordinary gameplay and navigation captures, not concept art. See [screenshot provenance](docs/images/README.md).
 
 ## Play
 
-Turn the Digital Crown or drag on the court to move. Your player returns the ball automatically; your position shapes the shot. The build 8 candidate uses the selected B3 slate-blue court with illustrated night-arena scenery, a darker kitchen and white painted lines. The HUD and outer fade retain black areas.
+Turn the Digital Crown or drag on the court to move. Your player returns the ball automatically; your position shapes the shot. The accepted build 10 uses the selected B3 slate-blue court with illustrated night-arena scenery, a darker kitchen and white painted lines. The HUD and outer fade retain black areas.
 
-**Boss Rally** appears first on Home. Choose The Wall, The Banger, The Poacher, The Dinker, or The Lobber individually. After a win, **Play Next** offers the next opponent in that displayed order. The Lobber ends the list without looping; Rematch, Choose Opponent, and Home remain available. In this unaccepted iteration, each match is first to three points and starts with no saves. Every 20 consecutive player returns in one rally can earn one save; only one can be held. The Wall rewards placement, The Banger presses the pace, and The Poacher commits to a side from your shot tendencies. The Dinker mixes in soft resets; The Lobber sends elevated shots back to your normal receiving area. Your wins, best score, and longest rally for each boss stay on your Watch.
+**Boss Rally** appears first on Home. Choose The Wall, The Banger, The Poacher, The Dinker, or The Lobber individually. After a win, **Play Next** offers the next opponent in that displayed order. The Lobber ends the list without looping; Rematch, Choose Opponent, and Home remain available. Each match is first to three points and starts with no saves. Every 20 consecutive player returns can earn a save, capped at one. Won points preserve return progress and an unused save. Player misses, including a consumed save or lost point, reset progress; rematch, restart and Play Next start fresh. The Wall rewards placement, The Banger presses the pace, and The Poacher commits to a side from your shot tendencies. The Dinker mixes in soft resets; The Lobber sends elevated shots back to your normal receiving area. Your wins, best score, and longest rally for each boss stay on your Watch.
 
 **Arcade** appears below Boss Rally and offers three target waves followed by a final rally against The Wall. Your best score is stored locally.
 
@@ -48,7 +48,7 @@ SwiftUI provides the menus, settings, pause, and results. The pure Swift `Pickle
 
 Game settings and records are stored in the app's local storage. PickleBlast works offline and has no account, gameplay server, analytics, advertising, or user-tracking integration. Apple system services follow Apple's own policies; see [Privacy](PRIVACY.md) for the app's inspected behavior.
 
-The current iteration candidate is version 1.0 (9), preserving the tested B3 arena while moving the moon clear of the system clock, upgrading the Watch icon and Arcade equipment/feedback, and preserving return progress across won points. Build 6 and build 7 remain preserved on separate branches. The iteration is unmerged and awaits independent user testing and acceptance. PickleBlast has not been released through the App Store or TestFlight. [App Store readiness](docs/APP_STORE_READINESS.md) describes the outstanding work.
+Version 1.0 (10) was physically tested and accepted by the owner. It includes the B3 arena with the moon clear of the clock, original Arcade equipment and bounded hit feedback, won-point return progress, and the approved matte chartreuse paddle icon with true-black ink. Earlier builds remain in git history. PickleBlast has not been released through the App Store or TestFlight. [App Store readiness](docs/APP_STORE_READINESS.md) describes the outstanding work.
 
 ## Issues, security, and rights
 

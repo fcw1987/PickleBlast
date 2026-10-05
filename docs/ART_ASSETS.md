@@ -34,3 +34,7 @@ The [B3 source record](../ArtSources/Backgrounds/B3/README.md) preserves the ori
 The two runtime images have a combined estimated uncompressed RGBA pixel cost of 2 MiB, one MiB more than the former single arena texture. This estimate excludes atlas packing, upload copies, mipmaps and renderer overhead. Disk size, loaded memory and frame cadence must be measured separately; the selected blue surface also gives up the previous true-black court pixels. Asset storage tolerance does not establish GPU or OLED power cost.
 
 The court material occupies its own single-image `CourtMaterial.atlas`. Native Watch simulator validation showed that `SKShapeNode.fillTexture` could sample neighboring packed arena content when both images shared an atlas. Keeping the material isolated prevents scenery from appearing inside the court; the original source and runtime PNG pixels are unchanged. Native compiled captures, rather than raw-file host fixtures alone, are required to verify this integration.
+
+## Accepted icon and Arcade equipment
+
+Build 10 uses original approved [paddle-outline icon artwork](../ArtSources/IconV1/README.md), with exact sRGB #000000 solid ink and naturally blended edges. All sixteen opaque Watch slots derive from its 1024×1024 production source. Original [Arcade equipment](../ArtSources/ArcadeV1/README.md) supplies paddles, a cone and baskets. No third-party rendering package or licensed artwork was added. Existing character/contact frames remain unchanged.

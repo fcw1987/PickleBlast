@@ -1,3 +1,5 @@
+> Current local build: 1.0 (10), physically accepted. Source/docs publication is authorized; enrollment/payment and App Store submission remain on hold. Store drafts are not published metadata.
+
 # Preparing the App Store submission
 
 These instructions are for the owner and authorized developers. Reviewed October 1, 2026. This folder contains local drafts, not an App Store Connect submission. Developer enrollment/payment and account setup remain on hold; the owner handles them separately. Build 6 polish and its physical acceptance are still in progress. No Apple account setting, app record, upload, TestFlight invitation, review submission, or release is performed by these files.
