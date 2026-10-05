@@ -33,7 +33,7 @@ public final class PickleBlastScene: SKScene {
     private let score = SKLabelNode(fontNamed: "HelveticaNeue-Bold")
     private let opponentScore = SKLabelNode(fontNamed: "HelveticaNeue-Bold")
     private let combo = SKLabelNode(fontNamed: "HelveticaNeue-Bold")
-    private let rallySaves = SKLabelNode(fontNamed: "HelveticaNeue-Bold")
+    private let rallyMomentum = RallyMomentumHUD()
     private var comboUntil = 0.0
     private var comboPoints = 0
     private let message = SKLabelNode(fontNamed: "HelveticaNeue-Bold")
@@ -53,8 +53,6 @@ public final class PickleBlastScene: SKScene {
     private var lastScore: Int?
     private var lastPlayerRallyPoints: Int?
     private var lastOpponentRallyPoints: Int?
-    private var lastRallyReturns: Int?
-    private var lastSaves: Int?
     private var lastHUDMode: GameMode?
     private var lastLives: Int?
     private var lastMessage = ""
@@ -166,13 +164,7 @@ public final class PickleBlastScene: SKScene {
         combo.verticalAlignmentMode = .center
         combo.isHidden = true
         hud.addChild(combo)
-        rallySaves.name = "hudRallySaves"
-        rallySaves.fontSize = 8
-        rallySaves.fontColor = Neon.lime
-        rallySaves.horizontalAlignmentMode = .right
-        rallySaves.verticalAlignmentMode = .center
-        rallySaves.isHidden = true
-        hud.addChild(rallySaves)
+        hud.addChild(rallyMomentum)
         for _ in 0..<tuning.initialLives {
             let heart = SKSpriteNode(texture: textures.supporting("uiHeartFull"))
             heart.size = CGSize(width: 15, height: 15)
@@ -244,6 +236,7 @@ public final class PickleBlastScene: SKScene {
             pulseUntil = 0
             visualTime = 0
             clearEffectBegan = -.infinity
+            rallyMomentum.reset()
             player.reset()
             boss.release()
             requestedBossIdentity = nil
@@ -254,6 +247,8 @@ public final class PickleBlastScene: SKScene {
         let frozen = state.isPaused || state.resumeCountdown > 0
         let visualDelta = frozen ? 0 : max(0, state.simulationTime - (previousSimulationTime ?? state.simulationTime))
         visualTime += visualDelta
+        if let lastHUDMode, lastHUDMode != state.mode { rallyMomentum.reset() }
+        rallyMomentum.prepare(returns: state.consecutivePlayerReturns)
         player.advance(x: state.playerX, planeY: tuning.playerY + tuning.ballRadius,
                        delta: visualDelta, frozen: frozen,
                        prediction: prediction(state: state, x: state.playerX, plane: tuning.playerY + tuning.ballRadius, front: false), projection: courtProjection)
@@ -287,13 +282,10 @@ public final class PickleBlastScene: SKScene {
             score.fontSize = isBossRally ? 10.5 : 15
             opponentScore.fontSize = isBossRally ? 10.5 : 12
             opponentScore.isHidden = !isBossRally
-            rallySaves.isHidden = !isBossRally
             for heart in hearts { heart.isHidden = isBossRally }
             lastScore = nil
             lastPlayerRallyPoints = nil
             lastOpponentRallyPoints = nil
-            lastRallyReturns = nil
-            lastSaves = nil
             lastHUDMode = state.mode
             layoutScoreDetails(isBossRally: isBossRally)
         }
@@ -305,14 +297,6 @@ public final class PickleBlastScene: SKScene {
             if lastOpponentRallyPoints != state.opponentRallyPoints {
                 opponentScore.text = "BOSS \(state.opponentRallyPoints)"
                 lastOpponentRallyPoints = state.opponentRallyPoints
-            }
-            if lastRallyReturns != state.currentRallyReturns {
-                combo.text = state.currentRallyReturns >= 100 ? "R99+" : "R\(state.currentRallyReturns)"
-                lastRallyReturns = state.currentRallyReturns
-            }
-            if lastSaves != state.recoveriesRemaining {
-                rallySaves.text = "S\(state.recoveriesRemaining)"
-                lastSaves = state.recoveriesRemaining
             }
             layoutScoreDetails(isBossRally: true)
         } else if lastScore != state.score {
@@ -333,10 +317,10 @@ public final class PickleBlastScene: SKScene {
         clearEffect.isHidden = clearProgress < 0 || clearProgress >= 1 || state.phase == .blackout
         if !clearEffect.isHidden { clearEffect.texture = textures.supporting(String(format: "%@%02d", clearEffectPrefix, min(8, Int(clearProgress * 8) + 1))) }
         renderCascade(state.celebration, visible: state.phase == .celebration)
-        combo.isHidden = isBossRally
-            ? state.phase == .blackout || state.phase == .results
-            : state.targetChain < 2 || visualTime >= comboUntil || state.phase != .playing
-        if isBossRally { rallySaves.isHidden = combo.isHidden }
+        combo.isHidden = isBossRally || state.targetChain < 2 || visualTime >= comboUntil || state.phase != .playing
+        let milestoneVisible = rallyMomentum.render(state: state, time: visualTime, reduceMotion: reduceMotion)
+        score.isHidden = milestoneVisible
+        opponentScore.isHidden = !isBossRally || milestoneVisible
         renderMessage(state)
         #if DEBUG
         renderDebug(state)
@@ -401,8 +385,8 @@ public final class PickleBlastScene: SKScene {
     }
 
     private func layoutScoreDetails(isBossRally: Bool) {
-        // All four Rally values share the one safe row above every approved
-        // boss pose. The short counters sit beside, never over, the scores.
+        // Match scores and a quiet progress/save pair share the safe row above
+        // every boss pose. Growing numbers appear only for brief milestones.
         if isBossRally {
             let sideMargin = size.width < 190 ? CGFloat(7) : max(14, size.width * 0.08)
             score.position.x = safeInsets.leading + sideMargin
@@ -414,7 +398,8 @@ public final class PickleBlastScene: SKScene {
         combo.fontSize = isBossRally ? 8 : 10
         combo.position = CGPoint(x: isBossRally ? score.frame.maxX + 2 : size.width / 2,
                                  y: isBossRally ? courtProjection.hudY : courtProjection.hudY - 13)
-        rallySaves.position = CGPoint(x: opponentScore.frame.minX - 2, y: courtProjection.hudY)
+        rallyMomentum.layout(playerScore: score.frame, opponentScore: opponentScore.frame,
+                             y: courtProjection.hudY, centerX: courtProjection.centerX)
     }
 
     private func buildCourt() {
@@ -478,6 +463,12 @@ public final class PickleBlastScene: SKScene {
                 }
             case .ballRecovered:
                 show("BALL BACK", until: visualTime + tuning.recoveryReadyDuration)
+            case let .rallyMilestone(returns):
+                if state.mode.isBossRally {
+                    rallyMomentum.celebrate(returns: returns, earnedSave: events.contains(.recoveryEarned), time: visualTime)
+                }
+            case .recoveryEarned:
+                break // The simultaneous milestone presents the earned save.
             case let .comboChanged(chain, _):
                 if chain == 0 { comboPoints = 0; comboUntil = 0 }
             case .waveCleared:

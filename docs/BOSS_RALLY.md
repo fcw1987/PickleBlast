@@ -2,11 +2,11 @@
 
 Boss Rally is the first Home option, followed by Arcade. Choose **The Wall → The Banger → The Poacher → The Dinker → The Lobber** from the individual opponent list. Back returns Home.
 
-Each match is first to three rally points, without win-by-two. The HUD shows **YOU / BOSS**, a compact uninterrupted return count, and remaining saves. A genuine boss miss earns a player point. The first two player misses use the existing free saves and score neither side; later misses earn the boss a point. Saves do not replenish between points. Boss Rally has no additional lives or health-bar loss condition.
+Each match is first to three rally points, without win-by-two. This build 7 prototype is awaiting acceptance. The HUD keeps **YOU / BOSS**, a quiet progress indicator, and one save slot. A genuine boss miss earns a player point. Matches begin with no save. Every 20 consecutive successful **player returns in the same rally** can fill an empty save slot; it never holds more than one. A held save absorbs the next player miss and scores neither side; without one, the miss earns the boss a point. A point or saved miss resets the return streak. An unused save survives a won point; retry, rematch and the next boss clear it. Milestones at 20, 40 and later multiples celebrate without banking extra saves. Pause preserves both progress and a held save. Boss Rally has no additional lives or health-bar loss condition.
 
 ## Results and continued play
 
-A point gets a brief confirmation and ready transition. Every individual match win retains its celebration and results. After winning, **Play Next** offers the next opponent in the displayed order. Selecting it starts a fresh individual match at 0–0 with two saves; it does not carry the prior score or saves. Each completed match updates its own opponent record once.
+A point gets a brief confirmation and ready transition. Every individual match win retains its celebration and results. After winning, **Play Next** offers the next opponent in the displayed order. Selecting it starts a fresh individual match at 0–0 with no banked save; it does not carry the prior score or saves. Each completed match updates its own opponent record once.
 
 The Lobber is the final opponent. Its winning result identifies the end of the list and has no Play Next action or automatic wrap to Wall. A loss does not offer advancement. Rematch/Retry keeps the current opponent; Choose Opponent returns to the list, and Home exits. You can start at any boss without first defeating earlier opponents.
 

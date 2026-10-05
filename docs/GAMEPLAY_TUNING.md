@@ -1,4 +1,4 @@
-# Accepted gameplay tuning
+# Gameplay tuning and build 7 prototype
 
 `Sources/PickleBlastCore/GameTuning.swift` is authoritative; this document describes the implementation rather than proposing a rebalance.
 
@@ -13,7 +13,7 @@
 | Arcade | 36 / 48 / 58 one-hit targets, three lives, two free recoveries per stage |
 | Final targets | Legitimate destruction leaving at most four starts base-score cleanup every 0.10 s |
 | Combo | Successive damage uses ×1, ×2, ×3, ×3, ×5; returns, misses and stages reset it |
-| Boss Rally | First to three, no win-by-two, two saves per match scoring neither side |
+| Boss Rally | First to three, no win-by-two; prototype starts at zero saves, earns one at each 20-return milestone if empty, cap one |
 | Match / save ready | 1.0 / 0.75 s |
 | Wall speed / acceleration / braking / observation delay | 7.2 ft/s / 24 ft/s² / 30 ft/s² / 0.20 s |
 | Banger | 8.8 / 29 / 35 / 0.20 |

@@ -204,6 +204,8 @@ public struct GameState: Equatable, Sendable {
     public var boss: BossState?
     public var score: Int = 0
     public var targetChain: Int = 0
+    /// Arcade allowances, or a single earned Boss Rally save (zero or one).
+    /// Boss Rally banks this across won points, but never across matches.
     public var recoveriesRemaining: Int = 2
     public var lives: Int = 3
     public var won: Bool = false
@@ -211,7 +213,11 @@ public struct GameState: Equatable, Sendable {
     public var resumeCountdown: Double = 0
     public var phaseTimeRemaining: Double = 0
     public var rallyTime: Double = 0
+    /// Both players' returns, retained for existing match records.
     public var currentRallyReturns: Int = 0
+    /// Successful PLAYER paddle contacts within this point. Boss contacts,
+    /// walls and serves do not count; either side's point or a save resets it.
+    public var consecutivePlayerReturns: Int = 0
     public var longestRallyReturns: Int = 0
     public var currentBossMatchLongestRallyReturns: Int = 0
     public var completedBossMatches: [BossMatchResult] = []
@@ -237,6 +243,10 @@ public enum GameEvent: Equatable, Sendable {
     case targetHit(id: Int, kind: TargetKind, destroyed: Bool, score: Int)
     case targetCleaned(id: Int, kind: TargetKind, score: Int)
     case ballRecovered(remaining: Int)
+    /// Emitted once on a Boss Rally save bank transition from zero to one.
+    case recoveryEarned
+    /// Emitted at each 20-return boundary, including while a save is banked.
+    case rallyMilestone(returns: Int)
     case comboChanged(chain: Int, multiplier: Int)
     case wallContact
     case lifeLost(remaining: Int)

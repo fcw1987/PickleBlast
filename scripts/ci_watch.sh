@@ -77,6 +77,7 @@ xcodebuild -project PickleBlast.xcodeproj -scheme PickleBlast -configuration Deb
   -maximum-test-execution-time-allowance 360 \
   -only-testing:PickleBlastWatchUITests/PickleBlastWatchUITests/testBossRallyHomeOrderRosterAndBack \
   -only-testing:PickleBlastWatchUITests/PickleBlastWatchUITests/testBossRallySelectEachOpponentPauseResumeAndHome \
+  -only-testing:PickleBlastWatchUITests/PickleBlastWatchUITests/testBossRallyStartsWithoutSavesAndThirdPointEndsMatch \
   -only-testing:PickleBlastWatchUITests/PickleBlastWatchUITests/testScriptedPlayNextAdvancesAllFiveOpponents \
   -only-testing:PickleBlastWatchUITests/PickleBlastWatchUITests/testPrivacyAndSupportScrollBackPreserveSettings \
   -only-testing:PickleBlastWatchUITests/PickleBlastWatchUITests/testPrivacyAndSupportShowReadableAddressesWithoutWebLaunchControls \

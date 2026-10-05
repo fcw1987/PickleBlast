@@ -55,7 +55,7 @@ struct BossRallySessionTests {
         #expect(session.engine.state.longestRallyReturns == 0)
     }
 
-    @Test("Pause and resume freeze a Boss Rally countdown, then a miss consumes only recovery allowance")
+    @Test("Pause and resume freeze a Boss Rally countdown, then a miss consumes a previously earned save")
     func pauseResumeAndMissAllowance() {
         let (session, defaults, suite) = makeSession(id: .banger)
         defer { defaults.removePersistentDomain(forName: suite) }
@@ -65,6 +65,8 @@ struct BossRallySessionTests {
                                               velocity: .init(x: 0, y: -26))
         session.engine.state.currentRallyReturns = 5
         session.engine.state.longestRallyReturns = 8
+        // A save banked by a previous twenty-return point survives this point.
+        session.engine.state.recoveriesRemaining = 1
         let rallyBall = session.engine.state.ball
         var time = 0.0
 
@@ -93,19 +95,17 @@ struct BossRallySessionTests {
         frames(1, session: session, time: &time)
         #expect(session.engine.state.ball?.position.y ?? 35 < (rallyBall?.position.y ?? 35))
         #expect(session.engine.state.lives == 3)
-        #expect(session.engine.state.recoveriesRemaining == 2)
+        #expect(session.engine.state.recoveriesRemaining == 1)
 
-        for expectedRecoveries in [1, 0] {
-            session.engine.state.phase = .playing
-            session.engine.state.ball = BallState(position: .init(x: 0.3, y: -0.29),
-                                                  velocity: .init(x: 0, y: -26))
-            frames(4, session: session, time: &time)
-            #expect(session.engine.state.phase == .ready)
-            #expect(session.engine.state.lives == 3)
-            #expect(session.engine.state.recoveriesRemaining == expectedRecoveries)
-            #expect(session.engine.state.currentRallyReturns == 0)
-            #expect(session.engine.state.longestRallyReturns == 8)
-        }
+        session.engine.state.phase = .playing
+        session.engine.state.ball = BallState(position: .init(x: 0.3, y: -0.29),
+                                              velocity: .init(x: 0, y: -26))
+        frames(4, session: session, time: &time)
+        #expect(session.engine.state.phase == .ready)
+        #expect(session.engine.state.lives == 3)
+        #expect(session.engine.state.recoveriesRemaining == 0)
+        #expect(session.engine.state.currentRallyReturns == 0)
+        #expect(session.engine.state.longestRallyReturns == 8)
 
         session.engine.state.phase = .playing
         session.engine.state.ball = BallState(position: .init(x: 0.3, y: -0.29),
@@ -301,7 +301,7 @@ struct BossRallySessionTests {
             #expect(!session.finished && !session.paused && !session.newBest)
             #expect(session.phase == .ready)
             #expect(session.score == 0 && session.playerRallyPoints == 0 && session.opponentRallyPoints == 0)
-            #expect(session.engine.state.recoveriesRemaining == 2)
+            #expect(session.engine.state.recoveriesRemaining == 0)
             #expect(session.engine.state.currentRallyReturns == 0)
             #expect(session.engine.state.longestRallyReturns == 0)
             #expect(session.engine.state.completedBossMatches.isEmpty)
@@ -344,7 +344,7 @@ struct BossRallySessionTests {
         session.restart()
         #expect(session.mode == .bossRally(.dinker))
         #expect(session.engine.state.bossID == .dinker)
-        #expect(session.score == 0 && session.engine.state.recoveriesRemaining == 2)
+        #expect(session.score == 0 && session.engine.state.recoveriesRemaining == 0)
         #expect(session.preferences.bossRecord(for: .poacher).wins == 1)
         #expect(session.preferences.bossRecord(for: .dinker).wins == 0)
         winCurrentMatch(session, time: &time)
@@ -380,7 +380,7 @@ struct BossRallySessionTests {
         #expect(session.engine.state == result)
         session.restart()
         #expect(session.mode == .bossRally(id))
-        #expect(session.engine.state.recoveriesRemaining == 2)
+        #expect(session.engine.state.recoveriesRemaining == 0)
         #expect(session.playerRallyPoints == 0 && session.opponentRallyPoints == 0)
     }
 }

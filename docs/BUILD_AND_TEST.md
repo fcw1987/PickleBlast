@@ -71,7 +71,7 @@ xcodebuild -project PickleBlast.xcodeproj -scheme PickleBlast \
   -derivedDataPath .build/WatchSimulator CODE_SIGNING_ALLOWED=NO clean build
 ```
 
-These builds need no Apple account. Debug uses `-Onone`; Release uses `-O` and whole-module compilation. The polish candidate is version 1.0, build 6, with its existing bundle identifier and local data domain.
+These builds need no Apple account. Debug uses `-Onone`; Release uses `-O` and whole-module compilation. The separate earned-save/HUD prototype is version 1.0, build 7, with its existing bundle identifier and local data domain.
 
 Install and launch the Debug product after building it:
 

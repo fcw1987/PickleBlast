@@ -46,3 +46,27 @@ Raw source inventories, run logs, hashes and before/after images remain in priva
 ## Compiled development bundle
 
 The preserved signed build 5 bundle contains 17,706,070 file bytes across 33 files. Signed build 6 contains 17,839,450 bytes across 33 files: an increase of 133,380 bytes (about 130 KiB). Both are development-signed watchOS Release products from the same Xcode installation; provisioning/signature bytes are included. Every compiled atlas page has the same dimensions and the summed RGBA estimate remains 32,950,964 bytes across all atlases. This is an inventory estimate, not concurrent residency: only the player and selected opponent character atlases are retained. It excludes driver allocations, mipmaps, heap, framework and shape-raster memory.
+
+## Build 6 real-time simulator comparison
+
+Three alternating fresh Debug processes per version used the same Ultra 4 49mm watchOS 27 simulator, Lobber seed 23 and real-time public-input evaluation policy, with no concurrent UI tests. Baseline build 5 and build 6 both measured median 30.03 callbacks/s and 33.33 ms sampled p95 callback intervals. Across the three processes, callbacks over 50 ms numbered one and zero respectively; that small sample does not establish an improvement.
+
+Median per-process resident-memory samples were 196.89 → 197.25 MiB, a 0.36 MiB difference. Scene initialization medians were 77.61 → 76.28 ms. These are simulator-host Debug measurements, not physical Watch RAM, GPU time, battery, heat or perceived launch latency. Instruments could not establish a physical Watch recording connection. The owner subsequently played build 6 and accepted the menus, while requesting stronger graphics.
+
+## Separate build 7 prototype
+
+Build 7 experiments with earned saves and a bounded milestone HUD. The three generated visual directions are review concepts, separate from the executable; their detailed art is not included in runtime atlases and has no measured Watch performance. Selecting a direction requires producing registered animation assets and measuring the resulting bundle, decoded atlas footprint, loading and on-device behavior. Neither the existing build 6 measurements nor conceptual asset budgets establish that those future graphics are affordable.
+
+The final milestone renderer was compared with exact build 6 source `552397e` using three alternating fresh Release host processes per version. The Apple M3 Max/Xcode 27.0 probe ran while native builds and simulator UI testing were paused. Twelve held Lobber fixtures covered ordinary, active and Reduced Motion presentation at 20/40 player returns and both measured Watch layouts. Each fixture measured 1,140 update calls after warmup; milestone-trigger updates were timed separately. Both versions used the same legacy combined-contact counts. These synthetic states measure presentation cost, not natural rally reachability.
+
+| Host metric, median of per-run values | Build 6 | Final build 7 milestone prototype |
+| --- | ---: | ---: |
+| Aggregate scene-update CPU mean | 0.007808 ms | 0.008051 ms |
+| Milestone-trigger CPU mean range | 0.00781–0.00841 ms | 0.06558–0.07462 ms |
+| Scene descendants / labels | 178 / 6 | 186 / 7 |
+| End-process RSS median | 46.56 MiB | 47.58 MiB |
+| End-process RSS range | 46.52–47.73 MiB | 47.00–55.45 MiB |
+
+Per-fixture mean CPU deltas ranged from +0.000093 to +0.000399 ms. The largest median trigger p95 was 0.09288 ms; that additional text/layout cost is separate from steady animation work. Node identities remained stable, and all intended active-animation samples were visible. All 1,678 runtime-art files remained byte-identical. Source and preview hashes are recorded with the [actual-renderer milestone captures](engineering/build-7-milestones/README.md).
+
+The probe measures unpaced macOS node updates, excluding core simulation, displayed rendering and GPU work. A synthetic 1/30-second input clock is not measured 30 Hz frame pacing. RSS ranges overlap; three short processes cannot establish a memory regression or Watch RAM use. Physical Watch GPU cost, frame intervals, memory, energy, heat and usability remain unmeasured for build 7. No concept art was loaded by this probe, and these results do not establish that the proposed richer graphics are affordable.

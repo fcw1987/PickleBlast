@@ -1,0 +1,75 @@
+{
+  "version": "1.0 (7)",
+  "method": "Native macOS shared SpriteKit renderer; synthetic held Lobber/ball fixtures with measured Watch safe insets. Not live Watch screenshots or performance samples.",
+  "viewports": {
+    "large": {
+      "points": [
+        211,
+        257
+      ],
+      "safeInsetsTopBottom": [
+        56.5,
+        40
+      ]
+    },
+    "small": {
+      "points": [
+        162,
+        197
+      ],
+      "safeInsetsTopBottom": [
+        40,
+        19
+      ]
+    }
+  },
+  "sourceSHA256": {
+    "Sources/PickleBlastRendering/PickleBlastScene.swift": "7f5f229b59ed8c4093702ae38154265bdf94d297b2981beeb7c5b1fd002ab740",
+    "Sources/PickleBlastRendering/RallyMomentumHUD.swift": "8362e997c0fae8eb59873346371771e662d083e9cbfdaa28a21b1aea876469ab",
+    "Sources/PickleBlastCore/GameEngine.swift": "70be1c77cdcfa7fcbb2ca017ef7dc010b0a7f36a23810f826bdd73dc53e683e4",
+    "Sources/PickleBlastCore/GameTypes.swift": "c0e76441d07ddf1966f683d562d066d7da767ca3c26519c3a2469bb27242f9fe",
+    "Tools/RenderEvidence/RallyMilestoneEvidence.swift": "309f3a93487b18be4716e67f18028617fe7c305afb256a1efe70387d057d23df"
+  },
+  "images": {
+    "large-returns-19.png": {
+      "bytes": 191814,
+      "sha256": "dec377665774b82116b7769f15ad705661bf4d26af437b86b2ea718791c80c5e"
+    },
+    "large-returns-20.png": {
+      "bytes": 191921,
+      "sha256": "2f1803673ce5d7c0e1463639d2b76c4846754b3a46554e0669e1103a84d987e3"
+    },
+    "large-returns-40.png": {
+      "bytes": 190678,
+      "sha256": "53f378cd814ec5907cbdda14b6c7eb7304fb20495336d72aa7e545d964ed8098"
+    },
+    "large-milestone-animated.gif": {
+      "bytes": 93364,
+      "sha256": "ee7107531ee327358d95308cb6150639b67c18f168b8c59765dc4f23ece91774"
+    },
+    "large-milestone-reduced-motion.gif": {
+      "bytes": 69772,
+      "sha256": "8bb4d1c4c1bc8179f96b8db4342e8408fbcd76b444ae6dceda339adf52e24c85"
+    },
+    "small-returns-19.png": {
+      "bytes": 123733,
+      "sha256": "c4fc8907aeac7ed7302e2c923160f675bad2a2fd0da7a7c585aca5aee121ab77"
+    },
+    "small-returns-20.png": {
+      "bytes": 123851,
+      "sha256": "54b6cd927506ec6481048851482f2e1f050749cc089aa585fe21c88beb235146"
+    },
+    "small-returns-40.png": {
+      "bytes": 122694,
+      "sha256": "7893ce46c852c3e2ebe7c9c513849a82d7903e5e5eb5dc589ab976bc5d3a2bdc"
+    },
+    "small-milestone-animated.gif": {
+      "bytes": 74283,
+      "sha256": "4cbb8f770749e23ce4d7940d2837512f7b1aceaa2d34f495a7cf94efb57d753a"
+    },
+    "small-milestone-reduced-motion.gif": {
+      "bytes": 52874,
+      "sha256": "a665a7aba213fe4a566bc709e8cfd4dc6c654e6ea14eee5fa7e5e36e7f5bd162"
+    }
+  }
+}

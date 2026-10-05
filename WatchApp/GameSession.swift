@@ -373,7 +373,7 @@ struct GameplayFeedbackPolicy {
             switch event {
             case .lifeLost, .opponentPoint:
                 if priority < 3 { primary = .failure; priority = 3 }
-            case .waveCleared, .bossDefeated:
+            case .waveCleared, .bossDefeated, .recoveryEarned:
                 if priority < 2 { primary = .success; priority = 2 }
             case let .bossMatchEnded(result):
                 let resultPriority = result.won ? 2 : 3

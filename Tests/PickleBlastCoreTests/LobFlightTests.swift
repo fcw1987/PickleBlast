@@ -62,7 +62,26 @@ struct LobFlightTests {
         }
         #expect(contacts == 1)
         #expect(engine.state.playerRallyPoints == 0 && engine.state.opponentRallyPoints == 0)
-        #expect(engine.state.recoveriesRemaining == 2)
+        #expect(engine.state.recoveriesRemaining == 0)
+    }
+
+    @Test("A real descending lob supplies the twentieth return and awards exactly one save",
+          arguments: [1.0 / 120, 1.0 / 30, 0.10])
+    func descendingLobEarnsSave(cadence: Double) throws {
+        let engine = try launchedLob()
+        let lob = try #require(engine.state.rallyShot?.lobFlight)
+        engine.state.consecutivePlayerReturns = 19
+        engine.movePlayer(crownDelta: lob.receivingX - engine.state.playerX)
+        var all: [GameEvent] = []
+        for _ in 0..<Int(ceil(lob.duration / cadence)) + 2 {
+            all += engine.update(delta: cadence)
+        }
+        #expect(all.paddleContacts == 1)
+        #expect(all.filter { $0 == .recoveryEarned }.count == 1)
+        #expect(all.filter { $0 == .rallyMilestone(returns: 20) }.count == 1)
+        #expect(engine.state.consecutivePlayerReturns == 20)
+        #expect(engine.state.recoveriesRemaining == 1)
+        #expect(engine.state.rallyShot?.lobFlight == nil)
     }
 
     @Test("Rise, apex and descent freeze through interruption and resume without a jump",
@@ -89,11 +108,12 @@ struct LobFlightTests {
         #expect(resumed.duration == duration)
     }
 
-    @Test("Missed lobs use two non-scoring saves then first-to-three opponent points")
+    @Test("Missed lobs consume one banked save then first-to-three opponent points")
     func lobMissScoring() throws {
         let engine = GameEngine(mode: .bossRally(.lobber), seed: 83)
+        engine.state.recoveriesRemaining = 1 // A save earned during an earlier rally.
         var saved = 0, scored = 0
-        for _ in 0..<5 {
+        for _ in 0..<4 {
             engine.state.phase = .playing
             engine.state.playerX = 18.9
             let origin = Vector2(x: 3, y: engine.activeBossConfiguration.y - engine.tuning.ballRadius)
@@ -109,7 +129,7 @@ struct LobFlightTests {
             #expect(!events.contains { if case .paddleContact = $0 { return true }; return false })
             #expect(engine.state.rallyShot == nil)
         }
-        #expect(saved == 2 && scored == 3)
+        #expect(saved == 1 && scored == 3)
         #expect(engine.state.phase == .results)
         #expect(engine.state.opponentRallyPoints == 3)
         #expect(engine.state.playerRallyPoints == 0 && engine.state.score == 0)

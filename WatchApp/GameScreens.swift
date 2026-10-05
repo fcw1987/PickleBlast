@@ -217,7 +217,8 @@ struct HowToPlayView: View {
         ("arrow.up.left.and.arrow.up.right", "Meet the ball at your center to return straight. Edge contact sends it left or right."),
         ("square.grid.3x2", "Clear three dense waves. Every target breaks in one hit."),
         ("heart.fill", "Arcade gives two free ball recoveries per stage before a miss costs a life."),
-        ("figure.pickleball", "Boss Rally is first to three points. Choose any opponent. After a win, Play Next continues through Wall, Banger, Poacher, Dinker, then Lobber. Lobber is the final opponent. You get two saves per match. R counts rally returns; S shows saves."),
+        ("figure.pickleball", "Boss Rally is first to three points. Choose any opponent. After a win, Play Next continues through Wall, Banger, Poacher, Dinker, then Lobber. Lobber is the final opponent."),
+        ("shield.lefthalf.filled", "Earn a save with 20 consecutive player returns. The ring fills toward each 20-return milestone; a filled shield means one save is ready. One save can be held at a time. A miss uses it automatically. Each new rally resets the ring; a held save lasts until used or the match ends."),
         ("bolt.fill", "The Wall covers steadily. The Banger drives harder. The Poacher commits to a side. The Dinker changes pace. The Lobber sends high arcs into your normal receiving area."),
         ("pause.fill", "Tap Pause at the top to take a break, restart, or return Home. After an interruption, choose Resume.")
     ]
@@ -344,6 +345,8 @@ struct RunView: View {
             return modeAccessibility + " " + String(format: "You %d. Boss %d. %d saves. Rally %d returns. Player x=%.3f. Crown gain %.3f. Score %d. %@.",
                 session.playerRallyPoints, session.opponentRallyPoints, state.recoveriesRemaining,
                 state.currentRallyReturns, state.playerX, session.crownGain, session.score, activity)
+                + " Player return streak \(state.consecutivePlayerReturns). Earn a save every 20 consecutive player returns. Hold one save at a time. "
+                + (state.recoveriesRemaining > 0 ? "Save ready." : "\(GameTuning.earnedRecoveryReturnInterval - state.consecutivePlayerReturns % GameTuning.earnedRecoveryReturnInterval) returns to the next save milestone.")
         }
     }
 

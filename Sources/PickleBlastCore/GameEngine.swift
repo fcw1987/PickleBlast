@@ -57,7 +57,7 @@ public final class GameEngine {
                                                             baseRadius: tuning.celebrationBallRadius,
                                                             seed: seed ^ 0xCA5CADE))
         state.mode = mode
-        state.recoveriesRemaining = max(0, tuning.freeRecoveriesPerStage)
+        state.recoveriesRemaining = mode.isBossRally ? 0 : max(0, tuning.freeRecoveriesPerStage)
         state.lives = tuning.initialLives
         state.stage = runPlan.stages[0].stage
         if let id = runPlan.stages[0].bossID {
@@ -82,7 +82,7 @@ public final class GameEngine {
                                                       baseRadius: tuning.celebrationBallRadius,
                                                       seed: initialSeed ^ 0xCA5CADE))
         state.mode = mode
-        state.recoveriesRemaining = max(0, tuning.freeRecoveriesPerStage)
+        state.recoveriesRemaining = mode.isBossRally ? 0 : max(0, tuning.freeRecoveriesPerStage)
         state.lives = tuning.initialLives
         state.stage = runPlan.stages[0].stage
         if let id = runPlan.stages[0].bossID {
@@ -293,6 +293,7 @@ public final class GameEngine {
         state.rallyShot = nil
         state.rallyTime = 0
         state.currentRallyReturns = 0
+        state.consecutivePlayerReturns = 0
         incomingGuided = false; noProgressTime = 0; stallRedirected = false
         targetContacts.removeAll(keepingCapacity: true)
         if mode.isBossRally { resetRallyRuntime(retainingHistory: true) }
@@ -326,7 +327,7 @@ public final class GameEngine {
                             events: inout [GameEvent]) {
         resetTargetChain(events: &events)
         state.stage = entry.stage
-        state.recoveriesRemaining = max(0, tuning.freeRecoveriesPerStage)
+        state.recoveriesRemaining = mode.isBossRally ? 0 : max(0, tuning.freeRecoveriesPerStage)
         state.playerX = CourtGeometry.centerX
         state.crownInput = state.playerX
         state.playerAnimation = .ready
@@ -955,6 +956,7 @@ public final class GameEngine {
                 }
                 state.boss!.points += 1
                 state.score += tuning.bossPointScore
+                if mode.isBossRally { state.consecutivePlayerReturns = 0 }
                 events.append(.bossPoint(points: state.boss!.points))
                 if state.boss!.points >= activeBossConfiguration.pointsToWin {
                     state.score += tuning.bossVictoryBonus
@@ -1038,11 +1040,23 @@ public final class GameEngine {
         swingSide = side; swingElapsed = 0
         state.playerAnimation = contactAnimation(side)
         events.append(.paddleContact(x: ball.position.x, side: side, centered: centered))
+        if mode.isBossRally { state.consecutivePlayerReturns += 1 }
+        if mode.isBossRally,
+           state.consecutivePlayerReturns.isMultiple(of: GameTuning.earnedRecoveryReturnInterval) {
+            events.append(.rallyMilestone(returns: state.consecutivePlayerReturns))
+            // A full bank never accumulates credit. A miss consumes its one
+            // save and starts a new streak, which must earn another 20 returns.
+            if state.recoveriesRemaining == 0 {
+                state.recoveriesRemaining = 1
+                events.append(.recoveryEarned)
+            }
+        }
         if mode.isBossRally { recordRallyShot(kind: .normal, requestedSpeed: ball.speed, ball: ball, events: &events) }
     }
 
     private func missPlayerBall(events: inout [GameEvent]) {
         resetTargetChain(events: &events)
+        if mode.isBossRally { state.consecutivePlayerReturns = 0 }
         state.playerAnimation = .miss
         missRemaining = tuning.missAnimationDuration
         swingSide = nil

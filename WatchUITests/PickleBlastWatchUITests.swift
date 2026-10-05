@@ -86,7 +86,7 @@ final class PickleBlastWatchUITests: XCTestCase {
                 XCTAssertTrue(reset.contains("Score 0. 3 lives. 2 saves."), reset)
             } else {
                 XCTAssertTrue(reset.contains("Boss Rally. THE \(mode.uppercased())."), reset)
-                XCTAssertTrue(reset.contains("You 0. Boss 0. 2 saves. Rally 0 returns."), reset)
+                XCTAssertTrue(reset.contains("You 0. Boss 0. 0 saves. Rally 0 returns."), reset)
                 XCTAssertTrue(reset.contains("Score 0."), reset)
             }
             XCTAssertFalse(reset.contains("Paused"), reset)
@@ -726,7 +726,7 @@ final class PickleBlastWatchUITests: XCTestCase {
     }
 
     @MainActor
-    func testBossRallySavesDoNotScoreAndThirdPointEndsMatch() throws {
+    func testBossRallyStartsWithoutSavesAndThirdPointEndsMatch() throws {
         let app = launchHome()
         app.buttons["home.bossRally"].tap()
         let choice = app.buttons["boss.select.wall"]
@@ -735,10 +735,10 @@ final class PickleBlastWatchUITests: XCTestCase {
         XCTAssertTrue(court.waitForExistence(timeout: 5))
         XCTAssertFalse((court.value as? String ?? "").contains("lives"))
         dragAcross(court, from: 0.5, to: 0.02)
-        // Normal input keeps the player outside the neutral serve. Each save
-        // preserves 0–0; the following three genuine misses decide the match.
-        for status in ["You 0. Boss 0. 1 saves.", "You 0. Boss 0. 0 saves.",
-                       "You 0. Boss 1. 0 saves.", "You 0. Boss 2. 0 saves."] {
+        // No return streak has earned a save. Ordinary misses must award points
+        // immediately, and the third genuine miss decides the match.
+        XCTAssertTrue((court.value as? String ?? "").contains("0 saves."))
+        for status in ["You 0. Boss 1. 0 saves.", "You 0. Boss 2. 0 saves."] {
             let observed = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
                 (court.value as? String ?? "").contains(status)
             }, object: nil)
@@ -751,7 +751,7 @@ final class PickleBlastWatchUITests: XCTestCase {
         let retry = app.buttons["results.replay"]
         reveal(retry, in: app); retry.tap()
         XCTAssertTrue(court.waitForExistence(timeout: 5))
-        XCTAssertTrue((court.value as? String ?? "").contains("You 0. Boss 0. 2 saves."))
+        XCTAssertTrue((court.value as? String ?? "").contains("You 0. Boss 0. 0 saves."))
     }
 
     @MainActor func testScriptedWallRallyVictoryRematchAndChooseOpponent() throws { try scriptedBossVictory("wall") }
@@ -942,7 +942,7 @@ final class PickleBlastWatchUITests: XCTestCase {
                                       file: StaticString = #filePath, line: UInt = #line) {
         let status = court.value as? String ?? ""
         XCTAssertTrue(status.hasPrefix("Boss Rally. THE \(id.uppercased())."), status, file: file, line: line)
-        XCTAssertTrue(status.contains("You 0. Boss 0. 2 saves."), status, file: file, line: line)
+        XCTAssertTrue(status.contains("You 0. Boss 0. 0 saves."), status, file: file, line: line)
         XCTAssertTrue(status.contains("Score 0."), status, file: file, line: line)
         XCTAssertFalse(status.contains("Paused"), status, file: file, line: line)
     }
