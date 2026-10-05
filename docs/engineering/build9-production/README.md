@@ -1,6 +1,6 @@
 # Build 9: moon, Watch icon and Arcade production pass
 
-The unmerged iteration is development version **1.0 (9)**, runtime commit `0b39a0ca4cc95cd5b8a2d7e7f8d4089857479644`. Build 8 (`e45c612`) remains the before baseline. Main is unchanged. [Draft PR #2](https://github.com/fcw1987/PickleBlast/pull/2) and [exact-head CI](https://github.com/fcw1987/PickleBlast/actions/runs/37350093327) track the candidate.
+The unmerged iteration is development version **1.0 (9)**, runtime commit `0b39a0ca4cc95cd5b8a2d7e7f8d4089857479644`. Build 8 (`e45c612`) remains the before baseline. Main is unchanged. [Draft PR #2](https://github.com/fcw1987/PickleBlast/pull/2) and the passing [exact-head CI](https://github.com/fcw1987/PickleBlast/actions/runs/37350093327) track the candidate.
 
 ## Changes
 
@@ -20,11 +20,13 @@ These are actual simulator app screenshots, with compiled atlases, native clock 
 
 ## Icon at launcher size
 
-The comparison includes 40pt and 54pt circular masks at 2× pixel density and an enlarged view. The unscaled native 90×90px crop is from the actual small Watch launcher. After an in-place simulator update, the first launcher capture showed its stale old icon; a reboot of that dedicated simulator preserved data and refreshed the cache. This final crop shows the new icon. Physical launcher appearance remains a user check.
+The comparison includes 40pt and 54pt circular masks at 2× pixel density and an enlarged view. The unscaled native 90×90px crop is from the actual small Watch launcher. After an in-place simulator update, the first launcher capture showed its stale old icon; a reboot of that dedicated simulator preserved data and refreshed the cache. This final crop shows the new icon. The paired physical Watch also returned the correct non-placeholder installed icon at40pt/2× (80×80px), shown below. This is an OS icon-service result, not a physical launcher screenshot. Physical launcher appearance and gameplay remain user checks.
 
 ![Original and new icon](images/icon-comparison.png)
 
 ![Native launcher icon crop](images/native-icon.png)
+
+![Physical Watch installed icon](images/physical-installed-icon.png)
 
 ## Matched renderer-only before/after and feedback
 

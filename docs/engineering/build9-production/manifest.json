@@ -67,6 +67,12 @@
       "file": "images/host-small-reduced-motion.gif",
       "bytes": 545429,
       "sha256": "f0eb77768bfdd3312131a3f8242a4efc9700bc923d8f728bd24daca6715a0951"
+    },
+    {
+      "file": "images/physical-installed-icon.png",
+      "bytes": 15138,
+      "sha256": "f04b5d9caa8a7e2d3e6f68165d1f21ad58253dbd2c086519815b1e445e2d7d6e",
+      "method": "Read-only physical Watch OS installed-app icon service;80x80px,40pt/2x,placeholderfalse;not launcher screenshot"
     }
   ]
 }
