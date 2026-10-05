@@ -12,9 +12,9 @@ These historical captures show version 1.0 (4) in the watchOS 27.0 simulator. Th
 
 ## Play
 
-Turn the Digital Crown or drag on the court to move. Your player returns the ball automatically; your position shapes the shot. The court glows against a true-black background, with a neon OLED-focused look.
+Turn the Digital Crown or drag on the court to move. Your player returns the ball automatically; your position shapes the shot. The build 8 candidate uses the selected B3 slate-blue court with illustrated night-arena scenery, a darker kitchen and white painted lines. The HUD and outer fade retain black areas.
 
-**Boss Rally** appears first on Home. Choose The Wall, The Banger, The Poacher, The Dinker, or The Lobber individually. After a win, **Play Next** offers the next opponent in that displayed order. The Lobber ends the list without looping; Rematch, Choose Opponent, and Home remain available. In this unaccepted build 7 prototype, each match is first to three points and starts with no saves. Every 20 consecutive player returns in one rally can earn one save; only one can be held. The Wall rewards placement, The Banger presses the pace, and The Poacher commits to a side from your shot tendencies. The Dinker mixes in soft resets; The Lobber sends elevated shots back to your normal receiving area. Your wins, best score, and longest rally for each boss stay on your Watch.
+**Boss Rally** appears first on Home. Choose The Wall, The Banger, The Poacher, The Dinker, or The Lobber individually. After a win, **Play Next** offers the next opponent in that displayed order. The Lobber ends the list without looping; Rematch, Choose Opponent, and Home remain available. In this unaccepted iteration, each match is first to three points and starts with no saves. Every 20 consecutive player returns in one rally can earn one save; only one can be held. The Wall rewards placement, The Banger presses the pace, and The Poacher commits to a side from your shot tendencies. The Dinker mixes in soft resets; The Lobber sends elevated shots back to your normal receiving area. Your wins, best score, and longest rally for each boss stay on your Watch.
 
 **Arcade** appears below Boss Rally and offers three target waves followed by a final rally against The Wall. Your best score is stored locally.
 
@@ -48,7 +48,7 @@ SwiftUI provides the menus, settings, pause, and results. The pure Swift `Pickle
 
 Game settings and records are stored in the app's local storage. PickleBlast works offline and has no account, gameplay server, analytics, advertising, or user-tracking integration. Apple system services follow Apple's own policies; see [Privacy](PRIVACY.md) for the app's inspected behavior.
 
-The current polish candidate is version 1.0 (6), awaiting independent user testing and acceptance. PickleBlast has not been released through the App Store or TestFlight. [App Store readiness](docs/APP_STORE_READINESS.md) describes the outstanding work.
+The current iteration candidate is version 1.0 (8), combining B3 arena artwork with the earned-save and milestone prototype. Build 6 and build 7 remain preserved on separate branches. The iteration is unmerged and awaits independent user testing and acceptance. PickleBlast has not been released through the App Store or TestFlight. [App Store readiness](docs/APP_STORE_READINESS.md) describes the outstanding work.
 
 ## Issues, security, and rights
 

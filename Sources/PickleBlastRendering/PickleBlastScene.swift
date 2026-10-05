@@ -18,7 +18,8 @@ public final class PickleBlastScene: SKScene {
     #endif
     private let world = SKNode()
     private let background: SKSpriteNode
-    private let court = NightArenaCourt()
+    private let systemClockBacking = SKShapeNode()
+    private let court: NightArenaCourt
     private let playerGround = SKShapeNode(ellipseOf: CGSize(width: 21, height: 3.6))
     private let bossGround = SKShapeNode(ellipseOf: CGSize(width: 16, height: 2.8))
     private let player: CharacterNode
@@ -73,6 +74,7 @@ public final class PickleBlastScene: SKScene {
         self.textures = textureLibrary
         self.courtProjection = CourtProjection(viewportWidth: size.width, viewportHeight: size.height)
         self.background = SKSpriteNode(texture: textureLibrary.supporting("backgroundArena"))
+        self.court = NightArenaCourt(material: textureLibrary.supporting("courtSlateB3"))
         self.player = CharacterNode(frontFacing: false, textures: textureLibrary, tuning: tuning)
         self.boss = CharacterNode(frontFacing: true, textures: textureLibrary, tuning: tuning)
         self.ball = SKSpriteNode(texture: textureLibrary.ball)
@@ -83,16 +85,24 @@ public final class PickleBlastScene: SKScene {
         addChild(world)
         background.name = "decorativeBackground"
         background.zPosition = -10
-        background.alpha = 0.34
+        background.alpha = 1
         world.addChild(background)
+        // The native watchOS clock overlays the full-display scene. Keep its
+        // small safe-area region dark even when the authored moon sits behind it.
+        systemClockBacking.name = "systemClockBacking"
+        systemClockBacking.zPosition = -5
+        systemClockBacking.fillColor = SKColor(white: 0, alpha: 0.96)
+        systemClockBacking.strokeColor = .clear
+        systemClockBacking.lineWidth = 0
+        world.addChild(systemClockBacking)
         world.addChild(court)
         buildCourt()
         for (node, name, color) in [(playerGround, "playerGrounding", Neon.cyan),
                                      (bossGround, "bossGrounding", Neon.magenta)] {
             node.name = name
             node.zPosition = 0.5
-            node.fillColor = color.withAlphaComponent(0.10)
-            node.strokeColor = color.withAlphaComponent(0.30)
+            node.fillColor = SKColor(white: 0, alpha: 0.58)
+            node.strokeColor = color.withAlphaComponent(0.24)
             node.lineWidth = 0.55
             CrispVector.prepare(node)
             world.addChild(node)
@@ -329,7 +339,7 @@ public final class PickleBlastScene: SKScene {
     }
 
     /// Insets come from an outer SwiftUI geometry reader before the game surface
-    /// extends under system chrome. Only the court background can enter that area.
+    /// extends under system chrome. Scenery and its clock backing may enter that area.
     public func setViewport(_ viewport: CGSize, safeTop: CGFloat, safeBottom: CGFloat,
                             safeLeading: CGFloat = 0, safeTrailing: CGFloat = 0) {
         let next = (safeTop, safeBottom, safeLeading, safeTrailing)
@@ -352,6 +362,13 @@ public final class PickleBlastScene: SKScene {
         let scale = max(requiredWidth / art.pixelSize[0], size.height / art.pixelSize[1])
         background.size = CGSize(width: art.pixelSize[0] * scale, height: art.pixelSize[1] * scale)
         background.position = CGPoint(x: visualCenterX, y: size.height / 2)
+        let clockHeight = min(27, max(0, safeInsets.top - 4))
+        let clockWidth = min(64, max(1, size.width * 0.37))
+        let clockPanel = CGRect(x: max(0, size.width - max(4, safeInsets.trailing + 4) - clockWidth),
+                                y: size.height - safeInsets.top / 2 - clockHeight / 2,
+                                width: clockWidth, height: clockHeight)
+        systemClockBacking.path = CGPath(roundedRect: clockPanel, cornerWidth: 8, cornerHeight: 8, transform: nil)
+        systemClockBacking.isHidden = clockHeight == 0
         buildCourt()
         let groundingScale = sqrt(size.width / 211)
         CrispVector.setVisualScale(groundingScale, on: playerGround)

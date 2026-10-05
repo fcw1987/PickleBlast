@@ -188,6 +188,9 @@ class GeneratedResourcesTests(unittest.TestCase):
         cls.icons = Path(cls.temporary.name) / "Icon"
         cls.source = art.fixture_source(Path(cls.temporary.name) / "Source")
         cls.source_hashes = {str(path.relative_to(cls.source)): art.digest(path) for path in cls.source.rglob("*") if path.is_file()}
+        cls.environment_hashes = {path: art.digest(path) for path in
+            [art.BACKGROUND_APPROVED, art.BACKGROUND_CLEAN]
+            + [item["source"] for item in art.environment_allowlist().values()]}
         cls.manifest, cls.audit = art.run(cls.source, cls.output, cls.icons)
 
     def test_source_pack_is_unchanged_and_character_frames_are_exact_copies(self):
@@ -197,6 +200,7 @@ class GeneratedResourcesTests(unittest.TestCase):
         self.assertEqual(len(images), 1626)
         self.assertTrue(all(item["sourceSHA256"] == item["sha256"] for item in images))
         self.assertEqual(sum(item["estimatedDecodedRGBABytes"] for item in images), 106_561_536)
+        self.assertEqual(self.manifest["characters"], art.read_json(art.OUTPUT / "runtime_manifest.json")["characters"])
 
     def test_resources_exclude_unselected_resolutions_and_future_content(self):
         included = {item["source"] for item in self.audit["resources"]}
@@ -205,27 +209,43 @@ class GeneratedResourcesTests(unittest.TestCase):
         self.assertTrue(any(path.startswith("Bosses/Runtime128/BossDinker.atlas/") for path in included))
         self.assertTrue(any(path.startswith("Bosses/Runtime128/BossLobber.atlas/") for path in included))
         self.assertFalse(any("Master256" in path or "Body.atlas" in path for path in included))
-        self.assertEqual(len(self.manifest["supporting"]), 49)
+        self.assertEqual(len(self.manifest["supporting"]), 50)
         self.assertIn("Targets/Objects/target_powerup.png", self.audit["omittedOptionalPNGs"])
 
-    def test_approved_background_is_preserved_and_runtime_atmosphere_is_bounded(self):
+    def test_approved_masters_are_unchanged_and_two_runtime_layers_are_bounded(self):
+        self.assertEqual({path: art.digest(path) for path in self.environment_hashes}, self.environment_hashes)
         self.assertEqual(art.digest(art.BACKGROUND_APPROVED), art.BACKGROUND_APPROVED_SHA256)
         self.assertEqual(art.digest(art.BACKGROUND_CLEAN), art.BACKGROUND_CLEAN_SHA256)
-        entry = self.manifest["supporting"]["backgroundArena"]
-        self.assertEqual(entry, {"atlas": "Arena", "name": "gameplay_background",
-                                 "pixelSize": [512, 512], "alphaBounds": [0, 0, 512, 512]})
-        runtime = self.output / "Arena.atlas/gameplay_background.png"
-        width, height, channels, _ = art.png_pixels(runtime)
-        self.assertEqual((width, height, channels), (512, 512, 3))
-        self.assertEqual(self.audit["groups"]["Arena.atlas"]["images"], 1)
-        self.assertEqual(self.audit["groups"]["Arena.atlas"]["estimatedDecodedRGBABytes"], 1_048_576)
+        for key, atlas, name in (("backgroundArena", "Arena", "arena_b3"),
+                                 ("courtSlateB3", "CourtMaterial", "court_slate_b3")):
+            self.assertEqual(self.manifest["supporting"][key], {"atlas": atlas, "name": name,
+                "pixelSize": [512, 512], "alphaBounds": [0, 0, 512, 512]})
+            self.assertEqual(art.png_pixels(self.output / f"{atlas}.atlas/{name}.png")[:3], (512, 512, 3))
+            self.assertEqual(self.audit["groups"][atlas + ".atlas"]["images"], 1)
+            self.assertEqual(self.audit["groups"][atlas + ".atlas"]["estimatedDecodedRGBABytes"], 1_048_576)
+        self.assertEqual(sum(self.audit["groups"][atlas]["estimatedDecodedRGBABytes"]
+                             for atlas in ("Arena.atlas", "CourtMaterial.atlas")), 2_097_152)
         self.assertEqual(self.audit["backgroundSource"]["approvedFilename"], "PickleblastBackground.png")
+        self.assertEqual(self.audit["environmentSources"], art.environment_sources())
 
-    def test_background_conversion_is_byte_deterministic(self):
-        destination = Path(self.temporary.name) / "background-again.png"
-        art.convert_png(art.BACKGROUND_CLEAN, destination, art.BACKGROUND_RUNTIME_SIZE, opaque=True)
-        self.assertEqual(destination.read_bytes(),
-                         (self.output / "Arena.atlas/gameplay_background.png").read_bytes())
+    def test_environment_conversions_are_byte_deterministic(self):
+        for specification in art.environment_allowlist().values():
+            destination = Path(self.temporary.name) / (specification["name"] + "-again.png")
+            art.convert_png(specification["source"], destination, art.BACKGROUND_RUNTIME_SIZE, opaque=True)
+            self.assertEqual(destination.read_bytes(),
+                             (self.output / f"{specification['atlas']}.atlas/{specification['name']}.png").read_bytes())
+
+    def test_full_concepts_and_retired_background_are_not_runtime_resources(self):
+        self.assertEqual({path.name for path in (self.output / "Arena.atlas").iterdir()},
+                         {"arena_b3.png"})
+        self.assertEqual({path.name for path in (self.output / "CourtMaterial.atlas").iterdir()},
+                         {"court_slate_b3.png"})
+        selected = [item for item in self.audit["resources"] if item["kind"] == "environment"]
+        self.assertEqual({item["source"] for item in selected}, {
+            "ArtSources/Backgrounds/B3/arena-b3-source.png",
+            "ArtSources/Backgrounds/B3/court-slate-b3-source.png"})
+        self.assertFalse(any("Concepts/" in item["source"] for item in self.audit["resources"]))
+        self.assertTrue(art.RETIRED_MANAGED_ART_PATHS.isdisjoint(self.audit["managedArtPaths"]))
 
     def test_runtime_ball_preserves_padding_and_actual_alpha_bounds(self):
         entry = self.manifest["supporting"]["ball"]
@@ -254,9 +274,9 @@ class GeneratedResourcesTests(unittest.TestCase):
     def test_check_detects_missing_required_generated_resource(self):
         stage = Path(self.temporary.name) / "CheckStage"
         stage.mkdir(exist_ok=True)
-        (stage / "resource.json").write_text("required")
+        (stage / "runtime_manifest.json").write_text("required")
         with self.assertRaisesRegex(art.ArtError, "differs or is missing"):
-            art.install_tree(stage, self.output, ["resource.json"], [], check=True)
+            art.install_tree(stage, self.output, ["runtime_manifest.json"], [], check=True)
 
     def test_technical_conversion_is_byte_deterministic(self):
         destination = Path(self.temporary.name) / "ball-again.png"
@@ -266,6 +286,10 @@ class GeneratedResourcesTests(unittest.TestCase):
     def test_outputs_cannot_mutate_source_pack(self):
         with self.assertRaisesRegex(art.ArtError, "outside immutable source pack"):
             art.run(self.source, self.source / "Imported", self.icons)
+
+    def test_outputs_cannot_mutate_environment_source_directory(self):
+        with self.assertRaisesRegex(art.ArtError, "immutable environment sources"):
+            art.run(self.source, art.B3_SOURCE_ROOT / "Imported", self.icons)
 
     def test_runtime_check_needs_no_optional_master_pack(self):
         with patch.object(art, "SOURCE", Path(self.temporary.name) / "MissingPrivatePack"):
@@ -293,6 +317,40 @@ class GeneratedResourcesTests(unittest.TestCase):
         finally:
             path.unlink(missing_ok=True)
 
+    def test_runtime_check_rejects_retired_background(self):
+        for relative in sorted(art.RETIRED_MANAGED_ART_PATHS):
+            path = self.output / relative
+            try:
+                shutil.copyfile(self.output / "Arena.atlas/arena_b3.png", path)
+                with self.assertRaisesRegex(art.ArtError, "membership differs"):
+                    art.check_runtime(self.output, self.icons)
+            finally:
+                path.unlink(missing_ok=True)
+
+    def test_runtime_check_rejects_changed_environment_source_audit(self):
+        path = self.output / "import_audit.json"
+        original = path.read_bytes()
+        data = json.loads(original)
+        data["environmentSources"]["courtSlateB3"]["sourceSHA256"] = "0" * 64
+        try:
+            path.write_bytes(art.json_bytes(data))
+            with self.assertRaisesRegex(art.ArtError, "environment source audit differs"):
+                art.check_runtime(self.output, self.icons)
+        finally:
+            path.write_bytes(original)
+
+    def test_runtime_check_rejects_swapped_environment_semantic(self):
+        path = self.output / "import_audit.json"
+        original = path.read_bytes()
+        data = json.loads(original)
+        next(item for item in data["resources"] if item.get("semanticKey") == "courtSlateB3")["semanticKey"] = "backgroundArena"
+        try:
+            path.write_bytes(art.json_bytes(data))
+            with self.assertRaisesRegex(art.ArtError, "approved environment differs"):
+                art.check_runtime(self.output, self.icons)
+        finally:
+            path.write_bytes(original)
+
     def test_runtime_check_rejects_changed_image_with_valid_png_layout(self):
         path = self.output / "UI.atlas/ui_close.png"
         original = path.read_bytes()
@@ -310,7 +368,8 @@ class ImportSafetyTests(unittest.TestCase):
     def setUp(self):
         self.temporary = tempfile.TemporaryDirectory(prefix="pickleblast-import-safety-")
         self.addCleanup(self.temporary.cleanup)
-        self.root = Path(self.temporary.name)
+        # macOS's system /var alias is unrelated to deliberately symlinked inputs.
+        self.root = Path(self.temporary.name).resolve()
         self.staged = self.root / "staged"
         self.output = self.root / "output"
         self.staged.mkdir()
@@ -349,6 +408,40 @@ class ImportSafetyTests(unittest.TestCase):
         self.assertEqual(path.read_text(), "untouched")
         self.assertFalse((self.output / "runtime_manifest.json").exists())
 
+    def test_retired_background_is_removed_only_as_previous_managed_output(self):
+        for relative in sorted(art.RETIRED_MANAGED_ART_PATHS):
+            retired = self.output / relative
+            retired.parent.mkdir(exist_ok=True)
+            retired.write_text("old runtime")
+            self.install(previous=[relative])
+            self.assertFalse(retired.exists())
+        self.assertEqual((self.output / "runtime_manifest.json").read_text(), "new")
+        self.assertEqual(self.outside.read_text(), "untouched")
+
+    def test_check_reports_retired_background_without_removing_it(self):
+        for relative in sorted(art.RETIRED_MANAGED_ART_PATHS):
+            retired = self.output / relative
+            retired.parent.mkdir(exist_ok=True)
+            retired.write_text("old runtime")
+            shutil.copyfile(self.staged / "runtime_manifest.json", self.output / "runtime_manifest.json")
+            with self.assertRaisesRegex(art.ArtError, "Obsolete generated resource remains"):
+                art.install_tree(self.staged, self.output, ["runtime_manifest.json"], [relative], True)
+            self.assertEqual(retired.read_text(), "old runtime")
+
+    def test_retired_or_concept_image_cannot_be_new_managed_output(self):
+        for relative in sorted(art.RETIRED_MANAGED_ART_PATHS | {"CourtMaterial.atlas/b3-concept.png"}):
+            with self.subTest(path=relative), self.assertRaisesRegex(art.ArtError, "Unexpected managed"):
+                self.install(paths=[relative])
+        self.assertFalse((self.output / "runtime_manifest.json").exists())
+
+    def test_shape_fill_material_allowlist_has_one_image_and_no_scenery(self):
+        paths, _ = art.managed_path_sets()
+        self.assertEqual({path for path in paths if path.startswith("CourtMaterial.atlas/")},
+                         {"CourtMaterial.atlas/court_slate_b3.png"})
+        self.assertEqual({path for path in paths if path.startswith("Arena.atlas/")},
+                         {"Arena.atlas/arena_b3.png"})
+        self.assertTrue(art.RETIRED_MANAGED_ART_PATHS.isdisjoint(paths))
+
     def test_traversal_or_absolute_managed_paths_fail_before_writes(self):
         for unsafe in ("../outside.json", str(self.outside), "./runtime_manifest.json", "Player.atlas/../outside.json", "Player.atlas\\outside.json"):
             with self.subTest(path=unsafe), self.assertRaisesRegex(art.ArtError, "Invalid managed"):
@@ -379,6 +472,27 @@ class ImportSafetyTests(unittest.TestCase):
     def test_nonlist_previous_paths_are_rejected(self):
         with self.assertRaisesRegex(art.ArtError, "must be lists"):
             art.install_tree(self.staged, self.output, ["runtime_manifest.json"], "runtime_manifest.json", False)
+
+    def test_environment_source_hash_dimensions_and_opacity_are_required(self):
+        path = self.root / "environment.png"
+        art.write_png(path, 2, 2, 3, bytes([24, 61, 105]) * 4)
+        approved = art.digest(path)
+        art.validate_environment_source(path, approved, [2, 2])
+        with self.assertRaisesRegex(art.ArtError, "dimensions or opacity differ"):
+            art.validate_environment_source(path, approved, [512, 512])
+        art.write_png(path, 2, 2, 4, bytes([24, 61, 105, 128]) * 4)
+        with self.assertRaisesRegex(art.ArtError, "source differs"):
+            art.validate_environment_source(path, approved, [2, 2])
+        with self.assertRaisesRegex(art.ArtError, "dimensions or opacity differ"):
+            art.validate_environment_source(path, art.digest(path), [2, 2])
+
+    def test_environment_source_symlink_is_rejected_even_with_matching_hash(self):
+        original = self.root / "master.png"
+        art.write_png(original, 1, 1, 3, bytes([24, 61, 105]))
+        path = self.root / "environment.png"
+        path.symlink_to(original)
+        with self.assertRaisesRegex(art.ArtError, "symlinks"):
+            art.validate_environment_source(path, art.digest(original), [1, 1])
 
     def png(self, width, height, raw, end=True):
         def chunk(kind, payload):

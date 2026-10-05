@@ -3,7 +3,7 @@ import Testing
 import PickleBlastCore
 @testable import PickleBlastRendering
 
-@Suite("Night arena presentation invariants")
+@Suite("Slate competition presentation invariants")
 @MainActor
 struct NightArenaTests {
     private func descendants(_ node: SKNode) -> [SKNode] {
@@ -32,9 +32,8 @@ struct NightArenaTests {
                 #expect(path.contains(CGPoint(x: projected.x, y: projected.y)))
             }
         }
-        let rgb = try #require(surface.fillColor.cgColor.converted(to: CGColorSpaceCreateDeviceRGB(),
-                                                                  intent: .defaultIntent, options: nil))
-        #expect(rgb.components?.prefix(3).allSatisfy { $0 == 0 } == true)
+        #expect(surface.fillTexture != nil, "The approved blue acrylic material fills the regulation court")
+        #expect(surface.fillTexture?.filteringMode == .linear)
         #expect(surface.fillColor.cgColor.alpha == 1)
         #expect(surface.alpha == 1 && court.alpha == 1)
         #expect(court.markingAlpha < 1)
@@ -78,6 +77,29 @@ struct NightArenaTests {
             }
             #expect(Set(descendants(court).map(ObjectIdentifier.init)) == initial)
         }
+    }
+
+    @Test("Slate paint separates the regulation kitchens without texture copies or collision geometry")
+    func kitchenMaterialAndNet() throws {
+        let textures = TextureLibrary()
+        let scene = PickleBlastScene(size: CGSize(width: 162, height: 197), textureLibrary: textures)
+        let surface = try #require(scene.childNode(withName: "//opaqueCourtSurface") as? SKShapeNode)
+        let kitchen = try #require(scene.childNode(withName: "//courtNonVolleyMaterial") as? SKShapeNode)
+        let tape = try #require(scene.childNode(withName: "//courtNetTape") as? SKShapeNode)
+        let material = try #require(surface.fillTexture)
+        #expect(material === textures.supporting("courtSlateB3"), "One cached texture covers the whole surface")
+        #expect(kitchen.fillTexture == nil, "Kitchen paint reuses material beneath it without another texture")
+        #expect(kitchen.zPosition > surface.zPosition && kitchen.zPosition < tape.parent!.zPosition)
+        for size in [CGSize(width: 162, height: 197), CGSize(width: 211, height: 257)] {
+            scene.setViewport(size, safeTop: 40, safeBottom: 19)
+            let path = try #require(kitchen.path)
+            for (y, inside) in [(14.9, false), (15.1, true), (21.9, true), (22.1, true), (28.9, true), (29.1, false)] {
+                let point = scene.courtProjection.screenPoint(for: .init(x: 10, y: y))
+                #expect(path.contains(CGPoint(x: point.x, y: point.y)) == inside)
+            }
+            #expect(surface.fillTexture === material, "Resizing does not generate another material")
+        }
+        #expect(descendants(try #require(surface.parent)).allSatisfy { $0.physicsBody == nil && !$0.hasActions() })
     }
 
     @Test("Rally redraws reuse decoration without adding actions, physics or character children")

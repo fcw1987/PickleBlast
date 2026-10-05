@@ -2,9 +2,9 @@
 
 ## Unreleased
 
-The current prototype is version 1.0 (7), on a separate iteration branch. Build 6 remains preserved and installed; its menus were accepted, while further visual work and the earned-save rule await review. No public release history is listed here.
+The current candidate is version 1.0 (8), on a separate iteration branch. Builds 6 and 7 remain preserved. The owner selected the B3 slate-blue court and Cel Sports Comic surroundings; the resulting playable implementation and earned-save rule await physical testing and acceptance. No public release history is listed here.
 
-- Added a night-arena presentation with an opaque black court, clearer line hierarchy, fine net detail, subdued background, compact HUD framing and character foot markers. Original character frames and contact timing remain intact.
+- Added the selected B3 blue acrylic playing surface, darker regulation kitchen, painted white lines and a layered mesh net, with separately authored illustrated skyline and palms. Compact black HUD framing and character grounding remain. Original character frames and contact timing are intact.
 - Boss Rally appears first on Home, with Arcade below it. The opponent menu lists all five bosses individually.
 - After a win, Play Next offers Wall → Banger → Poacher → Dinker → Lobber in displayed order. The Lobber ends the list without looping; Rematch, Choose Opponent, and Home stay available.
 - Added The Dinker and The Lobber as individual Boss Rally opponents, with approved motion artwork and separate local records.

@@ -1,0 +1,71 @@
+{
+  "tool": "built-in ImageGen",
+  "reference": "ArtSources/Concepts/b-court-directions/b3-slate-competition-concept.png",
+  "prompts": [
+    {
+      "key": "b3-arena-source",
+      "prompt": "Use case: precise-object-edit / background-extraction.\nInput image is the approved B3 cel sports-comic Watch game concept. Create its CLEAN ORIGINAL ENVIRONMENT BACKGROUND layer as a SQUARE artwork, suitable for a512x512runtime texture. Preserve the selected art direction: richly inked midnight-blue city skyline, distant mountain, moon, stylized palms, cool blue left light and pink right light, amber practical fixtures, crisp graphic architecture, dark blue side apron. This is an original production background, not a screenshot.\nREMOVE all gameplay and UI completely: no athletes, no paddles, no ball, no plus/oval cues, no scoreboard/text/icons, no court lines, no net or court posts, no service/kitchen markings, no outlined court-shaped floor, no watermark. Reconstruct the scene cleanly where they were. Keep the upper background's vivid, readable celestial/architectural shapes but concentrate skyline, moon and palm crowns in the TOP25%OF THE SQUARE. Keep architectural sidelights/low walls only in the outermost12%at the left and right edges, continuing down both sides. No perspective lines or luminous edge stripes extending inward across the central floor.\nThe center and lower center are a very dark quiet matte navy-black open apron, about central76%of width below top25%; they will be covered by a precisely rendered blue pickleball court in-engine, so NO baked court/trapezoid or markings. Subtle vignette to black at bottom, not a glowing pool. Side area remains attractive and graphically authored, no added props or clutter. Background corners should survive slight horizontal aspect-fill cropping on a portrait Watch. Keep important moon/building silhouettes inside center80%width. Maintain crisp broad cel shapes visible when reduced to512; avoid unnecessary tiny grain. Bake light into the art, no flare haze. Opaque square image only, no checkerboard or transparency."
+    },
+    {
+      "key": "b3-court-source",
+      "prompt": "Use case: precise-object-edit / background-extraction.\nInput image is the approved B3 blue competition court concept, used ONLY as color/material/style reference. Produce a standalone original SQUARE seamless material swatch for its painted acrylic pickleball court surface. The result must be a flat top-down orthographic texture filling the ENTIRE square edge to edge, to be mapped by SpriteKit onto accurate runtime court polygons. It is NOT a gameplay scene.\nUse the reference service-area rich DARK slate-blue color around RGB24,61,105, with a beautiful subtle hand-painted acrylic/rubber aggregate impression translated into restrained clean cel-sports-comic illustration. Broad low-frequency tone variation, extremely fine low-contrast grain; even dark luminous value, no bright flecks. Texture should read as premium professional court material at512x512runtime and be quiet under the bright lime ball and white court lines. No high-frequency salt-and-pepper noise, no cracks, no distress, no scuffs, no pebbles or large mottled islands, no asphalt gloss. Smooth tactile matte material, not flat color; no specular shine and no directional lighting gradient that creates edges when tiled.\nAbsolutely NO lines, borders, circles, text, icons, players, paddles, balls, nets, posts, scenery, ground shadows, perspective, trapezoid, kitchen division, checkerboard or transparency. No vignette. Uniform material extends beyond all four frame edges so it can repeat unobtrusively. Opaque square image only. Aim matching B3's competition surface, not a generic decorative blue texture."
+    }
+  ],
+  "sources": [
+    {
+      "filename": "arena-b3-source.png",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "bytes": 2024158,
+      "sha256": "2a88476385147cd27aa4540413b4a20f90144532d0657fa3f518b5286d8facd3"
+    },
+    {
+      "filename": "court-slate-b3-source.png",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "bytes": 3279270,
+      "sha256": "7596e030f31b24aa03c8cc2342f76764cd69327edf3e6ad79bfcbc0bc2bbbdb5"
+    }
+  ],
+  "runtime_target": {
+    "arena_b3": [
+      512,
+      512
+    ],
+    "court_slate_b3": [
+      512,
+      512
+    ],
+    "estimated_total_decoded_rgba_bytes": 2097152,
+    "note": "Imported pixel-data estimate only; excludes packing, mipmaps, upload copies and renderer overhead."
+  },
+  "runtime_assets": [
+    {
+      "path": "WatchApp/Art/Arena.atlas/arena_b3.png",
+      "semantic_key": "backgroundArena",
+      "dimensions": [
+        512,
+        512
+      ],
+      "png_bytes": 391676,
+      "sha256": "c114bd147cc3f1def9fc8a6d8348fc84633b6c52f08bfd39fd367a599a2919dc"
+    },
+    {
+      "path": "WatchApp/Art/CourtMaterial.atlas/court_slate_b3.png",
+      "semantic_key": "courtSlateB3",
+      "dimensions": [
+        512,
+        512
+      ],
+      "png_bytes": 479987,
+      "sha256": "f50f8a380ce2cbbf4527a2813a82d7591df686dece549a00f1cc78d485c78106"
+    }
+  ],
+  "runtime_integration_note": "Court material isolated in its own single-image atlas after native packed-atlas sampling defect; original image hashes unchanged."
+}

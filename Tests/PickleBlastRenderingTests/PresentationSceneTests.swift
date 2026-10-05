@@ -247,6 +247,23 @@ struct PresentationSceneTests {
         }
     }
 
+    @Test("Native clock backing stays above scenery inside the system safe area",
+          arguments: [(162.0, 197.0, 40.0, 19.0), (211.0, 257.0, 56.5, 40.0)])
+    func nativeClockContrast(size: (Double, Double, Double, Double)) throws {
+        let scene = PickleBlastScene(size: CGSize(width: size.0, height: size.1))
+        scene.setViewport(scene.size, safeTop: size.2, safeBottom: size.3)
+        let backing = try #require(scene.childNode(withName: "//systemClockBacking") as? SKShapeNode)
+        let background = try #require(scene.childNode(withName: "//decorativeBackground"))
+        let path = try #require(backing.path)
+        let frame = path.boundingBoxOfPath
+        #expect(frame.minY >= size.1 - size.2 && frame.maxY <= size.1)
+        #expect(frame.minX > size.0 / 2 && frame.maxX <= size.0)
+        #expect(frame.minY > scene.courtProjection.hudY + 8, "Backing cannot cover the gameplay HUD")
+        #expect(backing.zPosition > background.zPosition)
+        #expect(backing.fillColor.cgColor.alpha >= 0.95)
+        #expect(backing.physicsBody == nil && !backing.hasActions())
+    }
+
     @Test("Atmosphere aspect-fills below the authoritative court and disappears during blackout",
           arguments: [(211.0, 257.0, 56.5, 40.0), (162.0, 197.0, 40.0, 19.0)])
     func decorativeBackground(size: (Double, Double, Double, Double)) throws {
@@ -261,7 +278,7 @@ struct PresentationSceneTests {
         let background = try #require(scene.childNode(withName: "//decorativeBackground") as? SKSpriteNode)
         let world = try #require(background.parent)
         #expect(background.zPosition == -10)
-        near(background.alpha, 0.34)
+        near(background.alpha, 1)
         #expect(background.physicsBody == nil)
         #expect(background.texture?.filteringMode == .linear)
         spriteKitNear(background.position.x, scene.courtProjection.centerX)
