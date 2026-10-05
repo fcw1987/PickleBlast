@@ -4,11 +4,10 @@
 
 [Website](https://fcw1987.github.io/PickleBlast/) · [Privacy](https://fcw1987.github.io/PickleBlast/privacy/) · [Support](https://fcw1987.github.io/PickleBlast/support/)
 
-<a href="docs/images/boss-rally.png"><img src="docs/images/boss-rally.png" alt="A live Boss Rally on Apple Watch, with the ball crossing the neon court." width="142"></a>
-<a href="docs/images/opponents.png"><img src="docs/images/opponents.png" alt="Historical build 4 Boss Rally selection screen." width="142"></a>
-<a href="docs/images/arcade.png"><img src="docs/images/arcade.png" alt="Arcade mode during a neon target wave on Apple Watch." width="142"></a>
+<a href="docs/engineering/b3-production/images/native-small-lobber.png"><img src="docs/engineering/b3-production/images/native-small-lobber.png" alt="Actual build 8 Boss Rally on the small Watch simulator." width="162" height="197"></a>
+<a href="docs/engineering/b3-production/images/native-large-lobber.png"><img src="docs/engineering/b3-production/images/native-large-lobber.png" alt="Actual build 8 Boss Rally on the large Watch simulator." width="211" height="257"></a>
 
-These historical captures show version 1.0 (4) in the watchOS 27.0 simulator. They predate the five-boss roster and build 6 navigation and presentation; replacement captures are pending. See [screenshot provenance](docs/images/README.md).
+These are actual version 1.0 (8) watchOS 27 simulator captures from the unmerged candidate. See the [native and matched renderer comparison](docs/engineering/b3-production/README.md) for provenance, retained-character differences and performance limits. Historical build 4 captures remain in [screenshot history](docs/images/README.md).
 
 ## Play
 

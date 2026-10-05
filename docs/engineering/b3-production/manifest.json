@@ -1,0 +1,26 @@
+{
+  "beforeCommit": "84b9e0f4739059eb14446f0f6c38f6485d8683f5",
+  "afterCommit": "e45c612bcfc44922aa4897b42c16085b225eab6a",
+  "version": "1.0",
+  "build": "8",
+  "hostMethod": "Shared SpriteKit offscreen deterministic held fixtures; native clock/Pause omitted; black status backing intentionally empty",
+  "nativeMethod": "Actual watchOS27 simulator XCTest screenshots from ordinary boss selection",
+  "limits": "No physical Watch performance or human acceptance claim",
+  "images": {
+    "before-large-lobber.png": "3f8a4de1d2918740426b5a7bc183d191a274fa208e06b18e818ff0b45290de27",
+    "before-small-lobber.png": "0e1ae9bc7242517de20bb968364d83bf98d4b4c6bf197b278b782e8450b2e5c3",
+    "before-small-banger.png": "ad2a82adf0bc06220b35e4f39e20022a98fba9997c2d28d3395ea682aeecb99a",
+    "native-small-lobber.png": "b9d886894d643420e005f64d692754db1a0cbdf0885b4278af2c67339df4a0da",
+    "native-large-lobber.png": "b73082efb7c8b3399f6f6f8afdd09511265847d098c6c10e24e710b2c774afd3",
+    "after-small-wall.png": "c2c1da53e14c155c7a5356f6744487b0ca93c8870aaef0fe6f5b2477c62f822e",
+    "after-small-dinker.png": "fadcd048e9a22195baa03828c8e82ec3db2a3a8acfe5c1c498e6fadbcf22a613",
+    "before-small-wall.png": "64ee7ebfbb024ecac4ea68cf88c43a4769c414aa42e243cf585837c80a796948",
+    "before-small-dinker.png": "eed91a96890cf28d61817c262ee98b73d1e2945bfd5b2bc33fcf5613cfe493b7",
+    "small-milestone-animated.gif": "1fa48bccf74885623878032a753687cec39107261402c4f687fb6b4006f22b08",
+    "after-small-banger.png": "61de6a5acf6856f76f3dea68c4b00717aaaa1ccfe4c96c5b1b1a97dc0e02e2c2",
+    "before-small-poacher.png": "8715c469eb858ef69031f84a0cf58085cf37415162a7ba47b4afaaf8fb4dd1ce",
+    "after-small-lobber.png": "2fd9424d54f1c02416e0fd57cf642b69ea8474301a777f473e3023ebfb46ad4a",
+    "after-large-lobber.png": "f00477f4b6e30ec0aa5ea9916c230d227e130111141d0ebf69d12de8bafbcf65",
+    "after-small-poacher.png": "3b7f1197613ce0929e29e599027da17daae4b02c47f607d35af14b84068683ed"
+  }
+}

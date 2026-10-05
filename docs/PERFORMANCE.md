@@ -72,3 +72,28 @@ Per-fixture mean CPU deltas ranged from +0.000093 to +0.000399 ms. The largest m
 The probe measures unpaced macOS node updates, excluding core simulation, displayed rendering and GPU work. A synthetic 1/30-second input clock is not measured 30 Hz frame pacing. RSS ranges overlap; three short processes cannot establish a memory regression or Watch RAM use. Physical Watch GPU cost, frame intervals, memory, energy, heat and usability remain unmeasured for build 7. No concept art was loaded by this probe, and these results do not establish that the proposed richer graphics are affordable.
 
 The preserved development-signed build 7 Release bundle contains 17,897,210 file bytes across 33 files, 57,760 bytes more than the preserved signed build 6 bundle. Its compiled atlas RGBA inventory remains 32,950,964 bytes, with unchanged page dimensions. The new court concept PNGs are review documents and are absent from the app bundle. These inventories do not measure concurrently resident textures or physical Watch memory.
+
+## Build 8 B3 comparison
+
+The final B3 runtime is `e45c612bcfc44922aa4897b42c16085b225eab6a`, compared with build 7 `84b9e0f4739059eb14446f0f6c38f6485d8683f5`. Two original 512 × 512 environment images supply scenery and unmarked acrylic material. The material occupies its own single-image atlas; native compiled checks verify that packed scenery cannot leak into the court. The renderer adds six fixed nodes, including a bounded backing beneath the system clock. Existing character frames, registration, geometry and animation timing are unchanged.
+
+Three alternating fresh Release host processes per version used identical deterministic fixture helpers, 13 states at each of two Watch layouts, 120 warmup updates and 1,800 measured updates per fixture. Builds and UI tests were paused during measurement. Separate offscreen processes measured 60 SpriteKit render plus synchronous CGImage readback samples per fixture after warmup. The host remains the Apple M3 Max/Xcode 27 system described above. These are the repaired final-source results; the earlier packed-atlas host draft is superseded.
+
+| Median of per-process metrics | Build 7 | B3 build 8 |
+| --- | ---: | ---: |
+| Aggregate scene-update CPU mean | 0.025549 ms | 0.025426 ms |
+| First scene construction | 15.612 ms | 19.130 ms |
+| CPU-only process-end RSS | 66.16 MiB | 65.28 MiB |
+| CPU-only RSS range | 63.67–67.66 MiB | 62.86–70.08 MiB |
+| Aggregate offscreen render + readback mean | 17.256 ms | 17.262 ms |
+| Offscreen process-end RSS | 106.75 MiB | 110.69 MiB |
+| Offscreen RSS range | 106.64–108.80 MiB | 109.13–112.11 MiB |
+| Ordinary / dense scene descendants | 186 / 302 | 192 / 308 |
+
+CPU-only memory ranges overlap; the offscreen process samples show higher memory in this short host probe. Neither is physical Watch RAM. The small CPU and readback differences do not establish an improvement or a physical GPU budget. Process-cold construction includes cached framework/filesystem behavior; it is not measured Watch launch latency. Host probes use source PNG fallback rather than compiled Watch atlas loading, which is why native compiled visual checks are also required.
+
+The development-signed Release bundle has 35 files totaling 18,386,670 bytes, an increase of 489,460 bytes over preserved build 7. Compiled atlas RGBA inventory is 34,007,748 bytes, up 1,056,784 bytes; this remains an inventory estimate excluding driver allocations, mipmaps and shape caches, not concurrent residency.
+
+Three alternating fresh Debug processes per version on the Ultra 4 watchOS 27 simulator exercised the same real-time Lobber seed 23 public-input policy. Both measured 30.03 callbacks/s, sampled p95 intervals of 33.33 ms, and zero sampled intervals over 50 ms. Median sampled host RSS was 197.48 → 198.63 MiB; scene initialization was 75.48 → 79.91 ms. These callback timestamps do not measure presented GPU frames. Three periodic RSS samples per process can miss peaks.
+
+Watch GPU timing, sustained frame pacing, active-game RAM, OLED energy, battery and heat still require physical validation. The selected blue surface changes OLED pixel brightness; storage tolerance does not establish its power cost. User acceptance remains pending. See the [actual native and matched-renderer comparison](engineering/b3-production/README.md).
