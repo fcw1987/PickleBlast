@@ -41,7 +41,7 @@
     "AppIcon.appiconset": {
       "estimatedDecodedRGBABytes": 5421960,
       "images": 16,
-      "pngBytes": 2794776
+      "pngBytes": 840602
     },
     "Arena.atlas": {
       "estimatedDecodedRGBABytes": 1048576,
@@ -42520,10 +42520,10 @@
         48,
         48
       ],
-      "pngBytes": 6162,
-      "sha256": "9cf5b9fc366219ff1197811f4855a195a6884689797ddf666ebcb9e78954eb78",
+      "pngBytes": 2473,
+      "sha256": "39f63d63e41a1ada669ce07c063adf25b6e2b3c3482983cd2de2511d7ac09478",
       "source": "ArtSources/IconV1/app_icon_1024.png",
-      "sourceSHA256": "ea9381013f08da16e4ac7c3804db3c57539b51769c378fdfbcb3bff69e17cd18"
+      "sourceSHA256": "d171d32b7b747d8e4772eaa3467c718f1a2d567f60c72c14b7459ca86ba6fa95"
     },
     {
       "alphaBounds": [
@@ -42543,10 +42543,10 @@
         55,
         55
       ],
-      "pngBytes": 7939,
-      "sha256": "6e14912170895137b85d107df7a8f47535621419697eeef88b1f07ada7475d8a",
+      "pngBytes": 2971,
+      "sha256": "036149a443c35c4e0eefb35efc2a3e9ac3e24250d0063fe2725f474c47378305",
       "source": "ArtSources/IconV1/app_icon_1024.png",
-      "sourceSHA256": "ea9381013f08da16e4ac7c3804db3c57539b51769c378fdfbcb3bff69e17cd18"
+      "sourceSHA256": "d171d32b7b747d8e4772eaa3467c718f1a2d567f60c72c14b7459ca86ba6fa95"
     },
     {
       "alphaBounds": [
@@ -42566,10 +42566,10 @@
         80,
         80
       ],
-      "pngBytes": 16245,
-      "sha256": "4ebb82d2bc411df65ef928e436799a8ae8c86caf5b4eec0dfc4633943dc9f699",
+      "pngBytes": 5302,
+      "sha256": "466e441fb0304e4acece7e84d8abb947e55faa6e488c6972b093dc195eadc890",
       "source": "ArtSources/IconV1/app_icon_1024.png",
-      "sourceSHA256": "ea9381013f08da16e4ac7c3804db3c57539b51769c378fdfbcb3bff69e17cd18"
+      "sourceSHA256": "d171d32b7b747d8e4772eaa3467c718f1a2d567f60c72c14b7459ca86ba6fa95"
     },
     {
       "alphaBounds": [
@@ -42589,10 +42589,10 @@
         88,
         88
       ],
-      "pngBytes": 19559,
-      "sha256": "9c1d38484da3293d40148db1ec0e526b24f85dfb84c9165f7ec6c91215b65d72",
+      "pngBytes": 6158,
+      "sha256": "9469e37df7b5a135f63914baf5b293c6ecb680f4165d5f49bc492b54723ed947",
       "source": "ArtSources/IconV1/app_icon_1024.png",
-      "sourceSHA256": "ea9381013f08da16e4ac7c3804db3c57539b51769c378fdfbcb3bff69e17cd18"
+      "sourceSHA256": "d171d32b7b747d8e4772eaa3467c718f1a2d567f60c72c14b7459ca86ba6fa95"
     },
     {
       "alphaBounds": [
@@ -42612,10 +42612,10 @@
         92,
         92
       ],
-      "pngBytes": 21262,
-      "sha256": "db93a49ac5095868e771dda20f1887495b3e286b1aa1a9cdba97e9b3c19030eb",
+      "pngBytes": 6580,
+      "sha256": "eb895b2a0cda783c29fe2950a3ca973c6be69c564bdfd45e04631166b95d58ee",
       "source": "ArtSources/IconV1/app_icon_1024.png",
-      "sourceSHA256": "ea9381013f08da16e4ac7c3804db3c57539b51769c378fdfbcb3bff69e17cd18"
+      "sourceSHA256": "d171d32b7b747d8e4772eaa3467c718f1a2d567f60c72c14b7459ca86ba6fa95"
     },
     {
       "alphaBounds": [
@@ -42635,10 +42635,10 @@
         100,
         100
       ],
-      "pngBytes": 24826,
-      "sha256": "874bd2ceb7acedcc85ee135ae5c4a814527553aaf8bbbbe2dd936f46ed4f988d",
+      "pngBytes": 7488,
+      "sha256": "85525acbc1f9914e6f45b8688e313b1c5bbee69398fb41195273f4ebff3abe36",
       "source": "ArtSources/IconV1/app_icon_1024.png",
-      "sourceSHA256": "ea9381013f08da16e4ac7c3804db3c57539b51769c378fdfbcb3bff69e17cd18"
+      "sourceSHA256": "d171d32b7b747d8e4772eaa3467c718f1a2d567f60c72c14b7459ca86ba6fa95"
     },
     {
       "alphaBounds": [
@@ -42658,10 +42658,10 @@
         102,
         102
       ],
-      "pngBytes": 25762,
-      "sha256": "08af9d11342f8a18513b5b5735d442d9c00d5b7899004003b41dcfb2085e7672",
+      "pngBytes": 7680,
+      "sha256": "baef8f76f5febaa381370ae0f43d4b817867f5fbc8375e43caa226a7eb111f08",
       "source": "ArtSources/IconV1/app_icon_1024.png",
-      "sourceSHA256": "ea9381013f08da16e4ac7c3804db3c57539b51769c378fdfbcb3bff69e17cd18"
+      "sourceSHA256": "d171d32b7b747d8e4772eaa3467c718f1a2d567f60c72c14b7459ca86ba6fa95"
     },
     {
       "alphaBounds": [
@@ -42681,10 +42681,10 @@
         108,
         108
       ],
-      "pngBytes": 28657,
-      "sha256": "bbda629f094f799e57cab05419856bfbe979a09f9f9ece28cf2bd00fe55539c9",
+      "pngBytes": 8456,
+      "sha256": "dc6c023882aee7cce21c556c18960b2e6fed38a103f42398a2bc38f4277e5355",
       "source": "ArtSources/IconV1/app_icon_1024.png",
-      "sourceSHA256": "ea9381013f08da16e4ac7c3804db3c57539b51769c378fdfbcb3bff69e17cd18"
+      "sourceSHA256": "d171d32b7b747d8e4772eaa3467c718f1a2d567f60c72c14b7459ca86ba6fa95"
     },
     {
       "alphaBounds": [
@@ -42704,10 +42704,10 @@
         172,
         172
       ],
-      "pngBytes": 69374,
-      "sha256": "e90b465135c82cae466dc7b467ee64f72da51935a9a67c14792b1b0373a95583",
+      "pngBytes": 19234,
+      "sha256": "3ad72db6cf2386844054dfcffa6af2094049bb4aabfd1239e1d2280bbf1690d4",
       "source": "ArtSources/IconV1/app_icon_1024.png",
-      "sourceSHA256": "ea9381013f08da16e4ac7c3804db3c57539b51769c378fdfbcb3bff69e17cd18"
+      "sourceSHA256": "d171d32b7b747d8e4772eaa3467c718f1a2d567f60c72c14b7459ca86ba6fa95"
     },
     {
       "alphaBounds": [
@@ -42727,10 +42727,10 @@
         196,
         196
       ],
-      "pngBytes": 88626,
-      "sha256": "d8b1189213c1ab3959b4a5a54e270a1a323afd4ef94bc47655b524d15604ecd6",
+      "pngBytes": 25104,
+      "sha256": "e0ea553b12f7b2558c83c7c124887927baec20701e07b5c4a69a43ce6db081ab",
       "source": "ArtSources/IconV1/app_icon_1024.png",
-      "sourceSHA256": "ea9381013f08da16e4ac7c3804db3c57539b51769c378fdfbcb3bff69e17cd18"
+      "sourceSHA256": "d171d32b7b747d8e4772eaa3467c718f1a2d567f60c72c14b7459ca86ba6fa95"
     },
     {
       "alphaBounds": [
@@ -42750,10 +42750,10 @@
         216,
         216
       ],
-      "pngBytes": 106627,
-      "sha256": "941e25d39003e7b117b178eecc3690ca0d242875affb4e60a1adf1cc4f780cc3",
+      "pngBytes": 30478,
+      "sha256": "2773732f9f868840a265fd33cef32ac9c13a1807f597f87315cf920670167263",
       "source": "ArtSources/IconV1/app_icon_1024.png",
-      "sourceSHA256": "ea9381013f08da16e4ac7c3804db3c57539b51769c378fdfbcb3bff69e17cd18"
+      "sourceSHA256": "d171d32b7b747d8e4772eaa3467c718f1a2d567f60c72c14b7459ca86ba6fa95"
     },
     {
       "alphaBounds": [
@@ -42773,10 +42773,10 @@
         234,
         234
       ],
-      "pngBytes": 124336,
-      "sha256": "29e48c0ef05cdfa6f14f92a69bd1e485817467f8cd0cfc19cdf23449dd3387f9",
+      "pngBytes": 35442,
+      "sha256": "c7bf02b8323dff22fc9298c796f08448227007861aea5a8e1b43cd445333f91c",
       "source": "ArtSources/IconV1/app_icon_1024.png",
-      "sourceSHA256": "ea9381013f08da16e4ac7c3804db3c57539b51769c378fdfbcb3bff69e17cd18"
+      "sourceSHA256": "d171d32b7b747d8e4772eaa3467c718f1a2d567f60c72c14b7459ca86ba6fa95"
     },
     {
       "alphaBounds": [
@@ -42796,10 +42796,10 @@
         258,
         258
       ],
-      "pngBytes": 149710,
-      "sha256": "a45da7d166b746240f37202ab5aa4232d0f36182b0559aec8d7331345aaaf596",
+      "pngBytes": 43092,
+      "sha256": "0e1d71c965d0a8a9b8575a49ac1ec1757512e031a73f5a29f21c5e4f7557ee93",
       "source": "ArtSources/IconV1/app_icon_1024.png",
-      "sourceSHA256": "ea9381013f08da16e4ac7c3804db3c57539b51769c378fdfbcb3bff69e17cd18"
+      "sourceSHA256": "d171d32b7b747d8e4772eaa3467c718f1a2d567f60c72c14b7459ca86ba6fa95"
     },
     {
       "alphaBounds": [
@@ -42819,10 +42819,10 @@
         58,
         58
       ],
-      "pngBytes": 8798,
-      "sha256": "5619d4de1e910b97234a62757819c68ca4b6f9ba6312bedbd599b6dd08b5d711",
+      "pngBytes": 3265,
+      "sha256": "4eea3c701230cef2f2c231b31d68a4240d6b9d06a9eb7a2299f371cba69fecb7",
       "source": "ArtSources/IconV1/app_icon_1024.png",
-      "sourceSHA256": "ea9381013f08da16e4ac7c3804db3c57539b51769c378fdfbcb3bff69e17cd18"
+      "sourceSHA256": "d171d32b7b747d8e4772eaa3467c718f1a2d567f60c72c14b7459ca86ba6fa95"
     },
     {
       "alphaBounds": [
@@ -42842,10 +42842,10 @@
         87,
         87
       ],
-      "pngBytes": 19130,
-      "sha256": "79e9a8aebdebc28463bb268b2edd353b213c263842614f6923ba74acd16c2e1f",
+      "pngBytes": 6075,
+      "sha256": "d86e3a9e83c65165a3c20293116b634e080ca7985691cde7379eddc0e1b131a9",
       "source": "ArtSources/IconV1/app_icon_1024.png",
-      "sourceSHA256": "ea9381013f08da16e4ac7c3804db3c57539b51769c378fdfbcb3bff69e17cd18"
+      "sourceSHA256": "d171d32b7b747d8e4772eaa3467c718f1a2d567f60c72c14b7459ca86ba6fa95"
     },
     {
       "alphaBounds": [
@@ -42865,10 +42865,10 @@
         1024,
         1024
       ],
-      "pngBytes": 2077763,
-      "sha256": "3a8ce254ca048e534e6990c3a38bbd265d023c9097bd2727f1dc31acf4175fc2",
+      "pngBytes": 630804,
+      "sha256": "d171d32b7b747d8e4772eaa3467c718f1a2d567f60c72c14b7459ca86ba6fa95",
       "source": "ArtSources/IconV1/app_icon_1024.png",
-      "sourceSHA256": "ea9381013f08da16e4ac7c3804db3c57539b51769c378fdfbcb3bff69e17cd18"
+      "sourceSHA256": "d171d32b7b747d8e4772eaa3467c718f1a2d567f60c72c14b7459ca86ba6fa95"
     }
   ],
   "schemaVersion": 1,
