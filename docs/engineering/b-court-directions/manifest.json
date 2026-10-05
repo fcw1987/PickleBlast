@@ -1,0 +1,26 @@
+{
+  "status": "GENERATED CONCEPTS; no runtime integration",
+  "captures": [
+    {
+      "width": 1136,
+      "height": 1385,
+      "bytes": 1488370,
+      "sha256": "7475e0872ab2ec04d247e817348bc286f5e57e6e73ef038aa4a0c0d4778fd09d",
+      "repository_path": "docs/engineering/b-court-directions/images/b1-precision-court-concept.png"
+    },
+    {
+      "width": 1136,
+      "height": 1385,
+      "bytes": 1484780,
+      "sha256": "315995a2313c6339f20992c38d1bed5149c62cbe16b349540d96eb107c73e726",
+      "repository_path": "docs/engineering/b-court-directions/images/b2-blacktop-depth-concept.png"
+    },
+    {
+      "width": 1136,
+      "height": 1385,
+      "bytes": 2181286,
+      "sha256": "b074570903cb920543dca7d4ae1f749b1181b39f57e0f7917142bc316e577004",
+      "repository_path": "ArtSources/Concepts/b-court-directions/b3-slate-competition-concept.png"
+    }
+  ]
+}

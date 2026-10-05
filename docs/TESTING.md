@@ -6,15 +6,19 @@ The [build guide](BUILD_AND_TEST.md) documents individual commands, simulator se
 
 ## Regression coverage
 
-Host tests cover court geometry, swept collisions, Crown boundary reversal, receiving assistance, scoring, two-save match rules, first-to-three outcomes, All Three transitions, lifecycle, corrupt local data recovery, rendering registration and resource lifetime. Importer tests cover canonical fixtures, manifests, PNG bounds, integrity, and filesystem safety.
+Host tests cover court geometry, swept collisions, Crown boundary reversal, receiving assistance, scoring, earned-save thresholds and won-point progress, first-to-three outcomes, next-opponent eligibility and order, legacy internal series compatibility, lifecycle, corrupt local data recovery, rendering registration and resource lifetime. Importer tests cover canonical fixtures, manifests, PNG bounds, integrity, and filesystem safety.
 
-The native Watch suite covers Home, Settings persistence, Crown movement, all five opponents, Arcade, Pause/Resume/Restart, interruptions, results, rematch, app icon, and repeated scene lifetimes. Run it serially on a larger and smaller available Watch simulator. Tests labeled scripted use controlled input or accelerated simulation; they establish rules and reachability, not human difficulty or enjoyment.
+Required native Watch coverage includes Boss Rally first on Home, Settings persistence, Crown movement, all five opponent choices, Play Next after wins, no advance after losses, no wrap after Lobber, Back, Arcade, Pause/Resume/Restart, interruptions, results, rematch, app icon, and repeated scene lifetimes. Legacy series cases are compatibility tests, not public-menu acceptance. Run it serially on a larger and smaller available Watch simulator. Tests labeled scripted use controlled input or accelerated simulation; they establish rules and reachability, not human difficulty or enjoyment.
 
 A fresh source copy must pass without optional art masters, local signing, historical source folders or pre-existing build outputs. Compare gameplay source and runtime asset hashes when making packaging-only changes.
 
 Ability tests measure actual flight pace, response time, cooldowns, active recovery, and the Lobber’s single analytic contact across callback cadences and interruptions. Saved-format fixtures preserve the original three record keys while initializing new opponents independently.
 
 For clean real-time simulator recordings, `testRealtimeFiveBossAbilityRecording` navigates the normal selection screen with a delayed, bounded public-input controller. Capture the simulator with `simctl io … recordVideo`; keep recordings local and label them scripted. Compare ordinary and special shots on both display sizes.
+
+## Candidate evidence
+
+Version 1.0 (10), source 36ee3e28d5e116787c57c842d766eb6fad06d540, was physically tested and accepted by the owner. Build 10 passed focused icon/asset and signed Release checks; build 9 passed the full gameplay and UI checks. Documentation updates do not change that installed binary. Test source and earlier passing build 5 results do not establish a current pass. Record the exact commit, configuration, available simulator sizes and OS versions with each new result. Compare baseline and candidate frame timing, resident memory, load time and resource size using the same conditions; report unavailable measurements explicitly. Owner acceptance does not establish measured physical frame timing, RAM, GPU, heat or battery performance; those remain unmeasured.
 
 ## Human and distribution checks
 

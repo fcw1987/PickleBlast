@@ -11,7 +11,7 @@ final class PickleBlastWatchUITests: XCTestCase {
 
     @MainActor
     func testCoordinatePauseTapResumeAndHomeInEveryMode() throws {
-        for mode in ["arcade", "wall", "allThree"] {
+        for mode in ["arcade", "wall", "dinker", "lobber"] {
             let app = launchHome()
             if mode == "arcade" { _ = startRun(app) }
             else {
@@ -57,7 +57,7 @@ final class PickleBlastWatchUITests: XCTestCase {
     @MainActor
     func testOrdinaryPauseScrollRestartResetsEachMode() throws {
         let app = launchHome()
-        for mode in ["arcade", "banger", "allThree"] {
+        for mode in ["arcade", "banger", "dinker", "lobber"] {
             if mode == "arcade" { _ = startRun(app) }
             else {
                 app.buttons["home.bossRally"].tap()
@@ -85,9 +85,8 @@ final class PickleBlastWatchUITests: XCTestCase {
                 XCTAssertTrue(reset.hasPrefix("Arcade."), reset)
                 XCTAssertTrue(reset.contains("Score 0. 3 lives. 2 saves."), reset)
             } else {
-                XCTAssertTrue(reset.contains(mode == "banger"
-                    ? "Boss Rally. THE BANGER." : "All Three. Match 1 of 3. THE WALL."), reset)
-                XCTAssertTrue(reset.contains("You 0. Boss 0. 2 saves. Rally 0 returns."), reset)
+                XCTAssertTrue(reset.contains("Boss Rally. THE \(mode.uppercased())."), reset)
+                XCTAssertTrue(reset.contains("You 0. Boss 0. 0 saves. Rally 0 returns."), reset)
                 XCTAssertTrue(reset.contains("Score 0."), reset)
             }
             XCTAssertFalse(reset.contains("Paused"), reset)
@@ -100,36 +99,41 @@ final class PickleBlastWatchUITests: XCTestCase {
     }
 
     @MainActor
-    func testAllThreeLossRetryStartsAtWallAndChooseOpponentRemainsAvailable() throws {
+    func testBossRallyHomeOrderRosterAndBack() throws {
         let app = launchHome()
+        XCTAssertLessThan(app.buttons["home.bossRally"].frame.midY, app.buttons["home.play"].frame.midY,
+                          "Boss Rally is the first game mode, with Arcade immediately below")
+        capture("boss-rally-first-home", app: app)
         app.buttons["home.bossRally"].tap()
-        let allThree = app.buttons["boss.select.allThree"]
-        reveal(allThree, in: app); allThree.tap()
-        let court = element("game.court", in: app)
-        XCTAssertTrue(court.waitForExistence(timeout: 5))
-        XCTAssertTrue((court.value as? String ?? "").contains("Match 1 of 3. THE WALL"))
-        dragAcross(court, from: 0.5, to: 0.02)
-        XCTAssertTrue(element("results", in: app).waitForExistence(timeout: 35))
-        XCTAssertEqual(element("results.seriesProgress", in: app).label, "0 OF 3 BOSSES DEFEATED")
-        XCTAssertEqual(element("results.matchScore", in: app).label, "YOU 0 · BOSS 3")
-        capture("all-three-real-loss", app: app)
-        let retry = app.buttons["results.replay"]
-        reveal(retry, in: app); retry.tap()
-        XCTAssertTrue(court.waitForExistence(timeout: 5))
-        XCTAssertTrue((court.value as? String ?? "").contains("Match 1 of 3. THE WALL"))
-        XCTAssertTrue((court.value as? String ?? "").contains("You 0. Boss 0. 2 saves."))
-        app.buttons["game.pause"].tap()
-        let home = app.buttons["pause.home"]
-        reveal(home, in: app); home.tap()
-        app.buttons["home.bossRally"].tap()
-        XCTAssertTrue(app.buttons["boss.select.wall"].waitForExistence(timeout: 5))
+        let menuAppeared = app.buttons["boss.select.wall"].waitForExistence(timeout: 10)
+        if !menuAppeared {
+            capture("boss-rally-first-transition-failure", app: app)
+        }
+        XCTAssertTrue(menuAppeared,
+                      "Single Boss Rally tap must open the chooser. Home=\(app.buttons["home.bossRally"].exists), chooser=\(element("boss.selection", in: app).exists), court=\(element("game.court", in: app).exists).\n\(app.debugDescription)")
+        XCTAssertFalse(app.buttons["boss.select.allThree"].exists)
+        XCTAssertFalse(app.staticTexts["Play All Three"].exists)
+        let expected = ["wall", "banger", "poacher", "dinker", "lobber"].map { "boss.select.\($0)" }
+        let actual = app.buttons.allElementsBoundByIndex.map(\.identifier).filter { expected.contains($0) }
+        XCTAssertEqual(actual, expected, "Opponent order also defines Play Next order")
+        for identifier in expected {
+            let choice = app.buttons[identifier]
+            reveal(choice, in: app)
+            XCTAssertTrue(choice.isEnabled)
+            capture("roster-\(identifier)", app: app)
+        }
+        let back = app.buttons["boss.select.back"]
+        reveal(back, in: app); back.tap()
+        XCTAssertTrue(app.buttons["home.bossRally"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["home.play"].isHittable)
     }
 
     @MainActor
     func testScriptedAllThreeAutomaticProgressionAndFinalResult() throws {
         let app = XCUIApplication()
-        // Explicit DEBUG public-input oracle exercises the complete sequence;
-        // it is lifecycle/progression evidence, not a human balance model.
+        // Retain coverage of the internal legacy series using an explicit DEBUG
+        // launch. The obsolete series is no longer offered in ordinary menus.
+        // This public-input oracle is not a human balance model.
         app.launchArguments = ["--validation-series", "--validation-autoplay"]
         app.launchEnvironment = [:]
         app.launch()
@@ -149,7 +153,48 @@ final class PickleBlastWatchUITests: XCTestCase {
         capture("scripted-all-three-win", app: app)
         let opponents = app.buttons["results.chooseOpponent"]
         reveal(opponents, in: app); opponents.tap()
-        XCTAssertTrue(app.buttons["boss.select.allThree"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["boss.select.wall"].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.buttons["boss.select.allThree"].exists)
+    }
+
+    @MainActor
+    func testScriptedPlayNextAdvancesAllFiveOpponents() throws {
+        // Ordinary menu/result controls, with the existing DEBUG public-input
+        // oracle playing the rallies. No score or victory state is injected.
+        let app = launchHome(arguments: ["--validation-autoplay", "--validation-manual-start"])
+        app.buttons["home.bossRally"].tap()
+        let wall = app.buttons["boss.select.wall"]
+        reveal(wall, in: app); wall.tap()
+        let court = element("game.court", in: app)
+        let results = element("results", in: app)
+        let opponents = ["wall", "banger", "poacher", "dinker", "lobber"]
+        for (index, id) in opponents.enumerated() {
+            XCTAssertTrue(court.waitForExistence(timeout: 5))
+            assertFreshBossMatch(id, court: court)
+            XCTAssertTrue(results.waitForExistence(timeout: 90), "Victory against \(id)")
+            XCTAssertEqual(element("results.matchScore", in: app).label, "YOU 3 · BOSS 0")
+            let next = app.buttons["results.playNext"]
+            if index < opponents.count - 1 {
+                let nextID = opponents[index + 1]
+                reveal(next, in: app)
+                XCTAssertTrue(next.label.contains("Play Next"), next.label)
+                XCTAssertTrue(next.label.uppercased().contains(nextID.uppercased()), next.label)
+                XCTAssertFalse(element("results.sequenceComplete", in: app).exists)
+                capture("play-next-\(id)-to-\(nextID)", app: app)
+                next.tap()
+                XCTAssertFalse(results.exists, "Play Next must leave results for a fresh match")
+            } else {
+                XCTAssertFalse(next.exists, "The final opponent must not silently wrap to The Wall")
+                let complete = element("results.sequenceComplete", in: app)
+                reveal(complete, in: app)
+                XCTAssertEqual(complete.label, "Final opponent defeated")
+                capture("play-next-final-lobber", app: app)
+            }
+        }
+        let home = app.buttons["results.home"]
+        reveal(home, in: app); home.tap()
+        XCTAssertTrue(app.buttons["home.bossRally"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["home.play"].isHittable)
     }
 
     @MainActor
@@ -498,6 +543,36 @@ final class PickleBlastWatchUITests: XCTestCase {
     }
 
     @MainActor
+    func testArcadeArtworkWaveProgressionPauseAndHome() throws {
+        let app = XCUIApplication()
+        app.launchArguments = ["--validation-autoplay"]
+        app.launchEnvironment = [:]
+        app.launch()
+        let court = element("game.court", in: app)
+        XCTAssertTrue(court.waitForExistence(timeout: 10))
+        // The DEBUG oracle supplies public movement inputs to the real core.
+        // No target/score/stage injection; screenshots include compiled atlases
+        // and the actual system clock. This is not a human balance test.
+        for wave in 1...3 {
+            let observed = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
+                court.exists && (court.value as? String ?? "").contains("Wave \(wave).")
+            }, object: nil)
+            XCTAssertEqual(XCTWaiter.wait(for: [observed], timeout: 120), .completed)
+            capture("arcade-native-wave-\(wave)", app: app)
+            if wave == 2 {
+                app.buttons["game.pause"].tap()
+                XCTAssertTrue(app.buttons["pause.resume"].waitForExistence(timeout: 5))
+                app.buttons["pause.resume"].tap()
+                XCTAssertTrue(app.buttons["game.pause"].waitForExistence(timeout: 5))
+            }
+        }
+        app.buttons["game.pause"].tap()
+        let home = app.buttons["pause.home"]
+        reveal(home, in: app); home.tap()
+        XCTAssertTrue(app.buttons["home.play"].waitForExistence(timeout: 5))
+    }
+
+    @MainActor
     func testInstalledAppIconAndOpenFromWatchLauncher() throws {
         let app = launchHome()
         // XCUIDeviceButton.home and pressButton are provided by the installed
@@ -541,8 +616,9 @@ final class PickleBlastWatchUITests: XCTestCase {
             reveal(rally, in: app)
             rally.tap()
             // Wait for actionable menu content across Watch accessibility trees.
-            XCTAssertTrue(app.buttons["boss.select.allThree"].waitForExistence(timeout: 10),
+            XCTAssertTrue(app.buttons["boss.select.wall"].waitForExistence(timeout: 10),
                           app.debugDescription)
+            XCTAssertFalse(app.buttons["boss.select.allThree"].exists)
             let choice = app.buttons["boss.select.\(id)"]
             reveal(choice, in: app)
             capture("ordinary-boss-select-\(id)", app: app)
@@ -661,6 +737,8 @@ final class PickleBlastWatchUITests: XCTestCase {
             }
             XCTAssertTrue(results.waitForExistence(timeout: 20))
             XCTAssertEqual(element("results.matchScore", in: app).label, "YOU 0 · BOSS 3")
+            XCTAssertFalse(app.buttons["results.playNext"].exists, "Defeat requires retry or choosing an opponent")
+            XCTAssertFalse(element("results.sequenceComplete", in: app).exists)
             capture("ordinary-boss-defeat-\(replay)", app: app)
             if replay == 0 {
                 let retry = app.buttons["results.replay"]
@@ -668,7 +746,7 @@ final class PickleBlastWatchUITests: XCTestCase {
                 XCTAssertEqual(retry.label, "Retry")
                 retry.tap()
                 XCTAssertTrue(court.waitForExistence(timeout: 5))
-                XCTAssertTrue((court.value as? String ?? "").lowercased().contains("wall"))
+                assertFreshBossMatch("wall", court: court)
             }
         }
         let choose = app.buttons["results.chooseOpponent"]
@@ -678,7 +756,7 @@ final class PickleBlastWatchUITests: XCTestCase {
     }
 
     @MainActor
-    func testBossRallySavesDoNotScoreAndThirdPointEndsMatch() throws {
+    func testBossRallyStartsWithoutSavesAndThirdPointEndsMatch() throws {
         let app = launchHome()
         app.buttons["home.bossRally"].tap()
         let choice = app.buttons["boss.select.wall"]
@@ -687,10 +765,10 @@ final class PickleBlastWatchUITests: XCTestCase {
         XCTAssertTrue(court.waitForExistence(timeout: 5))
         XCTAssertFalse((court.value as? String ?? "").contains("lives"))
         dragAcross(court, from: 0.5, to: 0.02)
-        // Normal input keeps the player outside the neutral serve. Each save
-        // preserves 0–0; the following three genuine misses decide the match.
-        for status in ["You 0. Boss 0. 1 saves.", "You 0. Boss 0. 0 saves.",
-                       "You 0. Boss 1. 0 saves.", "You 0. Boss 2. 0 saves."] {
+        // No return streak has earned a save. Ordinary misses must award points
+        // immediately, and the third genuine miss decides the match.
+        XCTAssertTrue((court.value as? String ?? "").contains("0 saves."))
+        for status in ["You 0. Boss 1. 0 saves.", "You 0. Boss 2. 0 saves."] {
             let observed = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
                 (court.value as? String ?? "").contains(status)
             }, object: nil)
@@ -703,7 +781,7 @@ final class PickleBlastWatchUITests: XCTestCase {
         let retry = app.buttons["results.replay"]
         reveal(retry, in: app); retry.tap()
         XCTAssertTrue(court.waitForExistence(timeout: 5))
-        XCTAssertTrue((court.value as? String ?? "").contains("You 0. Boss 0. 2 saves."))
+        XCTAssertTrue((court.value as? String ?? "").contains("You 0. Boss 0. 0 saves."))
     }
 
     @MainActor func testScriptedWallRallyVictoryRematchAndChooseOpponent() throws { try scriptedBossVictory("wall") }
@@ -805,7 +883,7 @@ final class PickleBlastWatchUITests: XCTestCase {
         let app = launchHome()
         capture("stress-home-initial", app: app)
         for cycle in 0..<12 {
-            let mode = ["arcade", "wall", "banger", "poacher", "dinker", "lobber", "allThree"][cycle % 7]
+            let mode = ["arcade", "wall", "banger", "poacher", "dinker", "lobber"][cycle % 6]
             if mode == "arcade" {
                 _ = startRun(app)
             } else {
@@ -829,7 +907,7 @@ final class PickleBlastWatchUITests: XCTestCase {
     func testModeHomeLifetimesWithoutRepeatedScreenshots() throws {
         let app = launchHome(arguments: ["--validation-lifetimes"])
         for cycle in 0..<24 {
-            let mode = ["arcade", "wall", "banger", "poacher", "dinker", "lobber", "allThree"][cycle % 7]
+            let mode = ["arcade", "wall", "banger", "poacher", "dinker", "lobber"][cycle % 6]
             if mode == "arcade" { _ = startRun(app) }
             else {
                 app.buttons["home.bossRally"].tap()
@@ -860,6 +938,14 @@ final class PickleBlastWatchUITests: XCTestCase {
         let visible = app.staticTexts.allElementsBoundByIndex.map(\.label).joined(separator: " ").uppercased()
         XCTAssertTrue(visible.contains(id.uppercased()), visible)
         XCTAssertFalse(app.staticTexts["GAME OVER"].exists)
+        XCTAssertEqual(element("results.matchScore", in: app).label, "YOU 3 · BOSS 0")
+        if id == "lobber" {
+            XCTAssertFalse(app.buttons["results.playNext"].exists)
+            XCTAssertEqual(element("results.sequenceComplete", in: app).label, "Final opponent defeated")
+        } else {
+            XCTAssertTrue(app.buttons["results.playNext"].exists)
+            XCTAssertFalse(element("results.sequenceComplete", in: app).exists)
+        }
         let score = element("results.score", in: app).label
         XCTAssertEqual(try XCTUnwrap(Int(score.filter(\.isNumber))), 2_500)
         capture("scripted-\(id)-victory", app: app)
@@ -869,7 +955,7 @@ final class PickleBlastWatchUITests: XCTestCase {
         rematch.tap()
         let court = element("game.court", in: app)
         XCTAssertTrue(court.waitForExistence(timeout: 5))
-        XCTAssertTrue((court.value as? String ?? "").lowercased().contains(id))
+        assertFreshBossMatch(id, court: court)
         capture("scripted-\(id)-rematch", app: app)
         XCTAssertTrue(results.waitForExistence(timeout: 90))
         let choose = app.buttons["results.chooseOpponent"]
@@ -879,6 +965,16 @@ final class PickleBlastWatchUITests: XCTestCase {
         let back = app.buttons["boss.select.back"]
         reveal(back, in: app); back.tap()
         XCTAssertTrue(app.buttons["home.play"].waitForExistence(timeout: 5))
+    }
+
+    @MainActor
+    private func assertFreshBossMatch(_ id: String, court: XCUIElement,
+                                      file: StaticString = #filePath, line: UInt = #line) {
+        let status = court.value as? String ?? ""
+        XCTAssertTrue(status.hasPrefix("Boss Rally. THE \(id.uppercased())."), status, file: file, line: line)
+        XCTAssertTrue(status.contains("You 0. Boss 0. 0 saves."), status, file: file, line: line)
+        XCTAssertTrue(status.contains("Score 0."), status, file: file, line: line)
+        XCTAssertFalse(status.contains("Paused"), status, file: file, line: line)
     }
 
     @MainActor
@@ -936,7 +1032,11 @@ final class PickleBlastWatchUITests: XCTestCase {
     @discardableResult
     private func reveal(_ target: XCUIElement, in app: XCUIApplication,
                         failIfHidden: Bool = true) -> Bool {
-        let needsFullGeometry = ["home.settings", "settings.haptics", "settings.sensitivity", "pause.restart"].contains(target.identifier)
+        // Older XCTest can report clipped chooser/result buttons as hittable
+        // even when their centers are below the display. Scroll them fully in.
+        let needsFullGeometry = target.identifier.hasPrefix("boss.select.") ||
+            ["home.settings", "settings.haptics", "settings.sensitivity",
+             "pause.restart", "results.playNext", "results.home", "results.replay"].contains(target.identifier)
         // Five opponent cards need more short drags on the 40 mm display.
         for _ in 0..<16 {
             if target.exists {

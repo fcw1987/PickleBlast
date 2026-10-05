@@ -227,21 +227,15 @@ struct PresentationSceneTests {
             scene.render(state: GameState(), events: [], delta: 0)
             let player = try #require(scene.children.flatMap(\.children).compactMap { $0 as? CharacterNode }.first { $0.identity == "player" })
             let world = try #require(player.parent)
-            let court = try #require(world.children.first { $0.children.filter { $0 is SKShapeNode }.count == 3 })
-            let shapes = court.children.compactMap { $0 as? SKShapeNode }
-            var boundaryCopies = 0
-            var netCopies = 0
-            for shape in shapes {
+            let court = try #require(world.childNode(withName: "nightArenaCourt"))
+            for (name, lines) in [
+                ("courtPerimeterHalo", CourtGeometry.boundaryLines),
+                ("courtPerimeter", CourtGeometry.boundaryLines),
+                ("courtInteriorLines", CourtGeometry.nonVolleyLines + CourtGeometry.serviceLines),
+                ("courtNetTape", [CourtGeometry.net])
+            ] {
+                let shape = try #require(court.childNode(withName: "//" + name) as? SKShapeNode)
                 let vertices = try pathVertices(shape, relativeTo: world)
-                let lines: [CourtLine]
-                if vertices.count == CourtGeometry.lines.count * 2 {
-                    lines = CourtGeometry.lines
-                    boundaryCopies += 1
-                } else {
-                    #expect(vertices.count == 2)
-                    lines = [CourtGeometry.net]
-                    netCopies += 1
-                }
                 let expected = lines.flatMap { [scene.courtProjection.screenPoint(for: $0.start),
                                                 scene.courtProjection.screenPoint(for: $0.end)] }
                 #expect(vertices.count == expected.count)
@@ -250,8 +244,24 @@ struct PresentationSceneTests {
                     spriteKitNear(actual.y, desired.y)
                 }
             }
-            #expect(boundaryCopies == 2 && netCopies == 1)
         }
+    }
+
+    @Test("Native clock backing stays above scenery inside the system safe area",
+          arguments: [(162.0, 197.0, 40.0, 19.0), (211.0, 257.0, 56.5, 40.0)])
+    func nativeClockContrast(size: (Double, Double, Double, Double)) throws {
+        let scene = PickleBlastScene(size: CGSize(width: size.0, height: size.1))
+        scene.setViewport(scene.size, safeTop: size.2, safeBottom: size.3)
+        let backing = try #require(scene.childNode(withName: "//systemClockBacking") as? SKShapeNode)
+        let background = try #require(scene.childNode(withName: "//decorativeBackground"))
+        let path = try #require(backing.path)
+        let frame = path.boundingBoxOfPath
+        #expect(frame.minY >= size.1 - size.2 && frame.maxY <= size.1)
+        #expect(frame.minX > size.0 / 2 && frame.maxX <= size.0)
+        #expect(frame.minY > scene.courtProjection.hudY + 8, "Backing cannot cover the gameplay HUD")
+        #expect(backing.zPosition > background.zPosition)
+        #expect(backing.fillColor.cgColor.alpha >= 0.95)
+        #expect(backing.physicsBody == nil && !backing.hasActions())
     }
 
     @Test("Atmosphere aspect-fills below the authoritative court and disappears during blackout",
@@ -268,7 +278,7 @@ struct PresentationSceneTests {
         let background = try #require(scene.childNode(withName: "//decorativeBackground") as? SKSpriteNode)
         let world = try #require(background.parent)
         #expect(background.zPosition == -10)
-        #expect(background.alpha == 0.5)
+        near(background.alpha, 1)
         #expect(background.physicsBody == nil)
         #expect(background.texture?.filteringMode == .linear)
         spriteKitNear(background.position.x, scene.courtProjection.centerX)
@@ -276,7 +286,7 @@ struct PresentationSceneTests {
         #expect(background.size.width >= size.0 && background.size.height >= size.1)
         near(background.size.width / background.size.height, 1)
 
-        let court = try #require(world.children.first { $0.children.filter { $0 is SKShapeNode }.count == 3 })
+        let court = try #require(world.childNode(withName: "nightArenaCourt"))
         let player = try #require(world.children.compactMap { $0 as? CharacterNode }.first { $0.identity == "player" })
         let ball = try #require(world.children.compactMap { $0 as? SKSpriteNode }.first { $0.zPosition == 10 })
         #expect(background.zPosition < court.zPosition)

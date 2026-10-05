@@ -18,7 +18,10 @@ public final class PickleBlastScene: SKScene {
     #endif
     private let world = SKNode()
     private let background: SKSpriteNode
-    private let court = SKNode()
+    private let systemClockBacking = SKShapeNode()
+    private let court: NightArenaCourt
+    private let playerGround = SKShapeNode(ellipseOf: CGSize(width: 21, height: 3.6))
+    private let bossGround = SKShapeNode(ellipseOf: CGSize(width: 16, height: 2.8))
     private let player: CharacterNode
     private let boss: CharacterNode
     private let bossCue = SKShapeNode(circleOfRadius: 14)
@@ -31,12 +34,14 @@ public final class PickleBlastScene: SKScene {
     private let score = SKLabelNode(fontNamed: "HelveticaNeue-Bold")
     private let opponentScore = SKLabelNode(fontNamed: "HelveticaNeue-Bold")
     private let combo = SKLabelNode(fontNamed: "HelveticaNeue-Bold")
-    private let rallySaves = SKLabelNode(fontNamed: "HelveticaNeue-Bold")
+    private let rallyMomentum = RallyMomentumHUD()
     private var comboUntil = 0.0
     private var comboPoints = 0
     private let message = SKLabelNode(fontNamed: "HelveticaNeue-Bold")
     private let submessage = SKLabelNode(fontNamed: "HelveticaNeue-Medium")
     private let hud = SKNode()
+    private let hudBacking = SKShapeNode()
+    private let hudAccent = SKShapeNode()
     private let celebrationLayer = SKNode()
     private var hearts: [SKSpriteNode] = []
     private var targetNodes: [Int: TargetNode] = [:]
@@ -49,8 +54,6 @@ public final class PickleBlastScene: SKScene {
     private var lastScore: Int?
     private var lastPlayerRallyPoints: Int?
     private var lastOpponentRallyPoints: Int?
-    private var lastRallyReturns: Int?
-    private var lastSaves: Int?
     private var lastHUDMode: GameMode?
     private var lastLives: Int?
     private var lastMessage = ""
@@ -71,6 +74,7 @@ public final class PickleBlastScene: SKScene {
         self.textures = textureLibrary
         self.courtProjection = CourtProjection(viewportWidth: size.width, viewportHeight: size.height)
         self.background = SKSpriteNode(texture: textureLibrary.supporting("backgroundArena"))
+        self.court = NightArenaCourt(material: textureLibrary.supporting("courtSlateB3"))
         self.player = CharacterNode(frontFacing: false, textures: textureLibrary, tuning: tuning)
         self.boss = CharacterNode(frontFacing: true, textures: textureLibrary, tuning: tuning)
         self.ball = SKSpriteNode(texture: textureLibrary.ball)
@@ -81,10 +85,28 @@ public final class PickleBlastScene: SKScene {
         addChild(world)
         background.name = "decorativeBackground"
         background.zPosition = -10
-        background.alpha = 0.50
+        background.alpha = 1
         world.addChild(background)
+        // The native watchOS clock overlays the full-display scene. Keep its
+        // small safe-area region dark even when the authored moon sits behind it.
+        systemClockBacking.name = "systemClockBacking"
+        systemClockBacking.zPosition = -5
+        systemClockBacking.fillColor = SKColor(white: 0, alpha: 0.96)
+        systemClockBacking.strokeColor = .clear
+        systemClockBacking.lineWidth = 0
+        world.addChild(systemClockBacking)
         world.addChild(court)
         buildCourt()
+        for (node, name, color) in [(playerGround, "playerGrounding", Neon.cyan),
+                                     (bossGround, "bossGrounding", Neon.magenta)] {
+            node.name = name
+            node.zPosition = 0.5
+            node.fillColor = SKColor(white: 0, alpha: 0.58)
+            node.strokeColor = color.withAlphaComponent(0.24)
+            node.lineWidth = 0.55
+            CrispVector.prepare(node)
+            world.addChild(node)
+        }
         world.addChild(player)
         world.addChild(boss)
         bossCue.name = "bossSpecialCue"
@@ -120,6 +142,18 @@ public final class PickleBlastScene: SKScene {
         ball.size = CGSize(width: tuning.ballRadius * 3.2 / textures.manifest.supporting["ball"]!.visibleFraction, height: tuning.ballRadius * 3.2 / textures.manifest.supporting["ball"]!.visibleFraction)
         addChild(hud)
         hud.zPosition = 20
+        hudBacking.name = "hudBlackBacking"
+        hudBacking.zPosition = -2
+        hudBacking.fillColor = Neon.black
+        hudBacking.strokeColor = Neon.cyan.withAlphaComponent(0.18)
+        hudBacking.lineWidth = 0.5
+        hud.addChild(hudBacking)
+        hudAccent.name = "hudAccent"
+        hudAccent.zPosition = -1
+        hudAccent.strokeColor = Neon.cyan.withAlphaComponent(0.65)
+        hudAccent.lineWidth = 0.7
+        CrispVector.prepare(hudAccent)
+        hud.addChild(hudAccent)
         score.horizontalAlignmentMode = .left
         score.verticalAlignmentMode = .center
         score.fontSize = 15
@@ -140,13 +174,7 @@ public final class PickleBlastScene: SKScene {
         combo.verticalAlignmentMode = .center
         combo.isHidden = true
         hud.addChild(combo)
-        rallySaves.name = "hudRallySaves"
-        rallySaves.fontSize = 8
-        rallySaves.fontColor = Neon.lime
-        rallySaves.horizontalAlignmentMode = .right
-        rallySaves.verticalAlignmentMode = .center
-        rallySaves.isHidden = true
-        hud.addChild(rallySaves)
+        hud.addChild(rallyMomentum)
         for _ in 0..<tuning.initialLives {
             let heart = SKSpriteNode(texture: textures.supporting("uiHeartFull"))
             heart.size = CGSize(width: 15, height: 15)
@@ -218,6 +246,7 @@ public final class PickleBlastScene: SKScene {
             pulseUntil = 0
             visualTime = 0
             clearEffectBegan = -.infinity
+            rallyMomentum.reset()
             player.reset()
             boss.release()
             requestedBossIdentity = nil
@@ -228,6 +257,8 @@ public final class PickleBlastScene: SKScene {
         let frozen = state.isPaused || state.resumeCountdown > 0
         let visualDelta = frozen ? 0 : max(0, state.simulationTime - (previousSimulationTime ?? state.simulationTime))
         visualTime += visualDelta
+        if let lastHUDMode, lastHUDMode != state.mode { rallyMomentum.reset() }
+        rallyMomentum.prepare(returns: state.consecutivePlayerReturns)
         player.advance(x: state.playerX, planeY: tuning.playerY + tuning.ballRadius,
                        delta: visualDelta, frozen: frozen,
                        prediction: prediction(state: state, x: state.playerX, plane: tuning.playerY + tuning.ballRadius, front: false), projection: courtProjection)
@@ -245,6 +276,12 @@ public final class PickleBlastScene: SKScene {
         renderBossCue(state.boss, phase: state.phase)
         // Resolve impact positions before removing destroyed target nodes.
         consume(events, state: state)
+        // Contact registration translates the complete sprite inside its node.
+        // Grounding follows that visible foot anchor, including a reaching pose;
+        // it does not move, retime or add children to the approved character.
+        positionGrounding(playerGround, beneath: player, offset: -1.2)
+        positionGrounding(bossGround, beneath: boss, offset: -0.8)
+        bossGround.isHidden = boss.isHidden
         syncTargets(state.targets)
         world.isHidden = state.phase == .blackout
         hud.isHidden = state.phase == .blackout
@@ -255,13 +292,10 @@ public final class PickleBlastScene: SKScene {
             score.fontSize = isBossRally ? 10.5 : 15
             opponentScore.fontSize = isBossRally ? 10.5 : 12
             opponentScore.isHidden = !isBossRally
-            rallySaves.isHidden = !isBossRally
             for heart in hearts { heart.isHidden = isBossRally }
             lastScore = nil
             lastPlayerRallyPoints = nil
             lastOpponentRallyPoints = nil
-            lastRallyReturns = nil
-            lastSaves = nil
             lastHUDMode = state.mode
             layoutScoreDetails(isBossRally: isBossRally)
         }
@@ -273,14 +307,6 @@ public final class PickleBlastScene: SKScene {
             if lastOpponentRallyPoints != state.opponentRallyPoints {
                 opponentScore.text = "BOSS \(state.opponentRallyPoints)"
                 lastOpponentRallyPoints = state.opponentRallyPoints
-            }
-            if lastRallyReturns != state.currentRallyReturns {
-                combo.text = state.currentRallyReturns >= 100 ? "R99+" : "R\(state.currentRallyReturns)"
-                lastRallyReturns = state.currentRallyReturns
-            }
-            if lastSaves != state.recoveriesRemaining {
-                rallySaves.text = "S\(state.recoveriesRemaining)"
-                lastSaves = state.recoveriesRemaining
             }
             layoutScoreDetails(isBossRally: true)
         } else if lastScore != state.score {
@@ -295,16 +321,16 @@ public final class PickleBlastScene: SKScene {
             lastLives = state.lives
         }
         renderBall(state)
-        court.alpha = visualTime < pulseUntil ? 0.6 + 0.4 * sin((pulseUntil - visualTime) * 32) : 1
-        for index in effects.indices { effects[index].update(time: visualTime) }
+        court.markingAlpha = visualTime < pulseUntil ? 0.6 + 0.4 * sin((pulseUntil - visualTime) * 32) : 1
+        for index in effects.indices { effects[index].update(time: visualTime, animated: !reduceMotion && !isBossRally) }
         let clearProgress = (visualTime - clearEffectBegan) / 0.8
         clearEffect.isHidden = clearProgress < 0 || clearProgress >= 1 || state.phase == .blackout
         if !clearEffect.isHidden { clearEffect.texture = textures.supporting(String(format: "%@%02d", clearEffectPrefix, min(8, Int(clearProgress * 8) + 1))) }
         renderCascade(state.celebration, visible: state.phase == .celebration)
-        combo.isHidden = isBossRally
-            ? state.phase == .blackout || state.phase == .results
-            : state.targetChain < 2 || visualTime >= comboUntil || state.phase != .playing
-        if isBossRally { rallySaves.isHidden = combo.isHidden }
+        combo.isHidden = isBossRally || state.targetChain < 2 || visualTime >= comboUntil || state.phase != .playing
+        let milestoneVisible = rallyMomentum.render(state: state, time: visualTime, reduceMotion: reduceMotion)
+        score.isHidden = milestoneVisible
+        opponentScore.isHidden = !isBossRally || milestoneVisible
         renderMessage(state)
         #if DEBUG
         renderDebug(state)
@@ -313,7 +339,7 @@ public final class PickleBlastScene: SKScene {
     }
 
     /// Insets come from an outer SwiftUI geometry reader before the game surface
-    /// extends under system chrome. Only the court background can enter that area.
+    /// extends under system chrome. Scenery and its clock backing may enter that area.
     public func setViewport(_ viewport: CGSize, safeTop: CGFloat, safeBottom: CGFloat,
                             safeLeading: CGFloat = 0, safeTrailing: CGFloat = 0) {
         let next = (safeTop, safeBottom, safeLeading, safeTrailing)
@@ -336,7 +362,26 @@ public final class PickleBlastScene: SKScene {
         let scale = max(requiredWidth / art.pixelSize[0], size.height / art.pixelSize[1])
         background.size = CGSize(width: art.pixelSize[0] * scale, height: art.pixelSize[1] * scale)
         background.position = CGPoint(x: visualCenterX, y: size.height / 2)
+        let clockHeight = min(27, max(0, safeInsets.top - 4))
+        let clockWidth = min(64, max(1, size.width * 0.37))
+        let clockPanel = CGRect(x: max(0, size.width - max(4, safeInsets.trailing + 4) - clockWidth),
+                                y: size.height - safeInsets.top / 2 - clockHeight / 2,
+                                width: clockWidth, height: clockHeight)
+        systemClockBacking.path = CGPath(roundedRect: clockPanel, cornerWidth: 8, cornerHeight: 8, transform: nil)
+        systemClockBacking.isHidden = clockHeight == 0
         buildCourt()
+        let groundingScale = sqrt(size.width / 211)
+        CrispVector.setVisualScale(groundingScale, on: playerGround)
+        CrispVector.setVisualScale(groundingScale, on: bossGround)
+        let panel = CGRect(x: safeInsets.leading + 4, y: courtProjection.hudY - 8,
+                           width: max(1, size.width - safeInsets.leading - safeInsets.trailing - 8), height: 16)
+        hudBacking.path = CGPath(roundedRect: panel, cornerWidth: 5, cornerHeight: 5, transform: nil)
+        let accent = CGMutablePath()
+        for side in [panel.minX + 7, panel.maxX - 24] {
+            accent.move(to: CGPoint(x: side, y: panel.minY))
+            accent.addLine(to: CGPoint(x: side + 17, y: panel.minY))
+        }
+        CrispVector.replacePath(of: hudAccent, with: accent)
         for effect in effects { effect.reproject(courtProjection) }
         let safeX = max(14, size.width * 0.08)
         score.position = CGPoint(x: safeInsets.leading + safeX, y: courtProjection.hudY)
@@ -357,8 +402,8 @@ public final class PickleBlastScene: SKScene {
     }
 
     private func layoutScoreDetails(isBossRally: Bool) {
-        // All four Rally values share the one safe row above every approved
-        // boss pose. The short counters sit beside, never over, the scores.
+        // Match scores and a quiet progress/save pair share the safe row above
+        // every boss pose. Growing numbers appear only for brief milestones.
         if isBossRally {
             let sideMargin = size.width < 190 ? CGFloat(7) : max(14, size.width * 0.08)
             score.position.x = safeInsets.leading + sideMargin
@@ -370,35 +415,18 @@ public final class PickleBlastScene: SKScene {
         combo.fontSize = isBossRally ? 8 : 10
         combo.position = CGPoint(x: isBossRally ? score.frame.maxX + 2 : size.width / 2,
                                  y: isBossRally ? courtProjection.hudY : courtProjection.hudY - 13)
-        rallySaves.position = CGPoint(x: opponentScore.frame.minX - 2, y: courtProjection.hudY)
+        rallyMomentum.layout(playerScore: score.frame, opponentScore: opponentScore.frame,
+                             y: courtProjection.hudY, centerX: courtProjection.centerX)
     }
 
     private func buildCourt() {
-        court.removeAllChildren()
-        let path = CGMutablePath()
-        for line in CourtGeometry.lines {
-            path.move(to: screenPoint(line.start))
-            path.addLine(to: screenPoint(line.end))
-        }
-        let halo = SKShapeNode(path: path)
-        halo.strokeColor = Neon.cyan.withAlphaComponent(0.15)
-        halo.lineWidth = 3.2
-        CrispVector.prepare(halo)
-        court.addChild(halo)
-        let crisp = SKShapeNode(path: path)
-        crisp.strokeColor = Neon.cyan
-        crisp.lineWidth = 0.9
-        CrispVector.prepare(crisp)
-        court.addChild(crisp)
-        let netPath = CGMutablePath()
-        let net = CourtGeometry.net
-        netPath.move(to: screenPoint(net.start))
-        netPath.addLine(to: screenPoint(net.end))
-        let netNode = SKShapeNode(path: netPath)
-        netNode.strokeColor = Neon.cyan.withAlphaComponent(0.8)
-        netNode.lineWidth = 1.3
-        CrispVector.prepare(netNode)
-        court.addChild(netNode)
+        court.layout(projection: courtProjection)
+    }
+
+    private func positionGrounding(_ grounding: SKShapeNode, beneath character: CharacterNode, offset: CGFloat) {
+        let registration = character.children.first?.position ?? .zero
+        grounding.position = CGPoint(x: character.position.x + registration.x,
+                                     y: character.position.y + registration.y + offset)
     }
 
     private func syncTargets(_ targets: [TargetState]) {
@@ -414,7 +442,7 @@ public final class PickleBlastScene: SKScene {
                 targetNodes[target.id] = node
             }
             targetNodes[target.id]?.apply(target, projection: courtProjection)
-            targetNodes[target.id]?.update(time: visualTime)
+            targetNodes[target.id]?.update(time: visualTime, reduceMotion: reduceMotion)
         }
     }
 
@@ -452,6 +480,12 @@ public final class PickleBlastScene: SKScene {
                 }
             case .ballRecovered:
                 show("BALL BACK", until: visualTime + tuning.recoveryReadyDuration)
+            case let .rallyMilestone(returns):
+                if state.mode.isBossRally {
+                    rallyMomentum.celebrate(returns: returns, earnedSave: events.contains(.recoveryEarned), time: visualTime)
+                }
+            case .recoveryEarned:
+                break // The simultaneous milestone presents the earned save.
             case let .comboChanged(chain, _):
                 if chain == 0 { comboPoints = 0; comboUntil = 0 }
             case .waveCleared:
@@ -779,10 +813,14 @@ private struct ImpactRing {
         node.position = CGPoint(x: point.x, y: point.y)
     }
     mutating func reset() { began = -.infinity; node.isHidden = true }
-    func update(time: Double) {
+    func update(time: Double, animated: Bool) {
         let progress = (time - began) / 0.22
         node.isHidden = progress < 0 || progress >= 1
         guard !node.isHidden else { return }
         node.texture = textures.supporting(image ?? String(format: perfect ? "effectPerfect%02d" : "effectHit%02d", min(6, Int(progress * 6) + 1)))
+        // Arcade's existing six pooled impacts expand then dissolve. No extra
+        // nodes or full-screen effect; ball rendering/contact stay independent.
+        node.setScale(animated ? CGFloat(0.82 + 0.42 * progress) : 1)
+        node.alpha = animated ? CGFloat(1 - progress * progress) : 1
     }
 }

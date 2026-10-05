@@ -35,6 +35,8 @@ struct BossSeriesTests {
         for index in order.indices {
             let id = order[index]
             engine.state.currentBossMatchLongestRallyReturns = 7
+            engine.state.consecutivePlayerReturns = 20
+            engine.state.recoveriesRemaining = 1
             let events = scoreWinningPoint(engine, for: id)
             allMatchEvents += events
 
@@ -65,8 +67,9 @@ struct BossSeriesTests {
                 #expect(engine.state.boss?.lateralVelocity == 0)
                 #expect(engine.state.ball == nil)
                 #expect(engine.state.currentRallyReturns == 0)
+                #expect(engine.state.consecutivePlayerReturns == 0)
                 #expect(engine.state.currentBossMatchLongestRallyReturns == 0)
-                #expect(engine.state.recoveriesRemaining == engine.tuning.freeRecoveriesPerStage)
+                #expect(engine.state.recoveriesRemaining == 0)
                 #expect(engine.state.longestRallyReturns == 11)
                 #expect(engine.state.score == (index + 1) * expectedMatchScore)
                 #expect(!events.contains(.bossDefeated))
@@ -118,6 +121,8 @@ struct BossSeriesTests {
         #expect(engine.state.bossID == .banger)
         #expect(engine.state.completedBossMatches.count == 1)
 
+        engine.state.consecutivePlayerReturns = 20
+        engine.state.recoveriesRemaining = 1
         engine.reset()
 
         #expect(engine.state.mode == .bossSeries)
@@ -126,7 +131,8 @@ struct BossSeriesTests {
         #expect(engine.state.completedBossMatches.isEmpty)
         #expect(engine.state.score == 0)
         #expect(engine.state.longestRallyReturns == 0)
-        #expect(engine.state.recoveriesRemaining == engine.tuning.freeRecoveriesPerStage)
+        #expect(engine.state.consecutivePlayerReturns == 0)
+        #expect(engine.state.recoveriesRemaining == 0)
         #expect(engine.state.boss?.points == 0)
         #expect(engine.state.boss?.opponentPoints == 0)
     }

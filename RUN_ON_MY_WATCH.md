@@ -31,7 +31,7 @@ xcodebuild -project PickleBlast.xcodeproj -scheme PickleBlast \
   -configuration Release -destination 'generic/platform=watchOS' \
   -derivedDataPath .build/PhysicalRelease clean build
 python3 scripts/audit_release.py \
-  .build/PhysicalRelease/Build/Products/Release-watchos/PickleBlast.app --expected-build 5
+  .build/PhysicalRelease/Build/Products/Release-watchos/PickleBlast.app --expected-build 10
 python3 scripts/measure_resources.py \
   .build/PhysicalRelease/Build/Products/Release-watchos/PickleBlast.app
 ```
@@ -59,8 +59,9 @@ For iterative work, open `PickleBlast.xcodeproj`, select **PickleBlast** and the
 
 - Confirm existing records, Crown sensitivity, and haptic preference survive the update.
 - Play individual rallies against The Wall, The Banger, The Poacher, The Dinker, and The Lobber. Automatic returns, receiving assistance, court/background, and approved animation should retain their accepted feel.
-- In Boss Rally, deliberately miss: the first two saves preserve points; a later miss awards the opponent a point. A match ends at three points. Pause and Resume do not refill saves.
-- Choose All Three. A win advances Wall to Banger to Poacher, each starting with two saves; a loss ends the sequence, and Retry starts at Wall.
+- In Boss Rally, deliberately miss: a held earned save consumes the miss without awarding a point; without a save, a miss awards the opponent a point and resets return progress. A match ends at three points. Pause and Resume do not refill saves.
+- Confirm Boss Rally is first on Home, Arcade follows it, and the opponent menu contains five individual choices. After each win, use Play Next through Wall → Banger → Poacher → Dinker → Lobber. Each starts 0–0 with no save or return progress; a loss offers a retry without advancing. After Lobber, confirm the end-of-list message and no wrap to Wall.
+- Check Rematch/Retry retains the selected boss, Choose Opponent returns to the list, Back returns Home, and Pause/Resume/Restart/Home work after several Play Next transitions.
 - Check center and edge contact for one visible paddle, aligned ball departure, immediate Crown reversal at the boundary, and unchanged sensitivity.
 - Tap Pause away from the small icon, then Resume and Home. Lower/raise the wrist and interrupt through the system UI; active gameplay must wait for Resume.
 - Open Arcade and confirm its waves, scoring, recoveries, cleanup, The Wall, replay, and existing best record still work.

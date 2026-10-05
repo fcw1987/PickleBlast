@@ -25,6 +25,8 @@ BACKGROUND_CLEAN = ROOT / "ArtSources/Backgrounds/PickleblastBackground-Atmosphe
 BACKGROUND_APPROVED_SHA256 = "ddef9be67835df0eb04f30a45691f987e60eeedaf1ffd748f060f7518ebefeb2"
 BACKGROUND_CLEAN_SHA256 = "fb5e8d6db7a0b6e5728743003fc010d0c54e0dafb0f9d57010642f4f8432bfd3"
 BACKGROUND_RUNTIME_SIZE = [512, 512]
+B3_SOURCE_ROOT = ROOT / "ArtSources/Backgrounds/B3"
+RETIRED_MANAGED_ART_PATHS = {"Arena.atlas/gameplay_background.png", "Arena.atlas/court_slate_b3.png"}
 CLIPS = {"idle": (72, 1.5, True, None), "move_left": (32, .64, True, None),
          "move_right": (32, .64, True, None), "forehand": (49, .64, False, 20),
          "backhand": (49, .68, False, 20), "block": (37, .45, False, 16)}
@@ -193,7 +195,7 @@ def convert_png(source, destination, size, opaque=False):
     width, height, channels, pixels = png_pixels(destination)
     require([width, height] == list(size), f"Incorrect conversion size: {destination}")
     if opaque and channels == 4:
-        require(all(value == 255 for value in pixels[3::4]), f"App icon is not opaque: {source}")
+        require(all(value == 255 for value in pixels[3::4]), f"Required opaque image has transparency: {source}")
         pixels = bytes(value for i, value in enumerate(pixels) if i % 4 != 3)
         channels = 3
     write_png(destination, width, height, channels, pixels)
@@ -632,7 +634,79 @@ def icon_entries():
     return images
 
 
-def generate(source, art, icons, background_approved=BACKGROUND_APPROVED, background_clean=BACKGROUND_CLEAN):
+def production_upgrades():
+    """Bounded original build-9 art; never mutate the historical source pack."""
+    specifications = read_json(ROOT / "ArtSources/ArcadeV1/selection.json")
+    expected = {"targetPaddleCyan", "targetPaddleLime", "targetPaddleMagenta",
+                "targetCone", "targetBasket", "targetBasketDamaged", "appIcon"}
+    require(isinstance(specifications, dict) and set(specifications) == expected,
+            "Production upgrade selection differs")
+    for key, item in specifications.items():
+        require(isinstance(item, dict) and set(item) == {"source", "sha256", "size"},
+                "Invalid production upgrade record")
+        path = ROOT / relative_resource_path(item["source"])
+        require(path.parent == ROOT / ("ArtSources/IconV1" if key == "appIcon" else "ArtSources/ArcadeV1"),
+                "Production upgrade source outside its authored directory")
+        require(not any(parent.is_symlink() for parent in (path, *path.parents))
+                and path.is_file() and digest(path) == item["sha256"],
+                "Production upgrade source hash differs")
+        info = pixel_info(path)
+        require(item["size"] == ([1024, 1024] if key == "appIcon" else [256, 256])
+                and info["pixelSize"] == item["size"], "Production upgrade size differs")
+        require(info["alphaExtrema"] == [255, 255] if key == "appIcon"
+                else info["alphaExtrema"][0] == 0, "Production upgrade alpha differs")
+    return specifications
+
+
+def environment_allowlist():
+    """Only the separately authored B3 layers may enter the runtime atlas."""
+    return {
+        "backgroundArena": {"source": B3_SOURCE_ROOT / "Build9/arena-moon-left-source.png",
+            "sourceSHA256": "60d380e294ad47e9513c39aef66806a52362ef2511e1d35b862bf4521a8fe929",
+            "sourceSize": [1254, 1254], "atlas": "Arena", "name": "arena_b3"},
+        # SKShapeNode.fillTexture can sample the entire compiled atlas page.
+        # Keep this material isolated: packing scenery beside it corrupts native court fills.
+        "courtSlateB3": {"source": B3_SOURCE_ROOT / "court-slate-b3-source.png",
+            "sourceSHA256": "7596e030f31b24aa03c8cc2342f76764cd69327edf3e6ad79bfcbc0bc2bbbdb5",
+            "sourceSize": [1254, 1254], "atlas": "CourtMaterial", "name": "court_slate_b3"}}
+
+
+def validate_environment_source(path, expected_hash, size):
+    require(not any(parent.is_symlink() for parent in (path, *path.parents)),
+            "Environment source must not use symlinks")
+    require(path.is_file() and digest(path) == expected_hash,
+            f"Approved environment source differs or is missing: {path.name}")
+    info = pixel_info(path)
+    require(info["pixelSize"] == size and info["alphaExtrema"] == [255, 255],
+            f"Approved environment source dimensions or opacity differ: {path.name}")
+    return info
+
+
+def background_history():
+    """Retain and validate the original approved masters without bundling them."""
+    validate_environment_source(BACKGROUND_APPROVED, BACKGROUND_APPROVED_SHA256, [1254, 1254])
+    validate_environment_source(BACKGROUND_CLEAN, BACKGROUND_CLEAN_SHA256, [1254, 1254])
+    return {"approvedFilename": BACKGROUND_APPROVED.name,
+        "approvedSource": str(BACKGROUND_APPROVED.relative_to(ROOT)), "approvedSHA256": BACKGROUND_APPROVED_SHA256,
+        "cleanSource": str(BACKGROUND_CLEAN.relative_to(ROOT)), "cleanSHA256": BACKGROUND_CLEAN_SHA256,
+        "status": "Historical approved masters retained unchanged; replaced in runtime by B3 layers."}
+
+
+def environment_sources():
+    result = {}
+    for key, specification in sorted(environment_allowlist().items()):
+        path = specification["source"]
+        validate_environment_source(path, specification["sourceSHA256"], specification["sourceSize"])
+        result[key] = {"source": str(path.relative_to(ROOT)), "sourceSHA256": specification["sourceSHA256"],
+            "sourceSize": specification["sourceSize"], "runtimeSize": BACKGROUND_RUNTIME_SIZE,
+            "destination": f"{specification['atlas']}.atlas/{specification['name']}.png"}
+    return result
+
+
+def generate(source, art, icons):
+    historical_background = background_history()
+    environment = environment_sources()
+    upgrades = production_upgrades()
     characters, mappings = character_manifest(source)
     art.mkdir(parents=True, exist_ok=True)
     icons.mkdir(parents=True, exist_ok=True)
@@ -662,7 +736,8 @@ def generate(source, art, icons, background_approved=BACKGROUND_APPROVED, backgr
                 info = record(relative, destination, "character", {"character": character})
                 require(info["alphaExtrema"] == [0, 255], f"Character alpha contract differs: {relative}")
     for key, (relative, atlas, size) in sorted(supporting_allowlist().items()):
-        source_file = source / relative
+        upgrade = upgrades.get(key)
+        source_file = ROOT / upgrade["source"] if upgrade else source / relative
         require(source_file.is_file(), f"Missing required support asset: {relative}")
         original = pixel_info(source_file)
         require(original["pixelSize"] == ([1400, 360] if key == "wordmark" else [256, 256]),
@@ -670,39 +745,26 @@ def generate(source, art, icons, background_approved=BACKGROUND_APPROVED, backgr
         require(original["alphaExtrema"][0] == 0, f"Support artwork has an opaque matte: {relative}")
         destination = art / (atlas + ".atlas") / source_file.name
         convert_png(source_file, destination, size)
-        info = record(relative, destination, "support", {"semanticKey": key})
+        info = record(upgrade["source"] if upgrade else relative, destination, "support",
+                      {"semanticKey": key}, source_root=ROOT if upgrade else source)
         manifest["supporting"][key] = {"atlas": atlas, "name": source_file.stem,
                                       "pixelSize": info["pixelSize"], "alphaBounds": info["alphaBounds"]}
-    require(background_approved.is_file() and digest(background_approved) == BACKGROUND_APPROVED_SHA256,
-            "Approved gameplay background source differs or is missing")
-    require(background_clean.is_file() and digest(background_clean) == BACKGROUND_CLEAN_SHA256,
-            "Clean gameplay atmosphere source differs or is missing")
-    approved_info = pixel_info(background_approved)
-    clean_info = pixel_info(background_clean)
-    require(approved_info["pixelSize"] == [1254, 1254] and approved_info["alphaExtrema"] == [255, 255],
-            "Approved gameplay background must be opaque 1254x1254")
-    require(clean_info["pixelSize"] == [1254, 1254] and clean_info["alphaExtrema"] == [255, 255],
-            "Clean gameplay atmosphere must be opaque 1254x1254")
-    background_destination = art / "Arena.atlas/gameplay_background.png"
-    convert_png(background_clean, background_destination, BACKGROUND_RUNTIME_SIZE, opaque=True)
-    background_info = record(background_clean.name, background_destination, "background",
-                             {"semanticKey": "backgroundArena",
-                              "approvedSource": str(background_approved.relative_to(ROOT)),
-                              "cleanSource": str(background_clean.relative_to(ROOT))},
-                             source_root=background_clean.parent)
-    manifest["supporting"]["backgroundArena"] = {
-        "atlas": "Arena", "name": "gameplay_background",
-        "pixelSize": background_info["pixelSize"], "alphaBounds": background_info["alphaBounds"]}
-    icon_source = "AppIcon/app_icon_1024.png"
-    icon_info = pixel_info(source / icon_source)
+    for key, specification in environment.items():
+        destination = art / specification["destination"]
+        convert_png(ROOT / specification["source"], destination, BACKGROUND_RUNTIME_SIZE, opaque=True)
+        info = record(specification["source"], destination, "environment", {"semanticKey": key}, source_root=ROOT)
+        manifest["supporting"][key] = {"atlas": destination.parent.stem, "name": destination.stem,
+            "pixelSize": info["pixelSize"], "alphaBounds": info["alphaBounds"]}
+    icon_source = upgrades["appIcon"]["source"]
+    icon_info = pixel_info(ROOT / icon_source)
     require(icon_info["pixelSize"] == [1024, 1024] and icon_info["alphaExtrema"] == [255, 255],
             "Supplied app icon must be opaque and 1024x1024")
     entries = icon_entries()
     for entry in entries:
         size = round(float(entry["size"].split("x")[0]) * int(entry["scale"][0]))
         destination = icons / entry["filename"]
-        convert_png(source / icon_source, destination, [size, size], opaque=True)
-        record(icon_source, destination, "appIcon")
+        convert_png(ROOT / icon_source, destination, [size, size], opaque=True)
+        record(icon_source, destination, "appIcon", source_root=ROOT)
     (icons / "Contents.json").write_bytes(json_bytes({"images": entries, "info": {"author": "xcode", "version": 1}}))
     (art / "runtime_manifest.json").write_bytes(json_bytes(manifest))
     omitted = sorted(str(path.relative_to(source)) for path in source.rglob("*.png") if str(path.relative_to(source)) not in selected)
@@ -713,14 +775,12 @@ def generate(source, art, icons, background_approved=BACKGROUND_APPROVED, backgr
         for key, value in {"images": 1, "pngBytes": item["pngBytes"],
                            "estimatedDecodedRGBABytes": item["estimatedDecodedRGBABytes"]}.items():
             total[key] += value
+    require(groups.get("CourtMaterial.atlas", {}).get("images") == 1,
+            "CourtMaterial must remain a single-image atlas for native shape fills")
     audit = {"schemaVersion": 1, "sourcePack": "PickleBlast_Final_Approved_Art", "sourcePackModified": False,
         "approval": "Approved Player, Wall, Banger and Poacher runtime art; additional bosses explicitly selected by Boss Rally request. Paddle registration for Banger/Poacher is image-derived from their own frames and the shared Wall pose template.",
         "metadataMappings": mappings, "resources": resources, "groups": groups, "omittedOptionalPNGs": omitted,
-        "backgroundSource": {"approvedFilename": background_approved.name,
-            "approvedSource": str(background_approved.relative_to(ROOT)), "approvedSHA256": digest(background_approved),
-            "cleanSource": str(background_clean.relative_to(ROOT)), "cleanSHA256": digest(background_clean),
-            "runtimeSize": BACKGROUND_RUNTIME_SIZE, "scaling": "centered proportional aspect fill",
-            "cleanup": "Removed baked court, net, branding, signage, decorative balls and gameplay objects; retained arena atmosphere."},
+        "backgroundSource": historical_background, "environmentSources": environment,
         "sourceManifestSHA256": {name: digest(source / "Docs" / name) for name in ("player_animation_manifest.json", "boss_animation_manifest.json")},
         "estimationNote": "Decoded RGBA estimates are width * height * 4. They exclude atlas packing, mipmaps, upload copies and renderer overhead; PNG bytes are measured.",
         "managedArtPaths": sorted(str(path.relative_to(art)) for path in art.rglob("*") if path.is_file()) + ["import_audit.json"],
@@ -745,7 +805,9 @@ def relative_resource_path(value):
 
 
 def managed_path_sets():
-    art = {"runtime_manifest.json", "import_audit.json", "Arena.atlas/gameplay_background.png"}
+    art = {"runtime_manifest.json", "import_audit.json"}
+    art.update(f"{specification['atlas']}.atlas/{specification['name']}.png"
+               for specification in environment_allowlist().values())
     for character, (_, _, atlas) in CHARACTERS.items():
         prefix = "player" if character == "player" else "boss_" + character
         for clip, (count, _, _, _) in CLIPS.items():
@@ -762,7 +824,9 @@ def install_plan(staged, destination, paths, previous_paths):
     previous = [relative_resource_path(path) for path in previous_paths]
     require(len(set(current)) == len(current) and len(set(previous)) == len(previous), "Duplicate managed resource path")
     owned_art, owned_icons = managed_path_sets()
-    require(set(previous) <= owned_art | owned_icons, "Unexpected previous managed resource path")
+    require(set(current) <= owned_art | owned_icons, "Unexpected managed resource path")
+    require(set(previous) <= owned_art | owned_icons | RETIRED_MANAGED_ART_PATHS,
+            "Unexpected previous managed resource path")
     reject_symlinks(staged)
     reject_symlinks(destination)
     root = destination.resolve()
@@ -817,6 +881,11 @@ def run(source=SOURCE, output=OUTPUT, icon_output=ICON_OUTPUT, check=False):
             and not source.is_relative_to(output) and not source.is_relative_to(icon_output),
             "Outputs must be outside immutable source pack and cannot contain it")
     require(not output.is_relative_to(icon_output) and not icon_output.is_relative_to(output), "Output trees must not overlap")
+    environment_root = BACKGROUND_APPROVED.parent.resolve()
+    authored_roots = (environment_root, ROOT / "ArtSources/ArcadeV1", ROOT / "ArtSources/IconV1")
+    require(all(not destination.is_relative_to(authored) and not authored.is_relative_to(destination)
+                for destination in (output, icon_output) for authored in authored_roots),
+            "Outputs must not overlap immutable environment sources")
     previous = read_json(output / "import_audit.json") if (output / "import_audit.json").exists() else {}
     require(isinstance(previous, dict), "Previous import audit must be an object")
     # Complete validation/conversion in a staging directory before replacing managed output files.
@@ -852,6 +921,9 @@ def check_runtime(output=OUTPUT, icon_output=ICON_OUTPUT, fixtures=FIXTURES):
     require(isinstance(manifest, dict) and isinstance(audit, dict)
             and manifest.get("schemaVersion") == audit.get("schemaVersion") == 1,
             "Unsupported runtime metadata schema")
+    environment = environment_sources()
+    require(audit.get("backgroundSource") == background_history(), "Historical background source audit differs")
+    require(audit.get("environmentSources") == environment, "Runtime environment source audit differs")
     art_paths, icon_paths = managed_path_sets()
     require(isinstance(audit.get("managedArtPaths"), list) and isinstance(audit.get("managedIconPaths"), list),
             "Missing managed runtime resource paths")
@@ -879,20 +951,22 @@ def check_runtime(output=OUTPUT, icon_output=ICON_OUTPUT, fixtures=FIXTURES):
     for key, (relative, atlas, size) in supporting_allowlist().items():
         expected_supporting[key] = {"atlas": atlas, "name": Path(relative).stem, "pixelSize": size,
             "alphaBounds": pixel_info(output / (atlas + ".atlas") / Path(relative).name)["alphaBounds"]}
-    expected_supporting["backgroundArena"] = {"atlas": "Arena", "name": "gameplay_background",
-        "pixelSize": BACKGROUND_RUNTIME_SIZE, "alphaBounds": [0, 0, *BACKGROUND_RUNTIME_SIZE]}
+    for key, specification in environment.items():
+        destination = Path(specification["destination"])
+        expected_supporting[key] = {"atlas": destination.parent.stem, "name": destination.stem,
+            "pixelSize": BACKGROUND_RUNTIME_SIZE, "alphaBounds": [0, 0, *BACKGROUND_RUNTIME_SIZE]}
     require(manifest.get("supporting") == expected_supporting, "Runtime support metadata differs")
     resources = audit.get("resources")
     require(isinstance(resources, list) and len(resources) == len(art_paths) - 2 + len(icon_paths) - 1,
             "Runtime resource audit count differs")
     seen, groups = set(), {}
+    upgrades = production_upgrades()
     source_hashes = {relative: digest(fixtures / relative) for relative, _, _ in supporting_allowlist().values()}
-    source_hashes["AppIcon/app_icon_1024.png"] = digest(fixtures / "AppIcon/app_icon_1024.png")
     for item in resources:
         require(isinstance(item, dict), "Invalid runtime resource audit entry")
         relative = relative_resource_path(item.get("destination"))
         kind = item.get("kind")
-        require(kind in ("character", "support", "background", "appIcon"), "Invalid runtime resource kind")
+        require(kind in ("character", "support", "environment", "appIcon"), "Invalid runtime resource kind")
         root = icon_output if kind == "appIcon" else output
         key = (kind == "appIcon", relative)
         require(key not in seen and relative in (icon_paths if kind == "appIcon" else art_paths)
@@ -914,22 +988,26 @@ def check_runtime(output=OUTPUT, icon_output=ICON_OUTPUT, fixtures=FIXTURES):
             semantic = item.get("semanticKey")
             require(semantic in supporting_allowlist(), "Unexpected runtime supporting key")
             source_relative, atlas, size = supporting_allowlist()[semantic]
+            upgrade = upgrades.get(semantic)
             require(relative == atlas + ".atlas/" + Path(source_relative).name
-                    and item.get("source") == source_relative
-                    and item.get("sourceSHA256") == source_hashes[source_relative]
+                    and item.get("source") == (upgrade["source"] if upgrade else source_relative)
+                    and item.get("sourceSHA256") == (upgrade["sha256"] if upgrade else source_hashes[source_relative])
                     and info["pixelSize"] == size and info["alphaExtrema"][0] == 0,
                     "Runtime support selection differs: " + relative)
         elif kind == "appIcon":
             slot = next(entry for entry in icon_entries() if entry["filename"] == relative)
             side = round(float(slot["size"].split("x")[0]) * int(slot["scale"][0]))
-            require(item.get("source") == "AppIcon/app_icon_1024.png"
-                    and item.get("sourceSHA256") == source_hashes["AppIcon/app_icon_1024.png"]
+            require(item.get("source") == upgrades["appIcon"]["source"]
+                    and item.get("sourceSHA256") == upgrades["appIcon"]["sha256"]
                     and info["pixelSize"] == [side, side] and png_pixels(path)[2] == 3,
                     "Runtime icon dimensions or opacity differ: " + relative)
         else:
-            require(relative == "Arena.atlas/gameplay_background.png" and info["pixelSize"] == BACKGROUND_RUNTIME_SIZE
-                    and item.get("sourceSHA256") == BACKGROUND_CLEAN_SHA256 and png_pixels(path)[2] == 3,
-                    "Runtime approved background differs")
+            specification = environment.get(item.get("semanticKey"))
+            require(specification is not None and relative == specification["destination"]
+                    and item.get("source") == specification["source"]
+                    and item.get("sourceSHA256") == specification["sourceSHA256"]
+                    and info["pixelSize"] == BACKGROUND_RUNTIME_SIZE and png_pixels(path)[2] == 3,
+                    "Runtime approved environment differs")
         group = "AppIcon.appiconset" if kind == "appIcon" else relative.split("/")[0]
         total = groups.setdefault(group, {"images": 0, "pngBytes": 0, "estimatedDecodedRGBABytes": 0})
         total["images"] += 1
@@ -938,6 +1016,8 @@ def check_runtime(output=OUTPUT, icon_output=ICON_OUTPUT, fixtures=FIXTURES):
     require(seen == {(False, path) for path in art_paths if path.endswith(".png")}
             | {(True, path) for path in icon_paths if path.endswith(".png")}, "Runtime audited resource membership differs")
     require(groups == audit.get("groups"), "Runtime resource group totals differ")
+    require(groups.get("CourtMaterial.atlas", {}).get("images") == 1,
+            "CourtMaterial must remain a single-image atlas for native shape fills")
     return manifest, audit
 
 

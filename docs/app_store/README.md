@@ -1,6 +1,8 @@
+> Current local build: 1.0 (10), physically accepted. Source/docs publication is authorized; enrollment/payment and App Store submission remain on hold. Store drafts are not published metadata.
+
 # Preparing the App Store submission
 
-These instructions are for the owner and authorized developers. Reviewed October 1, 2026. This folder contains drafts, not an App Store Connect submission. No Apple account setting, app record, upload, TestFlight invitation, review submission, or release is performed by these files.
+These instructions are for the owner and authorized developers. Reviewed October 1, 2026. This folder contains local drafts, not an App Store Connect submission. Developer enrollment/payment and account setup remain on hold; the owner handles them separately. Build 6 polish and its physical acceptance are still in progress. No Apple account setting, app record, upload, TestFlight invitation, review submission, or release is performed by these files.
 
 GitHub hosts PickleBlast's source, support issues, and public website. Apple does not clone this repository for ordinary review. Xcode compiles a chosen source revision into an archive containing the executable, approved artwork, privacy text, and other required resources. The distribution build is uploaded through Apple's tools. Uploading the repository or pushing a Git commit does not upload the app.
 
@@ -10,7 +12,7 @@ GitHub hosts PickleBlast's source, support issues, and public website. Apple doe
 | --- | --- |
 | English listing draft | [metadata_en_US.json](metadata_en_US.json); enter reviewed values in App Store Connect |
 | Reviewer instructions | [review_notes.txt](review_notes.txt); paste into Notes after final testing |
-| Screenshot provenance | [screenshot_manifest.json](screenshot_manifest.json); identifies the actual captures and source revision |
+| Screenshot provenance | [screenshot_manifest.json](screenshot_manifest.json); historical build 4 captures pending replacement for the accepted candidate |
 | Owner checklist | [App Store readiness](../APP_STORE_READINESS.md); review every unresolved item |
 | Marketing URL | [PickleBlast](https://fcw1987.github.io/PickleBlast/) |
 | Privacy Policy URL | [Privacy](https://fcw1987.github.io/PickleBlast/privacy/) |
@@ -20,7 +22,7 @@ GitHub hosts PickleBlast's source, support issues, and public website. Apple doe
 
 ## 1. Confirm the candidate and account prerequisites
 
-Use the accepted preparation revision and run [build and test](../BUILD_AND_TEST.md). Preserve `com.pickleblast.watchapp`, version `1.0`, and the existing signing setup. The preparation candidate retains build `4`; this is not a claim that 4 is an unused upload number. Check previous uploads in App Store Connect before choosing the next unique number. If a change is required, update the project generator, regenerate the project, and rebuild/test the exact candidate.
+Use the accepted preparation revision and run [build and test](../BUILD_AND_TEST.md). Preserve `com.pickleblast.watchapp`, version `1.0`, and the existing signing setup. The local polish candidate uses build `6`; this is not a claim that 6 is an unused upload number. Check previous uploads in App Store Connect before choosing the next unique number. If a change is required, update the project generator, regenerate the project, and rebuild/test the exact candidate.
 
 The inspected toolchain is Xcode 27.0 (27A266a), with watchOS 27.0 SDK; deployment remains watchOS 10.0. Apple's effective April 28, 2026 upload minimum is Xcode 26 and watchOS 26 SDK. A newer build SDK does not require raising the deployment target. Recheck [current requirements](https://developer.apple.com/news/upcoming-requirements/) before upload.
 
@@ -62,4 +64,4 @@ After an authorized upload processes, an optional internal TestFlight check can 
 
 Select that exact tested build for the App Store version. Complete all required fields, attach the screenshots, review the submission, and submit only with separate owner authorization. Approval with manual release leaves the app pending the owner's release action. [Submit for review](https://developer.apple.com/help/app-store-connect/manage-submissions-to-app-review/submit-an-app/)
 
-The next owner step is to finish physical acceptance and resolve account/declaration items, then authorize the record/signing/upload phase. After the app is actually released, update the homepage's preparation notice with the real App Store URL and an authorized Apple badge if desired. Keep the Privacy and Support routes stable.
+The current work is local engineering and physical acceptance. Developer enrollment/payment and account setup remain on hold; no upload or submission is authorized by this polish pass. After the app is actually released, update the homepage's preparation notice with the real App Store URL and an authorized Apple badge if desired. Keep the Privacy and Support routes stable.

@@ -178,7 +178,7 @@ struct DinkerShotTests {
             durations.append(try receive(engine, frame: frame))
             #expect(engine.state.currentRallyReturns == 2)
             #expect(engine.state.playerRallyPoints == 0 && engine.state.opponentRallyPoints == 0)
-            #expect(engine.state.recoveriesRemaining == 2)
+            #expect(engine.state.recoveriesRemaining == 0)
         }
         #expect((durations.max() ?? 0) - (durations.min() ?? 0) <= 1.0 / 15 + 1e-8)
     }
@@ -201,7 +201,7 @@ struct DinkerShotTests {
             #expect(events.bossPoints == 1)
             #expect(engine.state.playerRallyPoints == point)
             #expect(engine.state.opponentRallyPoints == 0)
-            #expect(engine.state.recoveriesRemaining == 2)
+            #expect(engine.state.recoveriesRemaining == 0)
             #expect(engine.state.boss?.returnCount == 0)
             #expect(!events.contains {
                 if case .rallyShotLaunched(_, _, .soft) = $0 { return true }; return false

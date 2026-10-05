@@ -29,4 +29,15 @@ struct FeedbackTests {
         #expect(policy.select([.paddleContact(x: 10, side: .block, centered: true)], at: 4, enabled: true) == .contact)
     }
 
+    @Test func earningSaveIsOneSuccessAndHonorsInactivity() {
+        var policy = GameplayFeedbackPolicy()
+        let earned: [GameEvent] = [.paddleContact(x: 10, side: .block, centered: true),
+                                  .rallyMilestone(returns: 20), .recoveryEarned]
+        #expect(policy.select(earned, at: 1, enabled: false) == nil)
+        #expect(policy.select(earned, at: 1, enabled: true) == .success)
+        #expect(policy.select(earned, at: 1.01, enabled: true) == nil)
+        #expect(policy.select([.rallyMilestone(returns: 40)], at: 2, enabled: true) == nil)
+        #expect(policy.select([.ballRecovered(remaining: 0)], at: 3, enabled: true) == .recovery)
+    }
+
 }

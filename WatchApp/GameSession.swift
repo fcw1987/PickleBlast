@@ -7,6 +7,18 @@ import PickleBlastRendering
 import WatchKit
 #endif
 
+/// One displayed order for individual matches and the explicit Play Next action.
+/// The legacy three-match series keeps its separate internal run plan.
+enum BossRallyFlow {
+    static let opponents: [BossID] = [.wall, .banger, .poacher, .dinker, .lobber]
+
+    static func next(after boss: BossID) -> BossID? {
+        guard let index = opponents.firstIndex(of: boss),
+              opponents.indices.contains(index + 1) else { return nil }
+        return opponents[index + 1]
+    }
+}
+
 @MainActor
 final class AppPreferences: ObservableObject {
     private let storage: LocalStore
@@ -44,10 +56,10 @@ final class AppPreferences: ObservableObject {
 /// The scene drives this session. SwiftUI observes only input and semantic changes.
 @MainActor
 final class GameSession: ObservableObject {
-    let engine: GameEngine
+    private(set) var engine: GameEngine
     let scene: PickleBlastScene
     let preferences: AppPreferences
-    let mode: GameMode
+    var mode: GameMode { engine.mode }
     @Published private(set) var paused = false
     // True only while the scene is active and the display is not luminance reduced.
     @Published private(set) var active = false
@@ -79,10 +91,14 @@ final class GameSession: ObservableObject {
     var crownMinimum: Double { engine.tuning.playerMargin / crownGain }
     var crownMaximum: Double { (CourtGeometry.width - engine.tuning.playerMargin) / crownGain }
     var renderingPaused: Bool { !active || paused || finished }
+    var nextBossID: BossID? {
+        guard finished, !presentationEnded, engine.state.won,
+              case let .bossRally(id) = mode else { return nil }
+        return BossRallyFlow.next(after: id)
+    }
 
     init(preferences: AppPreferences, mode: GameMode = .arcade) {
         self.preferences = preferences
-        self.mode = mode
         #if DEBUG
         engine = GameEngine(mode: mode, seed: DebugValidation.seed)
         let sceneStart = ProcessInfo.processInfo.systemUptime
@@ -186,6 +202,25 @@ final class GameSession: ObservableObject {
     func restart() {
         guard !presentationEnded else { return }
         engine.reset()
+        resetMatchPresentation()
+    }
+
+    /// Each opponent is an independent match with its own record. Reuse the
+    /// scene and input surface, while a fresh engine owns the next encounter.
+    @discardableResult
+    func playNextBoss() -> Bool {
+        guard let nextBossID else { return false }
+        #if DEBUG
+        engine = GameEngine(mode: .bossRally(nextBossID), tuning: engine.tuning,
+                            seed: DebugValidation.seed)
+        #else
+        engine = GameEngine(mode: .bossRally(nextBossID), tuning: engine.tuning)
+        #endif
+        resetMatchPresentation()
+        return true
+    }
+
+    private func resetMatchPresentation() {
         #if DEBUG
         validation = DebugValidation()
         validationFrames = 0; validationElapsed = 0; validationIntervals.removeAll(keepingCapacity: true); validationLongFrames = 0
@@ -338,7 +373,7 @@ struct GameplayFeedbackPolicy {
             switch event {
             case .lifeLost, .opponentPoint:
                 if priority < 3 { primary = .failure; priority = 3 }
-            case .waveCleared, .bossDefeated:
+            case .waveCleared, .bossDefeated, .recoveryEarned:
                 if priority < 2 { primary = .success; priority = 2 }
             case let .bossMatchEnded(result):
                 let resultPriority = result.won ? 2 : 3

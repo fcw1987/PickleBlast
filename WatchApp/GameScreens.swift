@@ -50,29 +50,30 @@ struct RootView: View {
                                     .frame(width: 106, height: 28)
                                     .accessibilityLabel("PickleBlast")
                             }
-                            Button { selectedMode = .arcade } label: {
+                            Button { selectingOpponent = true } label: {
                                 HStack(spacing: 6) {
                                     ApprovedImage(key: "uiPlay").frame(width: 16, height: 16)
-                                    Text("Arcade")
+                                    Text("Boss Rally")
                                 }
                                 .font(.system(size: 16, weight: .bold, design: .rounded))
                                 .frame(maxWidth: .infinity)
-                                .frame(height: 38)
-                                .background(Neon.lime, in: Capsule())
+                                .frame(height: 44)
+                                .background(Neon.magenta, in: Capsule())
                                 .foregroundStyle(.black)
                             }
                                 .buttonStyle(.plain)
-                                .accessibilityIdentifier("home.play")
-                            Button { selectingOpponent = true } label: {
-                                Text("Boss Rally")
+                                .accessibilityIdentifier("home.bossRally")
+                            Button { selectedMode = .arcade } label: {
+                                Text("Arcade")
                                     .font(.system(size: 16, weight: .bold, design: .rounded))
                                     .frame(maxWidth: .infinity)
                                     .frame(height: 38)
-                                    .background(Neon.magenta, in: Capsule())
-                                    .foregroundStyle(.black)
+                                    .background(Color.black, in: Capsule())
+                                    .overlay(Capsule().stroke(Neon.lime.opacity(0.65), lineWidth: 1))
+                                    .foregroundStyle(Neon.lime)
                             }
                                 .buttonStyle(.plain)
-                                .accessibilityIdentifier("home.bossRally")
+                                .accessibilityIdentifier("home.play")
                             if preferences.best > 0 {
                                 Text("BEST \(preferences.best)")
                                     .font(.caption.monospacedDigit())
@@ -109,11 +110,21 @@ private enum BossAppearance {
 
     static func cue(_ id: BossID) -> String {
         switch id {
-        case .wall: return "Steady coverage. Change the angle."
-        case .banger: return "Power drives. Place the counter."
-        case .poacher: return "Reads a side. Use the opening."
-        case .dinker: return "Soft resets. Stay patient, then place."
-        case .lobber: return "High arcs. Follow the descent."
+        case .wall: return "Change the angle."
+        case .banger: return "Place the counter."
+        case .poacher: return "Use the opening."
+        case .dinker: return "Stay patient."
+        case .lobber: return "Follow the descent."
+        }
+    }
+
+    static func style(_ id: BossID) -> String {
+        switch id {
+        case .wall: return "DEFENSE"
+        case .banger: return "POWER"
+        case .poacher: return "ANTICIPATION"
+        case .dinker: return "SOFT RESETS"
+        case .lobber: return "HIGH ARCS"
         }
     }
 
@@ -134,57 +145,59 @@ private struct BossSelectionView: View {
 
     var body: some View {
         ScrollView {
-            VStack(spacing: 12) {
-                Text("BOSS RALLY")
-                    .font(.headline)
-                    .foregroundStyle(Neon.cyan)
-                    .accessibilityAddTraits(.isHeader)
-                Button { select(.bossSeries) } label: {
-                    VStack(alignment: .leading, spacing: 5) {
-                        Text("ALL THREE")
-                            .font(.system(size: 18, weight: .black, design: .rounded))
-                            .foregroundStyle(Neon.cyan)
-                        Text("Wall → Banger → Poacher")
-                            .font(.caption2.bold())
-                            .foregroundStyle(.white)
-                        Text("Win each match to face the next boss.")
-                            .font(.caption2)
-                            .foregroundStyle(.white)
-                            .fixedSize(horizontal: false, vertical: true)
-                    }
-                    .frame(maxWidth: .infinity, minHeight: 76, alignment: .leading)
-                    .padding(.horizontal, 10)
-                    .background(Color.black)
-                    .overlay(RoundedRectangle(cornerRadius: 10)
-                        .stroke(Neon.cyan, lineWidth: 1))
+            VStack(spacing: 9) {
+                VStack(spacing: 3) {
+                    Text("BOSS RALLY")
+                        .font(.system(size: 18, weight: .black, design: .rounded))
+                        .foregroundStyle(Neon.cyan)
+                        .accessibilityAddTraits(.isHeader)
+                    Text("Win, then Play Next to keep going.")
+                        .font(.system(size: 10, weight: .medium))
+                        .foregroundStyle(.white.opacity(0.72))
+                        .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
-                .buttonStyle(.plain)
-                .accessibilityLabel("Challenge all three bosses: Wall, Banger, then Poacher")
-                .accessibilityIdentifier("boss.select.allThree")
-                ForEach(BossID.allCases, id: \.self) { boss in
+                ForEach(BossRallyFlow.opponents.indices, id: \.self) { index in
+                    let boss = BossRallyFlow.opponents[index]
+                    let color = BossAppearance.color(boss)
                     Button { select(.bossRally(boss)) } label: {
-                        HStack(spacing: 5) {
-                            ApprovedBossImage(id: boss)
-                                .frame(width: 35, height: 44)
-                                .accessibilityHidden(true)
+                        HStack(spacing: 8) {
+                            ZStack {
+                                RoundedRectangle(cornerRadius: 10)
+                                    .fill(color.opacity(0.10))
+                                ApprovedBossImage(id: boss)
+                                    .frame(width: 48, height: 66)
+                            }
+                            .frame(width: 52, height: 72)
+                            .overlay(RoundedRectangle(cornerRadius: 10)
+                                .stroke(color.opacity(0.3), lineWidth: 0.5))
+                            .accessibilityHidden(true)
                             VStack(alignment: .leading, spacing: 4) {
+                                Text(String(format: "%02d", index + 1) + " · " + BossAppearance.style(boss))
+                                    .font(.system(size: 8, weight: .semibold, design: .rounded).monospacedDigit())
+                                    .foregroundStyle(.white.opacity(0.65))
+                                    .lineLimit(1)
+                                    .minimumScaleFactor(0.8)
                                 Text(BossAppearance.title(boss))
                                     .font(.system(size: 14, weight: .black, design: .rounded))
-                                    .foregroundStyle(BossAppearance.color(boss))
+                                    .foregroundStyle(color)
+                                    .lineLimit(1)
+                                    .minimumScaleFactor(0.8)
                                 Text(BossAppearance.cue(boss))
-                                    .font(.caption2)
-                                    .foregroundStyle(.white)
+                                    .font(.system(size: 11, weight: .medium))
+                                    .foregroundStyle(.white.opacity(0.85))
                                     .fixedSize(horizontal: false, vertical: true)
                             }
+                            .frame(maxWidth: .infinity, alignment: .leading)
                         }
-                        .frame(maxWidth: .infinity, minHeight: 76, alignment: .leading)
-                        .padding(.horizontal, 10)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(8)
                         .background(Color.black)
-                        .overlay(RoundedRectangle(cornerRadius: 10)
-                            .stroke(BossAppearance.color(boss), lineWidth: 1))
+                        .overlay(RoundedRectangle(cornerRadius: 16)
+                            .stroke(color.opacity(0.55), lineWidth: 1))
                     }
                     .buttonStyle(.plain)
-                    .accessibilityLabel("Challenge \(BossAppearance.title(boss)). \(BossAppearance.cue(boss))")
+                    .accessibilityLabel("Challenge \(BossAppearance.title(boss)). Opponent \(index + 1) of \(BossRallyFlow.opponents.count). \(BossAppearance.style(boss)). \(BossAppearance.cue(boss))")
                     .accessibilityIdentifier("boss.select.\(boss.rawValue)")
                 }
                 Button("Back", action: back).accessibilityIdentifier("boss.select.back")
@@ -204,7 +217,8 @@ struct HowToPlayView: View {
         ("arrow.up.left.and.arrow.up.right", "Meet the ball at your center to return straight. Edge contact sends it left or right."),
         ("square.grid.3x2", "Clear three dense waves. Every target breaks in one hit."),
         ("heart.fill", "Arcade gives two free ball recoveries per stage before a miss costs a life."),
-        ("figure.pickleball", "Boss Rally is first to three points. Choose one opponent or All Three to face Wall, Banger, then Poacher. You get two saves per match. R counts rally returns; S shows saves."),
+        ("figure.pickleball", "Boss Rally is first to three points. Choose any opponent. After a win, Play Next continues through Wall, Banger, Poacher, Dinker, then Lobber. Lobber is the final opponent."),
+        ("shield.lefthalf.filled", "Earn a save with 20 consecutive player returns. The ring fills toward each 20-return milestone; a filled shield means one save is ready. Winning a point keeps your progress. A miss resets the streak and uses a held save automatically. One save can be held at a time; an unused save lasts until the match ends."),
         ("bolt.fill", "The Wall covers steadily. The Banger drives harder. The Poacher commits to a side. The Dinker changes pace. The Lobber sends high arcs into your normal receiving area."),
         ("pause.fill", "Tap Pause at the top to take a break, restart, or return Home. After an interruption, choose Resume.")
     ]
@@ -325,12 +339,19 @@ struct RunView: View {
         let activity = session.paused ? "Paused" : (state.resumeCountdown > 0 ? "Resume countdown" : session.phase.rawValue)
         switch session.mode {
         case .arcade:
-            return modeAccessibility + " " + String(format: "Player x=%.3f. Crown gain %.3f. Score %d. %d lives. %d saves. %@.",
+            let stage: String
+            switch state.stage {
+            case let .wave(number): stage = "Wave \(number)."
+            case .boss: stage = "Boss stage."
+            }
+            return modeAccessibility + " " + stage + " " + String(format: "Player x=%.3f. Crown gain %.3f. Score %d. %d lives. %d saves. %@.",
                 state.playerX, session.crownGain, session.score, session.lives, state.recoveriesRemaining, activity)
         case .bossRally, .bossSeries:
             return modeAccessibility + " " + String(format: "You %d. Boss %d. %d saves. Rally %d returns. Player x=%.3f. Crown gain %.3f. Score %d. %@.",
                 session.playerRallyPoints, session.opponentRallyPoints, state.recoveriesRemaining,
                 state.currentRallyReturns, state.playerX, session.crownGain, session.score, activity)
+                + " Player return streak \(state.consecutivePlayerReturns). Earn a save every 20 consecutive player returns. Hold one save at a time. "
+                + (state.recoveriesRemaining > 0 ? "Save ready." : "\(GameTuning.earnedRecoveryReturnInterval - state.consecutivePlayerReturns % GameTuning.earnedRecoveryReturnInterval) returns to the next save milestone.")
         }
     }
 
@@ -580,6 +601,13 @@ struct ResultsView: View {
                         .foregroundStyle(Neon.cyan)
                         .accessibilityIdentifier("results.matchScore")
                 }
+                if bossRallyID == BossRallyFlow.opponents.last && session.engine.state.won {
+                    Text("Final opponent defeated")
+                        .font(.caption.bold())
+                        .foregroundStyle(Neon.cyan)
+                        .multilineTextAlignment(.center)
+                        .accessibilityIdentifier("results.sequenceComplete")
+                }
                 Text("\(session.score)")
                     .font(.system(size: isBossRally ? 24 : 35, weight: .bold, design: .rounded).monospacedDigit())
                     .foregroundStyle(Neon.lime)
@@ -613,6 +641,26 @@ struct ResultsView: View {
                     Text("PERSONAL BEST \(session.preferences.best)")
                         .font(.caption2.monospacedDigit())
                         .accessibilityIdentifier("results.best")
+                }
+                if let nextBossID = session.nextBossID {
+                    Button {
+                        session.playNextBoss()
+                    } label: {
+                        VStack(spacing: 2) {
+                            Text("Play Next")
+                                .font(.system(size: 16, weight: .bold, design: .rounded))
+                            Text(BossAppearance.title(nextBossID))
+                                .font(.system(size: 10, weight: .semibold, design: .rounded))
+                        }
+                        .frame(maxWidth: .infinity, minHeight: 44)
+                        .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(Neon.magenta)
+                    .foregroundStyle(.black)
+                    .accessibilityLabel("Play Next. \(BossAppearance.title(nextBossID))")
+                    .accessibilityHint("Start a new match against the next opponent")
+                    .accessibilityIdentifier("results.playNext")
                 }
                 Button(replayTitle) {
                     session.restart()

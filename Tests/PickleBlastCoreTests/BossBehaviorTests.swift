@@ -13,35 +13,28 @@ struct BossBehaviorTests {
         #expect(engine.state.boss?.id == id)
         #expect(engine.state.playerRallyPoints == 0)
         #expect(engine.state.opponentRallyPoints == 0)
-        #expect(engine.state.recoveriesRemaining == 2)
+        #expect(engine.state.recoveriesRemaining == 0)
         #expect(engine.state.phase == .ready)
         engine.reset()
         #expect(engine.state.mode == .bossRally(id))
         #expect(engine.state.boss?.id == id)
     }
 
-    @Test("Two saves precede opponent points and the third unrescued miss ends the match",
+    @Test("Matches start without free saves and the third unrescued miss ends the match",
           arguments: BossID.allCases)
     func firstToThreeAndSaves(id: BossID) {
         let engine = playingBoss(id)
-        for miss in 1...5 {
+        for point in 1...3 {
             engine.state.phase = .playing
             engine.state.ball = BallState(position: .init(x: 18, y: -0.1),
                                           velocity: .init(x: 0, y: -26))
             let events = advance(engine, seconds: 0.1)
             #expect(events.lifeLosses == 0)
             #expect(engine.state.lives == 3)
-            if miss <= 2 {
-                #expect(events.contains(.ballRecovered(remaining: 2 - miss)))
-                #expect(engine.state.opponentRallyPoints == 0)
-                #expect(engine.state.phase == .ready)
-            } else {
-                let point = miss - 2
-                #expect(events.contains(.opponentPoint(points: point)))
-                #expect(engine.state.opponentRallyPoints == point)
-                #expect(engine.state.recoveriesRemaining == 0)
-                #expect(engine.state.phase == (point == 3 ? .results : .ready))
-            }
+            #expect(events.contains(.opponentPoint(points: point)))
+            #expect(engine.state.opponentRallyPoints == point)
+            #expect(engine.state.recoveriesRemaining == 0)
+            #expect(engine.state.phase == (point == 3 ? .results : .ready))
             #expect(engine.state.playerRallyPoints == 0)
         }
         #expect(!engine.state.won)

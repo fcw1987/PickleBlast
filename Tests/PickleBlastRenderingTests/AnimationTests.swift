@@ -343,13 +343,13 @@ struct AnimationTests {
         let scene = PickleBlastScene(size: CGSize(width: 211, height: 257))
         let player = try #require(scene.children.flatMap(\.children).compactMap { $0 as? CharacterNode }.first { $0.identity == "player" })
         let world = try #require(player.parent)
-        let court = try #require(world.children.first { $0.children.filter { $0 is SKShapeNode }.count == 3 })
+        let court = try #require(world.childNode(withName: "nightArenaCourt") as? NightArenaCourt)
         let clear = try #require(scene.children.compactMap { $0 as? SKSpriteNode }.first)
         let labels = scene.children.compactMap { $0 as? SKLabelNode }
         var state = GameState()
         state.phase = .impact
         scene.render(state: state, events: [.waveCleared(number: 1)], delta: 0)
-        let pulseAlpha = court.alpha
+        let pulseAlpha = court.markingAlpha
         let clearTexture = try #require(clear.texture)
         #expect(!clear.isHidden)
         #expect(labels.contains { $0.text == "WAVE CLEAR" })
@@ -357,13 +357,13 @@ struct AnimationTests {
         state.isPaused = true
         state.simulationTime += 3_600
         scene.render(state: state, events: [], delta: 3_600)
-        near(court.alpha, pulseAlpha)
+        near(court.markingAlpha, pulseAlpha)
         #expect(!clear.isHidden && clear.texture === clearTexture)
         state.isPaused = false
         state.resumeCountdown = 0.5
         state.simulationTime += 0.5
         scene.render(state: state, events: [], delta: 0.5)
-        near(court.alpha, pulseAlpha)
+        near(court.markingAlpha, pulseAlpha)
         #expect(!clear.isHidden && clear.texture === clearTexture)
         #expect(labels.contains { $0.text == "READY" })
 
@@ -372,7 +372,7 @@ struct AnimationTests {
         #expect(labels.contains { $0.text == "WAVE CLEAR" })
         state.simulationTime += 0.9
         scene.render(state: state, events: [], delta: 0.9)
-        near(court.alpha, 1)
+        near(court.markingAlpha, 1)
         #expect(clear.isHidden)
         #expect(!labels.contains { $0.text == "WAVE CLEAR" })
     }

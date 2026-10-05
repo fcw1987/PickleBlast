@@ -17,7 +17,7 @@ write_summary() {
       printf -- '- Xcode: `%s`\n' "$XCODE_VERSION"
       printf -- '- Required source and unsigned generic Debug/Release builds: %s\n' "$REQUIRED_STATUS"
       printf -- '- Optional native Watch UI checks: %s\n' "$UI_STATUS"
-      printf -- '- Signing: disabled. Build products/results stay in ignored `.build`; no artifacts uploaded.\n'
+      printf -- '- Signing: disabled. Unsigned UI result bundles are retained as workflow artifacts for seven days; other products remain in ignored `.build`.\n'
     } >> "$SUMMARY_PATH"
   fi
   return "$exit_code"
@@ -75,7 +75,10 @@ xcodebuild -project PickleBlast.xcodeproj -scheme PickleBlast -configuration Deb
   -parallel-testing-enabled NO -test-timeouts-enabled YES \
   -default-test-execution-time-allowance 240 \
   -maximum-test-execution-time-allowance 360 \
+  -only-testing:PickleBlastWatchUITests/PickleBlastWatchUITests/testBossRallyHomeOrderRosterAndBack \
   -only-testing:PickleBlastWatchUITests/PickleBlastWatchUITests/testBossRallySelectEachOpponentPauseResumeAndHome \
+  -only-testing:PickleBlastWatchUITests/PickleBlastWatchUITests/testBossRallyStartsWithoutSavesAndThirdPointEndsMatch \
+  -only-testing:PickleBlastWatchUITests/PickleBlastWatchUITests/testScriptedPlayNextAdvancesAllFiveOpponents \
   -only-testing:PickleBlastWatchUITests/PickleBlastWatchUITests/testPrivacyAndSupportScrollBackPreserveSettings \
   -only-testing:PickleBlastWatchUITests/PickleBlastWatchUITests/testPrivacyAndSupportShowReadableAddressesWithoutWebLaunchControls \
   CODE_SIGNING_ALLOWED=NO test

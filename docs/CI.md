@@ -12,13 +12,14 @@ Run the same route locally with full Xcode:
 bash scripts/ci_watch.sh
 ```
 
-An existing `DEVELOPER_DIR` selection is honored. The scripts do not change global Xcode selection or choose a signing team. Builds and tests use `CODE_SIGNING_ALLOWED=NO`; products, inventory, logs and result bundles remain under ignored `.build`. No artifacts are uploaded.
+An existing `DEVELOPER_DIR` selection is honored. The scripts do not change global Xcode selection or choose a signing team. Builds and tests use `CODE_SIGNING_ALLOWED=NO`; products, inventory, logs and result bundles are generated under ignored `.build`. The workflow retains only its unsigned Watch UI result bundles for seven days so screenshots and accessibility failures remain reviewable. Local device, signing and preference evidence is never part of that artifact path.
 
-The workflow grants only `contents: read`, checks out a shallow source revision with credentials disabled, and uses no secrets, privileged event, cache, deployment, or self-hosted/larger runner. Its 45-minute job cancels older runs for the same branch. The sole action is pinned to `actions/checkout` v7.0.1 commit `3d3c42e5aac5ba805825da76410c181273ba90b1`; its MIT license does not grant rights to this project's artwork or code.
+The workflow grants only `contents: read`, checks out a shallow source revision with credentials disabled, and uses no secrets, privileged event, cache, deployment, or self-hosted/larger runner. Its 45-minute job cancels older runs for the same branch. Actions are pinned to `actions/checkout` v7.0.1 commit `3d3c42e5aac5ba805825da76410c181273ba90b1` and `actions/upload-artifact` v7.0.1 commit `043fb46d1a93c77aae656e7c1c64a875d1fc6a0a`. These workflow utilities add no application runtime dependency and do not grant rights to this project's artwork or code.
 
 Official sources checked October 1, 2026:
 
 - [Checkout v7.0.1 release](https://github.com/actions/checkout/releases/tag/v7.0.1) and [release commit](https://github.com/actions/checkout/commit/3d3c42e5aac5ba805825da76410c181273ba90b1).
+- [Upload Artifact v7.0.1 release](https://github.com/actions/upload-artifact/releases/tag/v7.0.1) and [release commit](https://github.com/actions/upload-artifact/commit/043fb46d1a93c77aae656e7c1c64a875d1fc6a0a), checked October 5, 2026.
 - [Standard runner documentation](https://docs.github.com/en/actions/reference/runners/github-hosted-runners), listing `macos-26` as a standard Apple silicon runner. Standard hosted runners are free for public repositories; private repositories use account minutes and can incur charges.
 - [macOS 26 runner image manifest](https://github.com/actions/runner-images/blob/main/images/macos/macos-26-arm64-Readme.md), currently listing default Xcode 26.6 and watchOS 26.5 SDKs. Runner images evolve; each job records its actual Xcode version.
 

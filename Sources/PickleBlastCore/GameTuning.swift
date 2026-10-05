@@ -26,7 +26,10 @@ public struct GameTuning: Equatable, Sendable {
     public var stallRecoveryVerticalFraction: Double = 0.45
     public var playerVisualReachHorizontalFraction: Double = 0.52
     public var playerVisualReachVerticalFraction: Double = 0.30
+    /// Arcade keeps its accepted free allowances. Boss Rally starts without a
+    /// save and earns one at each interval of consecutive player returns.
     public var freeRecoveriesPerStage: Int = 2
+    public static let earnedRecoveryReturnInterval = 20
     public var recoveryReadyDuration: Double = 0.75
     public var cleanupTargetThreshold: Int = 4
     public var cleanupStepDuration: Double = 0.10

@@ -55,6 +55,12 @@ for (device, size) in [("ultra-reference", CGSize(width: 211, height: 257)), ("s
         view.presentScene(nil)
     }
 }
+if CommandLine.arguments.contains("--rally-milestones") {
+    try captureRallyMilestoneEvidence(at: output)
+}
+if CommandLine.arguments.contains("--arcade-feedback") {
+    try captureArcadeFeedbackEvidence(at: output)
+}
 #else
 import Foundation
 print("RenderEvidence is a macOS-only development utility.")

@@ -1,0 +1,45 @@
+{
+  "baselineImplementation": "77d00620013d85dc4a5dbecd39ca4f93dc8584d9",
+  "images": [
+    {
+      "filename": "a-painted-tournament-concept.png",
+      "width": 1136,
+      "height": 1385,
+      "bytes": 1349133,
+      "sha256": "4ad1ee1610e52642c9e68f301741636fc7a020f47841e8344c82956d957d953e",
+      "type": "concept"
+    },
+    {
+      "filename": "b-cel-sports-comic-concept.png",
+      "width": 1136,
+      "height": 1385,
+      "bytes": 1335635,
+      "sha256": "5b8c05d6f8a585dd162eee9b300f03fb959642fa32db9aa50e0630e5d33c0cca",
+      "type": "concept"
+    },
+    {
+      "filename": "build6-actual-large-lobber.png",
+      "width": 422,
+      "height": 514,
+      "bytes": 192642,
+      "sha256": "59fcc49c18ede78fb61ec12d3eee0e71f90178bcfab98e5e7164dad980ee0852",
+      "type": "actual_engine_fixture"
+    },
+    {
+      "filename": "build6-actual-small-lobber.png",
+      "width": 324,
+      "height": 394,
+      "bytes": 124199,
+      "sha256": "35ca39605da10342a84c45aaad01556891fbfa21cc4d519a03fc929f7ec79542",
+      "type": "actual_engine_fixture"
+    },
+    {
+      "filename": "c-miniature-diorama-concept.png",
+      "width": 1136,
+      "height": 1385,
+      "bytes": 1760237,
+      "sha256": "57b125b6284e8a2aea3dc9f19e8640feb96d97d348389c4ac04028f2ebf2480e",
+      "type": "concept"
+    }
+  ]
+}
