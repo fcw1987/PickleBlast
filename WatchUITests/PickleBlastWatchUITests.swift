@@ -1006,7 +1006,7 @@ final class PickleBlastWatchUITests: XCTestCase {
         // even when their centers are below the display. Scroll them fully in.
         let needsFullGeometry = target.identifier.hasPrefix("boss.select.") ||
             ["home.settings", "settings.haptics", "settings.sensitivity",
-             "pause.restart", "results.playNext", "results.home"].contains(target.identifier)
+             "pause.restart", "results.playNext", "results.home", "results.replay"].contains(target.identifier)
         // Five opponent cards need more short drags on the 40 mm display.
         for _ in 0..<16 {
             if target.exists {
