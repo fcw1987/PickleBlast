@@ -17,7 +17,7 @@ write_summary() {
       printf -- '- Xcode: `%s`\n' "$XCODE_VERSION"
       printf -- '- Required source and unsigned generic Debug/Release builds: %s\n' "$REQUIRED_STATUS"
       printf -- '- Optional native Watch UI checks: %s\n' "$UI_STATUS"
-      printf -- '- Signing: disabled. Build products/results stay in ignored `.build`; no artifacts uploaded.\n'
+      printf -- '- Signing: disabled. Unsigned UI result bundles are retained as workflow artifacts for seven days; other products remain in ignored `.build`.\n'
     } >> "$SUMMARY_PATH"
   fi
   return "$exit_code"

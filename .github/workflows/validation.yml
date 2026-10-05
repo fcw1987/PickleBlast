@@ -26,3 +26,13 @@ jobs:
 
       - name: Validate source, unsigned Watch builds, and available UI tests
         run: bash scripts/ci_watch.sh
+
+      - name: Retain unsigned Watch UI results
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: watch-ui-results
+          path: .build/CI/watch-ui-*.xcresult
+          include-hidden-files: true
+          if-no-files-found: ignore
+          retention-days: 7

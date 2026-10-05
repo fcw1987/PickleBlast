@@ -105,7 +105,12 @@ final class PickleBlastWatchUITests: XCTestCase {
                           "Boss Rally is the first game mode, with Arcade immediately below")
         capture("boss-rally-first-home", app: app)
         app.buttons["home.bossRally"].tap()
-        XCTAssertTrue(app.buttons["boss.select.wall"].waitForExistence(timeout: 5))
+        let menuAppeared = app.buttons["boss.select.wall"].waitForExistence(timeout: 10)
+        if !menuAppeared {
+            capture("boss-rally-first-transition-failure", app: app)
+        }
+        XCTAssertTrue(menuAppeared,
+                      "Single Boss Rally tap must open the chooser. Home=\(app.buttons["home.bossRally"].exists), chooser=\(element("boss.selection", in: app).exists), court=\(element("game.court", in: app).exists).\n\(app.debugDescription)")
         XCTAssertFalse(app.buttons["boss.select.allThree"].exists)
         XCTAssertFalse(app.staticTexts["Play All Three"].exists)
         let expected = ["wall", "banger", "poacher", "dinker", "lobber"].map { "boss.select.\($0)" }
