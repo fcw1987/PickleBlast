@@ -1002,8 +1002,11 @@ final class PickleBlastWatchUITests: XCTestCase {
     @discardableResult
     private func reveal(_ target: XCUIElement, in app: XCUIApplication,
                         failIfHidden: Bool = true) -> Bool {
-        let needsFullGeometry = ["home.settings", "settings.haptics", "settings.sensitivity",
-                                 "pause.restart", "results.playNext"].contains(target.identifier)
+        // Older XCTest can report clipped chooser/result buttons as hittable
+        // even when their centers are below the display. Scroll them fully in.
+        let needsFullGeometry = target.identifier.hasPrefix("boss.select.") ||
+            ["home.settings", "settings.haptics", "settings.sensitivity",
+             "pause.restart", "results.playNext", "results.home"].contains(target.identifier)
         // Five opponent cards need more short drags on the 40 mm display.
         for _ in 0..<16 {
             if target.exists {
