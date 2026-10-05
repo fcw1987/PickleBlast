@@ -13,6 +13,8 @@ struct EarnedRecoveryTests {
     /// Each fixture feeds an actual swept player collision through update;
     /// contact, award, counters and events remain the engine's responsibility.
     private func returnBall(_ engine: GameEngine, frame: Double = 0.1) -> [GameEvent] {
+        engine.state.phase = .playing
+        engine.state.phaseTimeRemaining = 0
         engine.state.ball = BallState(position: .init(x: 10, y: 3), velocity: .init(x: 0, y: -26))
         return advance(engine, seconds: 0.1, frame: frame)
     }
@@ -75,12 +77,12 @@ struct EarnedRecoveryTests {
         }
     }
 
-    @Test("A bank survives a won point but both winning and losing points reset the streak")
+    @Test("A bank and return streak survive a won point; a miss resets the streak and consumes the bank")
     func pointAndMissBoundaries() {
         let engine = playing()
         for _ in 1...20 { _ = returnBall(engine) }
         #expect(winPoint(engine).contains(.bossPoint(points: 1)))
-        #expect(engine.state.consecutivePlayerReturns == 0)
+        #expect(engine.state.consecutivePlayerReturns == 20)
         #expect(engine.state.longestRallyReturns == 20)
         #expect(engine.state.recoveriesRemaining == 1)
         engine.state.phase = .playing
@@ -94,6 +96,29 @@ struct EarnedRecoveryTests {
         #expect(miss(engine).contains(.opponentPoint(points: 1)))
         #expect(engine.state.consecutivePlayerReturns == 0 && engine.state.recoveriesRemaining == 0)
         #expect(engine.state.playerRallyPoints == 1)
+    }
+
+    @Test("A winning point preserves progress across twenty-return milestones without duplicate saves")
+    func winningPointPreservesMilestoneProgress() {
+        let engine = playing()
+        for _ in 1...19 { _ = returnBall(engine) }
+        #expect(engine.state.consecutivePlayerReturns == 19)
+        #expect(winPoint(engine).contains(.bossPoint(points: 1)))
+        #expect(engine.state.consecutivePlayerReturns == 19)
+
+        let twentieth = returnBall(engine)
+        #expect(engine.state.consecutivePlayerReturns == 20)
+        #expect(twentieth.filter { $0 == .recoveryEarned }.count == 1)
+        #expect(twentieth.contains(.rallyMilestone(returns: 20)))
+
+        #expect(winPoint(engine).contains(.bossPoint(points: 2)))
+        #expect(engine.state.consecutivePlayerReturns == 20)
+        var laterEvents: [GameEvent] = []
+        for _ in 1...20 { laterEvents += returnBall(engine) }
+        #expect(engine.state.consecutivePlayerReturns == 40)
+        #expect(laterEvents.filter { if case .rallyMilestone(returns: 40) = $0 { return true }; return false }.count == 1)
+        #expect(laterEvents.filter { $0 == .recoveryEarned }.isEmpty)
+        #expect(engine.state.recoveriesRemaining == 1)
     }
 
     @Test("A miss at nineteen on the deciding point resets streak and ends without a save")
@@ -110,13 +135,13 @@ struct EarnedRecoveryTests {
         #expect(!events.contains(.recoveryEarned))
     }
 
-    @Test("The deciding player point also ends its streak while preserving the recorded best")
+    @Test("The deciding player point preserves its streak and recorded best in results")
     func terminalWin() {
         let engine = playing()
         engine.state.boss?.points = 2
         for _ in 1...20 { _ = returnBall(engine) }
         #expect(winPoint(engine).contains(.bossDefeated))
-        #expect(engine.state.consecutivePlayerReturns == 0)
+        #expect(engine.state.consecutivePlayerReturns == 20)
         #expect(engine.state.completedBossMatches.last?.longestRallyReturns == 20)
         #expect(engine.state.recoveriesRemaining == 1)
     }

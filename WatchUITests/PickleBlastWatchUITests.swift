@@ -543,6 +543,36 @@ final class PickleBlastWatchUITests: XCTestCase {
     }
 
     @MainActor
+    func testArcadeArtworkWaveProgressionPauseAndHome() throws {
+        let app = XCUIApplication()
+        app.launchArguments = ["--validation-autoplay"]
+        app.launchEnvironment = [:]
+        app.launch()
+        let court = element("game.court", in: app)
+        XCTAssertTrue(court.waitForExistence(timeout: 10))
+        // The DEBUG oracle supplies public movement inputs to the real core.
+        // No target/score/stage injection; screenshots include compiled atlases
+        // and the actual system clock. This is not a human balance test.
+        for wave in 1...3 {
+            let observed = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
+                court.exists && (court.value as? String ?? "").contains("Wave \(wave).")
+            }, object: nil)
+            XCTAssertEqual(XCTWaiter.wait(for: [observed], timeout: 120), .completed)
+            capture("arcade-native-wave-\(wave)", app: app)
+            if wave == 2 {
+                app.buttons["game.pause"].tap()
+                XCTAssertTrue(app.buttons["pause.resume"].waitForExistence(timeout: 5))
+                app.buttons["pause.resume"].tap()
+                XCTAssertTrue(app.buttons["game.pause"].waitForExistence(timeout: 5))
+            }
+        }
+        app.buttons["game.pause"].tap()
+        let home = app.buttons["pause.home"]
+        reveal(home, in: app); home.tap()
+        XCTAssertTrue(app.buttons["home.play"].waitForExistence(timeout: 5))
+    }
+
+    @MainActor
     func testInstalledAppIconAndOpenFromWatchLauncher() throws {
         let app = launchHome()
         // XCUIDeviceButton.home and pressButton are provided by the installed

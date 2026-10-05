@@ -218,7 +218,7 @@ struct HowToPlayView: View {
         ("square.grid.3x2", "Clear three dense waves. Every target breaks in one hit."),
         ("heart.fill", "Arcade gives two free ball recoveries per stage before a miss costs a life."),
         ("figure.pickleball", "Boss Rally is first to three points. Choose any opponent. After a win, Play Next continues through Wall, Banger, Poacher, Dinker, then Lobber. Lobber is the final opponent."),
-        ("shield.lefthalf.filled", "Earn a save with 20 consecutive player returns. The ring fills toward each 20-return milestone; a filled shield means one save is ready. One save can be held at a time. A miss uses it automatically. Each new rally resets the ring; a held save lasts until used or the match ends."),
+        ("shield.lefthalf.filled", "Earn a save with 20 consecutive player returns. The ring fills toward each 20-return milestone; a filled shield means one save is ready. Winning a point keeps your progress. A miss resets the streak and uses a held save automatically. One save can be held at a time; an unused save lasts until the match ends."),
         ("bolt.fill", "The Wall covers steadily. The Banger drives harder. The Poacher commits to a side. The Dinker changes pace. The Lobber sends high arcs into your normal receiving area."),
         ("pause.fill", "Tap Pause at the top to take a break, restart, or return Home. After an interruption, choose Resume.")
     ]
@@ -339,7 +339,12 @@ struct RunView: View {
         let activity = session.paused ? "Paused" : (state.resumeCountdown > 0 ? "Resume countdown" : session.phase.rawValue)
         switch session.mode {
         case .arcade:
-            return modeAccessibility + " " + String(format: "Player x=%.3f. Crown gain %.3f. Score %d. %d lives. %d saves. %@.",
+            let stage: String
+            switch state.stage {
+            case let .wave(number): stage = "Wave \(number)."
+            case .boss: stage = "Boss stage."
+            }
+            return modeAccessibility + " " + stage + " " + String(format: "Player x=%.3f. Crown gain %.3f. Score %d. %d lives. %d saves. %@.",
                 state.playerX, session.crownGain, session.score, session.lives, state.recoveriesRemaining, activity)
         case .bossRally, .bossSeries:
             return modeAccessibility + " " + String(format: "You %d. Boss %d. %d saves. Rally %d returns. Player x=%.3f. Crown gain %.3f. Score %d. %@.",

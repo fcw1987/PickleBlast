@@ -14,6 +14,16 @@ import import_art as art
 
 
 class SourceContractTests(unittest.TestCase):
+    def test_production_upgrade_rejects_hash_tamper_and_unexpected_selection(self):
+        selected = art.production_upgrades()
+        bad = json.loads(json.dumps(selected))
+        bad["appIcon"]["sha256"] = "0" * 64
+        with patch.object(art, "read_json", return_value=bad), self.assertRaisesRegex(art.ArtError, "hash differs"):
+            art.production_upgrades()
+        selected["unexpected"] = selected["appIcon"]
+        with patch.object(art, "read_json", return_value=selected), self.assertRaisesRegex(art.ArtError, "selection differs"):
+            art.production_upgrades()
+
     def setUp(self):
         self.temporary = tempfile.TemporaryDirectory(prefix="pickleblast-art-test-")
         self.addCleanup(self.temporary.cleanup)
@@ -242,7 +252,7 @@ class GeneratedResourcesTests(unittest.TestCase):
                          {"court_slate_b3.png"})
         selected = [item for item in self.audit["resources"] if item["kind"] == "environment"]
         self.assertEqual({item["source"] for item in selected}, {
-            "ArtSources/Backgrounds/B3/arena-b3-source.png",
+            "ArtSources/Backgrounds/B3/Build9/arena-moon-left-source.png",
             "ArtSources/Backgrounds/B3/court-slate-b3-source.png"})
         self.assertFalse(any("Concepts/" in item["source"] for item in self.audit["resources"]))
         self.assertTrue(art.RETIRED_MANAGED_ART_PATHS.isdisjoint(self.audit["managedArtPaths"]))

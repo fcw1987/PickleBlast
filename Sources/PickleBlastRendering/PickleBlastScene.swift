@@ -322,7 +322,7 @@ public final class PickleBlastScene: SKScene {
         }
         renderBall(state)
         court.markingAlpha = visualTime < pulseUntil ? 0.6 + 0.4 * sin((pulseUntil - visualTime) * 32) : 1
-        for index in effects.indices { effects[index].update(time: visualTime) }
+        for index in effects.indices { effects[index].update(time: visualTime, animated: !reduceMotion && !isBossRally) }
         let clearProgress = (visualTime - clearEffectBegan) / 0.8
         clearEffect.isHidden = clearProgress < 0 || clearProgress >= 1 || state.phase == .blackout
         if !clearEffect.isHidden { clearEffect.texture = textures.supporting(String(format: "%@%02d", clearEffectPrefix, min(8, Int(clearProgress * 8) + 1))) }
@@ -442,7 +442,7 @@ public final class PickleBlastScene: SKScene {
                 targetNodes[target.id] = node
             }
             targetNodes[target.id]?.apply(target, projection: courtProjection)
-            targetNodes[target.id]?.update(time: visualTime)
+            targetNodes[target.id]?.update(time: visualTime, reduceMotion: reduceMotion)
         }
     }
 
@@ -813,10 +813,14 @@ private struct ImpactRing {
         node.position = CGPoint(x: point.x, y: point.y)
     }
     mutating func reset() { began = -.infinity; node.isHidden = true }
-    func update(time: Double) {
+    func update(time: Double, animated: Bool) {
         let progress = (time - began) / 0.22
         node.isHidden = progress < 0 || progress >= 1
         guard !node.isHidden else { return }
         node.texture = textures.supporting(image ?? String(format: perfect ? "effectPerfect%02d" : "effectHit%02d", min(6, Int(progress * 6) + 1)))
+        // Arcade's existing six pooled impacts expand then dissolve. No extra
+        // nodes or full-screen effect; ball rendering/contact stay independent.
+        node.setScale(animated ? CGFloat(0.82 + 0.42 * progress) : 1)
+        node.alpha = animated ? CGFloat(1 - progress * progress) : 1
     }
 }

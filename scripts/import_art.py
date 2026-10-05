@@ -634,11 +634,35 @@ def icon_entries():
     return images
 
 
+def production_upgrades():
+    """Bounded original build-9 art; never mutate the historical source pack."""
+    specifications = read_json(ROOT / "ArtSources/ArcadeV1/selection.json")
+    expected = {"targetPaddleCyan", "targetPaddleLime", "targetPaddleMagenta",
+                "targetCone", "targetBasket", "targetBasketDamaged", "appIcon"}
+    require(isinstance(specifications, dict) and set(specifications) == expected,
+            "Production upgrade selection differs")
+    for key, item in specifications.items():
+        require(isinstance(item, dict) and set(item) == {"source", "sha256", "size"},
+                "Invalid production upgrade record")
+        path = ROOT / relative_resource_path(item["source"])
+        require(path.parent == ROOT / ("ArtSources/IconV1" if key == "appIcon" else "ArtSources/ArcadeV1"),
+                "Production upgrade source outside its authored directory")
+        require(not any(parent.is_symlink() for parent in (path, *path.parents))
+                and path.is_file() and digest(path) == item["sha256"],
+                "Production upgrade source hash differs")
+        info = pixel_info(path)
+        require(item["size"] == ([1024, 1024] if key == "appIcon" else [256, 256])
+                and info["pixelSize"] == item["size"], "Production upgrade size differs")
+        require(info["alphaExtrema"] == [255, 255] if key == "appIcon"
+                else info["alphaExtrema"][0] == 0, "Production upgrade alpha differs")
+    return specifications
+
+
 def environment_allowlist():
     """Only the separately authored B3 layers may enter the runtime atlas."""
     return {
-        "backgroundArena": {"source": B3_SOURCE_ROOT / "arena-b3-source.png",
-            "sourceSHA256": "2a88476385147cd27aa4540413b4a20f90144532d0657fa3f518b5286d8facd3",
+        "backgroundArena": {"source": B3_SOURCE_ROOT / "Build9/arena-moon-left-source.png",
+            "sourceSHA256": "60d380e294ad47e9513c39aef66806a52362ef2511e1d35b862bf4521a8fe929",
             "sourceSize": [1254, 1254], "atlas": "Arena", "name": "arena_b3"},
         # SKShapeNode.fillTexture can sample the entire compiled atlas page.
         # Keep this material isolated: packing scenery beside it corrupts native court fills.
@@ -682,6 +706,7 @@ def environment_sources():
 def generate(source, art, icons):
     historical_background = background_history()
     environment = environment_sources()
+    upgrades = production_upgrades()
     characters, mappings = character_manifest(source)
     art.mkdir(parents=True, exist_ok=True)
     icons.mkdir(parents=True, exist_ok=True)
@@ -711,7 +736,8 @@ def generate(source, art, icons):
                 info = record(relative, destination, "character", {"character": character})
                 require(info["alphaExtrema"] == [0, 255], f"Character alpha contract differs: {relative}")
     for key, (relative, atlas, size) in sorted(supporting_allowlist().items()):
-        source_file = source / relative
+        upgrade = upgrades.get(key)
+        source_file = ROOT / upgrade["source"] if upgrade else source / relative
         require(source_file.is_file(), f"Missing required support asset: {relative}")
         original = pixel_info(source_file)
         require(original["pixelSize"] == ([1400, 360] if key == "wordmark" else [256, 256]),
@@ -719,7 +745,8 @@ def generate(source, art, icons):
         require(original["alphaExtrema"][0] == 0, f"Support artwork has an opaque matte: {relative}")
         destination = art / (atlas + ".atlas") / source_file.name
         convert_png(source_file, destination, size)
-        info = record(relative, destination, "support", {"semanticKey": key})
+        info = record(upgrade["source"] if upgrade else relative, destination, "support",
+                      {"semanticKey": key}, source_root=ROOT if upgrade else source)
         manifest["supporting"][key] = {"atlas": atlas, "name": source_file.stem,
                                       "pixelSize": info["pixelSize"], "alphaBounds": info["alphaBounds"]}
     for key, specification in environment.items():
@@ -728,16 +755,16 @@ def generate(source, art, icons):
         info = record(specification["source"], destination, "environment", {"semanticKey": key}, source_root=ROOT)
         manifest["supporting"][key] = {"atlas": destination.parent.stem, "name": destination.stem,
             "pixelSize": info["pixelSize"], "alphaBounds": info["alphaBounds"]}
-    icon_source = "AppIcon/app_icon_1024.png"
-    icon_info = pixel_info(source / icon_source)
+    icon_source = upgrades["appIcon"]["source"]
+    icon_info = pixel_info(ROOT / icon_source)
     require(icon_info["pixelSize"] == [1024, 1024] and icon_info["alphaExtrema"] == [255, 255],
             "Supplied app icon must be opaque and 1024x1024")
     entries = icon_entries()
     for entry in entries:
         size = round(float(entry["size"].split("x")[0]) * int(entry["scale"][0]))
         destination = icons / entry["filename"]
-        convert_png(source / icon_source, destination, [size, size], opaque=True)
-        record(icon_source, destination, "appIcon")
+        convert_png(ROOT / icon_source, destination, [size, size], opaque=True)
+        record(icon_source, destination, "appIcon", source_root=ROOT)
     (icons / "Contents.json").write_bytes(json_bytes({"images": entries, "info": {"author": "xcode", "version": 1}}))
     (art / "runtime_manifest.json").write_bytes(json_bytes(manifest))
     omitted = sorted(str(path.relative_to(source)) for path in source.rglob("*.png") if str(path.relative_to(source)) not in selected)
@@ -855,8 +882,10 @@ def run(source=SOURCE, output=OUTPUT, icon_output=ICON_OUTPUT, check=False):
             "Outputs must be outside immutable source pack and cannot contain it")
     require(not output.is_relative_to(icon_output) and not icon_output.is_relative_to(output), "Output trees must not overlap")
     environment_root = BACKGROUND_APPROVED.parent.resolve()
-    require(all(not destination.is_relative_to(environment_root) and not environment_root.is_relative_to(destination)
-                for destination in (output, icon_output)), "Outputs must not overlap immutable environment sources")
+    authored_roots = (environment_root, ROOT / "ArtSources/ArcadeV1", ROOT / "ArtSources/IconV1")
+    require(all(not destination.is_relative_to(authored) and not authored.is_relative_to(destination)
+                for destination in (output, icon_output) for authored in authored_roots),
+            "Outputs must not overlap immutable environment sources")
     previous = read_json(output / "import_audit.json") if (output / "import_audit.json").exists() else {}
     require(isinstance(previous, dict), "Previous import audit must be an object")
     # Complete validation/conversion in a staging directory before replacing managed output files.
@@ -931,8 +960,8 @@ def check_runtime(output=OUTPUT, icon_output=ICON_OUTPUT, fixtures=FIXTURES):
     require(isinstance(resources, list) and len(resources) == len(art_paths) - 2 + len(icon_paths) - 1,
             "Runtime resource audit count differs")
     seen, groups = set(), {}
+    upgrades = production_upgrades()
     source_hashes = {relative: digest(fixtures / relative) for relative, _, _ in supporting_allowlist().values()}
-    source_hashes["AppIcon/app_icon_1024.png"] = digest(fixtures / "AppIcon/app_icon_1024.png")
     for item in resources:
         require(isinstance(item, dict), "Invalid runtime resource audit entry")
         relative = relative_resource_path(item.get("destination"))
@@ -959,16 +988,17 @@ def check_runtime(output=OUTPUT, icon_output=ICON_OUTPUT, fixtures=FIXTURES):
             semantic = item.get("semanticKey")
             require(semantic in supporting_allowlist(), "Unexpected runtime supporting key")
             source_relative, atlas, size = supporting_allowlist()[semantic]
+            upgrade = upgrades.get(semantic)
             require(relative == atlas + ".atlas/" + Path(source_relative).name
-                    and item.get("source") == source_relative
-                    and item.get("sourceSHA256") == source_hashes[source_relative]
+                    and item.get("source") == (upgrade["source"] if upgrade else source_relative)
+                    and item.get("sourceSHA256") == (upgrade["sha256"] if upgrade else source_hashes[source_relative])
                     and info["pixelSize"] == size and info["alphaExtrema"][0] == 0,
                     "Runtime support selection differs: " + relative)
         elif kind == "appIcon":
             slot = next(entry for entry in icon_entries() if entry["filename"] == relative)
             side = round(float(slot["size"].split("x")[0]) * int(slot["scale"][0]))
-            require(item.get("source") == "AppIcon/app_icon_1024.png"
-                    and item.get("sourceSHA256") == source_hashes["AppIcon/app_icon_1024.png"]
+            require(item.get("source") == upgrades["appIcon"]["source"]
+                    and item.get("sourceSHA256") == upgrades["appIcon"]["sha256"]
                     and info["pixelSize"] == [side, side] and png_pixels(path)[2] == 3,
                     "Runtime icon dimensions or opacity differ: " + relative)
         else:

@@ -7,6 +7,35 @@ import PickleBlastCore
 @Suite("Arcade visual reach and durable targets")
 @MainActor
 struct ArcadeVisualTests {
+    @Test("Arcade recoil is bounded, settles, freezes by scene time and respects Reduced Motion")
+    func boundedTargetRecoil() throws {
+        let target = try #require(AuthoredWaves.targets(for: 1).first)
+        let node = TargetNode(target: target, textures: TextureLibrary())
+        let sprite = try #require(node.children.first as? SKSpriteNode)
+        let center = node.position
+        node.flash(at: 2)
+        node.update(time: 2.06)
+        #expect(sprite.xScale != 1 || sprite.zRotation != 0)
+        let scale = sprite.xScale, rotation = sprite.zRotation
+        node.update(time: 2.06) // Frozen presentation clock, as during pause.
+        #expect(sprite.xScale == scale && sprite.zRotation == rotation)
+        for tick in 0...36 {
+            node.update(time: 2 + Double(tick) / 120)
+            #expect(abs(sprite.xScale - 1) <= 0.055 && abs(sprite.zRotation) <= 0.045)
+            #expect(node.position == center && node.children.count == 1)
+            #expect(!node.hasActions() && !sprite.hasActions())
+        }
+        node.update(time: 3)
+        #expect(sprite.xScale == 1 && sprite.zRotation == 0)
+        node.flash(at: 4)
+        node.update(time: 4.06, reduceMotion: true)
+        #expect(sprite.xScale == 1 && sprite.zRotation == 0)
+        near(sprite.colorBlendFactor, 0.65)
+        node.resetFeedback()
+        node.update(time: 4.06)
+        #expect(sprite.xScale == 1 && sprite.zRotation == 0)
+    }
+
     private func near(_ value: Double, _ expected: Double, tolerance: Double = 0.00005) {
         #expect(abs(value - expected) < tolerance)
     }

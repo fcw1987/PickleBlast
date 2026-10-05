@@ -87,7 +87,7 @@ struct EarnedRecoverySessionTests {
         }
         #expect(session.finished && session.engine.state.won)
         #expect(session.engine.state.recoveriesRemaining == 1)
-        #expect(session.engine.state.consecutivePlayerReturns == 0)
+        #expect(session.engine.state.consecutivePlayerReturns == 20)
         #expect(session.preferences.bossRecord(for: .wall).longestRally == 20)
         #expect(session.playNextBoss())
         #expect(session.mode == .bossRally(.banger))

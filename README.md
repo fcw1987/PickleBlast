@@ -48,7 +48,7 @@ SwiftUI provides the menus, settings, pause, and results. The pure Swift `Pickle
 
 Game settings and records are stored in the app's local storage. PickleBlast works offline and has no account, gameplay server, analytics, advertising, or user-tracking integration. Apple system services follow Apple's own policies; see [Privacy](PRIVACY.md) for the app's inspected behavior.
 
-The current iteration candidate is version 1.0 (8), combining B3 arena artwork with the earned-save and milestone prototype. Build 6 and build 7 remain preserved on separate branches. The iteration is unmerged and awaits independent user testing and acceptance. PickleBlast has not been released through the App Store or TestFlight. [App Store readiness](docs/APP_STORE_READINESS.md) describes the outstanding work.
+The current iteration candidate is version 1.0 (9), preserving the tested B3 arena while moving the moon clear of the system clock, upgrading the Watch icon and Arcade equipment/feedback, and preserving return progress across won points. Build 6 and build 7 remain preserved on separate branches. The iteration is unmerged and awaits independent user testing and acceptance. PickleBlast has not been released through the App Store or TestFlight. [App Store readiness](docs/APP_STORE_READINESS.md) describes the outstanding work.
 
 ## Issues, security, and rights
 

@@ -15,8 +15,8 @@
         512,
         512
       ],
-      "source": "ArtSources/Backgrounds/B3/arena-b3-source.png",
-      "sourceSHA256": "2a88476385147cd27aa4540413b4a20f90144532d0657fa3f518b5286d8facd3",
+      "source": "ArtSources/Backgrounds/B3/Build9/arena-moon-left-source.png",
+      "sourceSHA256": "60d380e294ad47e9513c39aef66806a52362ef2511e1d35b862bf4521a8fe929",
       "sourceSize": [
         1254,
         1254
@@ -41,12 +41,12 @@
     "AppIcon.appiconset": {
       "estimatedDecodedRGBABytes": 5421960,
       "images": 16,
-      "pngBytes": 137642
+      "pngBytes": 2794776
     },
     "Arena.atlas": {
       "estimatedDecodedRGBABytes": 1048576,
       "images": 1,
-      "pngBytes": 391676
+      "pngBytes": 378566
     },
     "BossBanger.atlas": {
       "estimatedDecodedRGBABytes": 17760256,
@@ -101,7 +101,7 @@
     "Targets.atlas": {
       "estimatedDecodedRGBABytes": 655360,
       "images": 10,
-      "pngBytes": 56177
+      "pngBytes": 112432
     },
     "UI.atlas": {
       "estimatedDecodedRGBABytes": 131072,
@@ -2267,8 +2267,15 @@
     }
   ],
   "omittedOptionalPNGs": [
+    "AppIcon/app_icon_1024.png",
     "Ball/ball_power.png",
-    "Targets/Objects/target_powerup.png"
+    "Targets/Objects/target_basket.png",
+    "Targets/Objects/target_basket_damaged.png",
+    "Targets/Objects/target_cone.png",
+    "Targets/Objects/target_powerup.png",
+    "Targets/Paddles/target_paddle_cyan.png",
+    "Targets/Paddles/target_paddle_lime.png",
+    "Targets/Paddles/target_paddle_magenta.png"
   ],
   "resources": [
     {
@@ -41993,10 +42000,10 @@
     },
     {
       "alphaBounds": [
-        23,
-        14,
-        105,
-        110
+        18,
+        16,
+        110,
+        112
       ],
       "alphaExtrema": [
         0,
@@ -42009,18 +42016,18 @@
         128,
         128
       ],
-      "pngBytes": 9446,
+      "pngBytes": 23324,
       "semanticKey": "targetBasket",
-      "sha256": "fe1bae320888f7efc5a98e61bd79c434c89539908ddf11e9eb714a072cdee834",
-      "source": "Targets/Objects/target_basket.png",
-      "sourceSHA256": "fa71156933663b32d8efde26829827e6f4e95c9a8d628c1689ef15f331566d44"
+      "sha256": "83e669685f67aa5d388708b950523e156ecbe0ca9cdc24b11355d0147a0f1631",
+      "source": "ArtSources/ArcadeV1/target_basket.png",
+      "sourceSHA256": "72324e4bcd059d07aed9f877fecceee746714cf553af2654a1825eb50860881f"
     },
     {
       "alphaBounds": [
-        23,
-        14,
-        105,
-        110
+        19,
+        16,
+        109,
+        112
       ],
       "alphaExtrema": [
         0,
@@ -42033,18 +42040,18 @@
         128,
         128
       ],
-      "pngBytes": 10657,
+      "pngBytes": 20796,
       "semanticKey": "targetBasketDamaged",
-      "sha256": "9c4fbbeedd286090f161d40d03044ea03cfe9c6b89504e43c8a8f8a00f675526",
-      "source": "Targets/Objects/target_basket_damaged.png",
-      "sourceSHA256": "e9d254ce82fb1b107dfbebc841bc73da8d42d7c81523f05fe310c4574f8fb188"
+      "sha256": "8c1e3e4a228b55758c58840e62b9ec46e36b36fa0ca3814203175a38826ec795",
+      "source": "ArtSources/ArcadeV1/target_basket_damaged.png",
+      "sourceSHA256": "30437859acece431476633253db66f87256bb9618cf3ad1ea568d8236c122f73"
     },
     {
       "alphaBounds": [
-        27,
-        13,
-        101,
-        110
+        24,
+        16,
+        104,
+        112
       ],
       "alphaExtrema": [
         0,
@@ -42057,11 +42064,11 @@
         128,
         128
       ],
-      "pngBytes": 3511,
+      "pngBytes": 12333,
       "semanticKey": "targetCone",
-      "sha256": "0322698de765a752a5ef96a44efdcb02cf8cff1d220523545c78262c79d9cc9d",
-      "source": "Targets/Objects/target_cone.png",
-      "sourceSHA256": "0051184637c746d67c4507e7e86aae7a5a7b3fb98056c673c51739dc55db42df"
+      "sha256": "fa5b26fd5e53fada529ac1f3262d022c98bb260ac0faf09716981c4200fc0565",
+      "source": "ArtSources/ArcadeV1/target_cone.png",
+      "sourceSHA256": "20d0b3900ed6bff7626d773cc47f1329fd7cd8f55ba253f56efe35dde59af119"
     },
     {
       "alphaBounds": [
@@ -42090,9 +42097,9 @@
     {
       "alphaBounds": [
         35,
-        17,
+        18,
         93,
-        117
+        110
       ],
       "alphaExtrema": [
         0,
@@ -42105,11 +42112,11 @@
         128,
         128
       ],
-      "pngBytes": 3175,
+      "pngBytes": 10999,
       "semanticKey": "targetPaddleCyan",
-      "sha256": "1cbfe6b50a24420f9a411c9b4f2ab5ebf2229da7feb716f3b5eca63bd9e540c6",
-      "source": "Targets/Paddles/target_paddle_cyan.png",
-      "sourceSHA256": "b3b3381a68830744986aaafc5c961c11d9400588554aed8c5583cd2135ab75ba"
+      "sha256": "06dc17ea435e127b66f078479c4068a81854ad70bc5dd2bc776d0510790cf63b",
+      "source": "ArtSources/ArcadeV1/target_paddle_cyan.png",
+      "sourceSHA256": "7a08977c0c7dd152bb73a7f9458c7306fe8b972f96b46c3b0d0388577046a81d"
     },
     {
       "alphaBounds": [
@@ -42138,9 +42145,9 @@
     {
       "alphaBounds": [
         35,
-        17,
+        18,
         93,
-        117
+        110
       ],
       "alphaExtrema": [
         0,
@@ -42153,11 +42160,11 @@
         128,
         128
       ],
-      "pngBytes": 3274,
+      "pngBytes": 11029,
       "semanticKey": "targetPaddleLime",
-      "sha256": "1e2f2905b96c18bf0dc68946280ad2eeee540c57e6249af2f3416adb6c73d5a6",
-      "source": "Targets/Paddles/target_paddle_lime.png",
-      "sourceSHA256": "d5dcb1a82478da5aeba9af7054a4ce789e67c230ec8a829551a8ba36d805d5c9"
+      "sha256": "2f5c43f733e2e87284afe530a3b9c4c9ae9217be012b51e922d260f34d076cac",
+      "source": "ArtSources/ArcadeV1/target_paddle_lime.png",
+      "sourceSHA256": "726c7e475b94e093cace315ccc7e92a1836e32e5db1b3fba2a3d4e65b76f8404"
     },
     {
       "alphaBounds": [
@@ -42186,9 +42193,9 @@
     {
       "alphaBounds": [
         35,
-        17,
+        18,
         93,
-        117
+        110
       ],
       "alphaExtrema": [
         0,
@@ -42201,11 +42208,11 @@
         128,
         128
       ],
-      "pngBytes": 3307,
+      "pngBytes": 11144,
       "semanticKey": "targetPaddleMagenta",
-      "sha256": "70c34dab240f886d42581d75f376e226a03a71a89870642af9886575b52cb923",
-      "source": "Targets/Paddles/target_paddle_magenta.png",
-      "sourceSHA256": "00f8a8580016c6f924d63b78edd422cd2fe62b8fb624e1aced8c7f57b1c4ebcf"
+      "sha256": "26974d89c6d553e2998f2d87b4b2841b5fe550a3123f29fe7b6bbba58fd06224",
+      "source": "ArtSources/ArcadeV1/target_paddle_magenta.png",
+      "sourceSHA256": "c97c8086e7e4ed1a862fa6b9cb6c7e928ff0e5db04e9c04ff09e9dc1e82c05b6"
     },
     {
       "alphaBounds": [
@@ -42465,11 +42472,11 @@
         512,
         512
       ],
-      "pngBytes": 391676,
+      "pngBytes": 378566,
       "semanticKey": "backgroundArena",
-      "sha256": "c114bd147cc3f1def9fc8a6d8348fc84633b6c52f08bfd39fd367a599a2919dc",
-      "source": "ArtSources/Backgrounds/B3/arena-b3-source.png",
-      "sourceSHA256": "2a88476385147cd27aa4540413b4a20f90144532d0657fa3f518b5286d8facd3"
+      "sha256": "17e8ada0740c604b39af017cd8370c9c45a6722dcff0ad51dda3bd5a25cb74aa",
+      "source": "ArtSources/Backgrounds/B3/Build9/arena-moon-left-source.png",
+      "sourceSHA256": "60d380e294ad47e9513c39aef66806a52362ef2511e1d35b862bf4521a8fe929"
     },
     {
       "alphaBounds": [
@@ -42513,10 +42520,10 @@
         48,
         48
       ],
-      "pngBytes": 1676,
-      "sha256": "fd2d8b17c02ebda443981abfce82ea707482bab752f62e9117d6fa41d02ec717",
-      "source": "AppIcon/app_icon_1024.png",
-      "sourceSHA256": "855f21c7c91053099fb36df79bf80f103ec5ca260da469a5b64f532e5822e6e2"
+      "pngBytes": 6162,
+      "sha256": "9cf5b9fc366219ff1197811f4855a195a6884689797ddf666ebcb9e78954eb78",
+      "source": "ArtSources/IconV1/app_icon_1024.png",
+      "sourceSHA256": "ea9381013f08da16e4ac7c3804db3c57539b51769c378fdfbcb3bff69e17cd18"
     },
     {
       "alphaBounds": [
@@ -42536,10 +42543,10 @@
         55,
         55
       ],
-      "pngBytes": 1969,
-      "sha256": "7041b3a8361e13e108f2917fdd483df91ee7f821ee409a67b74d022d5bca952f",
-      "source": "AppIcon/app_icon_1024.png",
-      "sourceSHA256": "855f21c7c91053099fb36df79bf80f103ec5ca260da469a5b64f532e5822e6e2"
+      "pngBytes": 7939,
+      "sha256": "6e14912170895137b85d107df7a8f47535621419697eeef88b1f07ada7475d8a",
+      "source": "ArtSources/IconV1/app_icon_1024.png",
+      "sourceSHA256": "ea9381013f08da16e4ac7c3804db3c57539b51769c378fdfbcb3bff69e17cd18"
     },
     {
       "alphaBounds": [
@@ -42559,10 +42566,10 @@
         80,
         80
       ],
-      "pngBytes": 2968,
-      "sha256": "2eb31d580bb8d5f8588df2eed3bba6784464a596b0d68ccbbcc741d5de0790d1",
-      "source": "AppIcon/app_icon_1024.png",
-      "sourceSHA256": "855f21c7c91053099fb36df79bf80f103ec5ca260da469a5b64f532e5822e6e2"
+      "pngBytes": 16245,
+      "sha256": "4ebb82d2bc411df65ef928e436799a8ae8c86caf5b4eec0dfc4633943dc9f699",
+      "source": "ArtSources/IconV1/app_icon_1024.png",
+      "sourceSHA256": "ea9381013f08da16e4ac7c3804db3c57539b51769c378fdfbcb3bff69e17cd18"
     },
     {
       "alphaBounds": [
@@ -42582,10 +42589,10 @@
         88,
         88
       ],
-      "pngBytes": 3361,
-      "sha256": "3c55a9ce69456243b8eb6b5d19014858f6a3f0ccbeb2c0500c249827f130e9fd",
-      "source": "AppIcon/app_icon_1024.png",
-      "sourceSHA256": "855f21c7c91053099fb36df79bf80f103ec5ca260da469a5b64f532e5822e6e2"
+      "pngBytes": 19559,
+      "sha256": "9c1d38484da3293d40148db1ec0e526b24f85dfb84c9165f7ec6c91215b65d72",
+      "source": "ArtSources/IconV1/app_icon_1024.png",
+      "sourceSHA256": "ea9381013f08da16e4ac7c3804db3c57539b51769c378fdfbcb3bff69e17cd18"
     },
     {
       "alphaBounds": [
@@ -42605,10 +42612,10 @@
         92,
         92
       ],
-      "pngBytes": 3537,
-      "sha256": "20bf1da6770141f9bf278013833ddf0dbf7108248ca327decda355705851848f",
-      "source": "AppIcon/app_icon_1024.png",
-      "sourceSHA256": "855f21c7c91053099fb36df79bf80f103ec5ca260da469a5b64f532e5822e6e2"
+      "pngBytes": 21262,
+      "sha256": "db93a49ac5095868e771dda20f1887495b3e286b1aa1a9cdba97e9b3c19030eb",
+      "source": "ArtSources/IconV1/app_icon_1024.png",
+      "sourceSHA256": "ea9381013f08da16e4ac7c3804db3c57539b51769c378fdfbcb3bff69e17cd18"
     },
     {
       "alphaBounds": [
@@ -42628,10 +42635,10 @@
         100,
         100
       ],
-      "pngBytes": 3928,
-      "sha256": "155808783aedb08fe01a187b4c8e7df93482b25399defd5d4fa0dfd49042cdb5",
-      "source": "AppIcon/app_icon_1024.png",
-      "sourceSHA256": "855f21c7c91053099fb36df79bf80f103ec5ca260da469a5b64f532e5822e6e2"
+      "pngBytes": 24826,
+      "sha256": "874bd2ceb7acedcc85ee135ae5c4a814527553aaf8bbbbe2dd936f46ed4f988d",
+      "source": "ArtSources/IconV1/app_icon_1024.png",
+      "sourceSHA256": "ea9381013f08da16e4ac7c3804db3c57539b51769c378fdfbcb3bff69e17cd18"
     },
     {
       "alphaBounds": [
@@ -42651,10 +42658,10 @@
         102,
         102
       ],
-      "pngBytes": 3985,
-      "sha256": "efeb7832a5c59f1cef1063cbee716be529553fe1a4caed4752d8f00b2e9c17f6",
-      "source": "AppIcon/app_icon_1024.png",
-      "sourceSHA256": "855f21c7c91053099fb36df79bf80f103ec5ca260da469a5b64f532e5822e6e2"
+      "pngBytes": 25762,
+      "sha256": "08af9d11342f8a18513b5b5735d442d9c00d5b7899004003b41dcfb2085e7672",
+      "source": "ArtSources/IconV1/app_icon_1024.png",
+      "sourceSHA256": "ea9381013f08da16e4ac7c3804db3c57539b51769c378fdfbcb3bff69e17cd18"
     },
     {
       "alphaBounds": [
@@ -42674,10 +42681,10 @@
         108,
         108
       ],
-      "pngBytes": 4313,
-      "sha256": "73fa7c85ce30bd7e0f478db49630771397cf5b0e7048cdba0273bfffc2ed24a8",
-      "source": "AppIcon/app_icon_1024.png",
-      "sourceSHA256": "855f21c7c91053099fb36df79bf80f103ec5ca260da469a5b64f532e5822e6e2"
+      "pngBytes": 28657,
+      "sha256": "bbda629f094f799e57cab05419856bfbe979a09f9f9ece28cf2bd00fe55539c9",
+      "source": "ArtSources/IconV1/app_icon_1024.png",
+      "sourceSHA256": "ea9381013f08da16e4ac7c3804db3c57539b51769c378fdfbcb3bff69e17cd18"
     },
     {
       "alphaBounds": [
@@ -42697,10 +42704,10 @@
         172,
         172
       ],
-      "pngBytes": 7253,
-      "sha256": "553c7c23db90771ba1146dd9d678e84fab21879a9e50e6b1b5b502e2ab674ecb",
-      "source": "AppIcon/app_icon_1024.png",
-      "sourceSHA256": "855f21c7c91053099fb36df79bf80f103ec5ca260da469a5b64f532e5822e6e2"
+      "pngBytes": 69374,
+      "sha256": "e90b465135c82cae466dc7b467ee64f72da51935a9a67c14792b1b0373a95583",
+      "source": "ArtSources/IconV1/app_icon_1024.png",
+      "sourceSHA256": "ea9381013f08da16e4ac7c3804db3c57539b51769c378fdfbcb3bff69e17cd18"
     },
     {
       "alphaBounds": [
@@ -42720,10 +42727,10 @@
         196,
         196
       ],
-      "pngBytes": 8491,
-      "sha256": "edcabff63669d64412a1b37e4e225e417270079c7f63c937ff4bff9159609100",
-      "source": "AppIcon/app_icon_1024.png",
-      "sourceSHA256": "855f21c7c91053099fb36df79bf80f103ec5ca260da469a5b64f532e5822e6e2"
+      "pngBytes": 88626,
+      "sha256": "d8b1189213c1ab3959b4a5a54e270a1a323afd4ef94bc47655b524d15604ecd6",
+      "source": "ArtSources/IconV1/app_icon_1024.png",
+      "sourceSHA256": "ea9381013f08da16e4ac7c3804db3c57539b51769c378fdfbcb3bff69e17cd18"
     },
     {
       "alphaBounds": [
@@ -42743,10 +42750,10 @@
         216,
         216
       ],
-      "pngBytes": 9415,
-      "sha256": "b36694fa404594c0f81138a92727e962bd9cb6e880715c53106734e8a18072a4",
-      "source": "AppIcon/app_icon_1024.png",
-      "sourceSHA256": "855f21c7c91053099fb36df79bf80f103ec5ca260da469a5b64f532e5822e6e2"
+      "pngBytes": 106627,
+      "sha256": "941e25d39003e7b117b178eecc3690ca0d242875affb4e60a1adf1cc4f780cc3",
+      "source": "ArtSources/IconV1/app_icon_1024.png",
+      "sourceSHA256": "ea9381013f08da16e4ac7c3804db3c57539b51769c378fdfbcb3bff69e17cd18"
     },
     {
       "alphaBounds": [
@@ -42766,10 +42773,10 @@
         234,
         234
       ],
-      "pngBytes": 10277,
-      "sha256": "4704deb1a4be775d61c22f063765cba74fe9d1d41bc8326a37a9ef096731b76d",
-      "source": "AppIcon/app_icon_1024.png",
-      "sourceSHA256": "855f21c7c91053099fb36df79bf80f103ec5ca260da469a5b64f532e5822e6e2"
+      "pngBytes": 124336,
+      "sha256": "29e48c0ef05cdfa6f14f92a69bd1e485817467f8cd0cfc19cdf23449dd3387f9",
+      "source": "ArtSources/IconV1/app_icon_1024.png",
+      "sourceSHA256": "ea9381013f08da16e4ac7c3804db3c57539b51769c378fdfbcb3bff69e17cd18"
     },
     {
       "alphaBounds": [
@@ -42789,10 +42796,10 @@
         258,
         258
       ],
-      "pngBytes": 11414,
-      "sha256": "e889bdd7e257ac0860e74650e754956a832019bac5320e79d207326892ace455",
-      "source": "AppIcon/app_icon_1024.png",
-      "sourceSHA256": "855f21c7c91053099fb36df79bf80f103ec5ca260da469a5b64f532e5822e6e2"
+      "pngBytes": 149710,
+      "sha256": "a45da7d166b746240f37202ab5aa4232d0f36182b0559aec8d7331345aaaf596",
+      "source": "ArtSources/IconV1/app_icon_1024.png",
+      "sourceSHA256": "ea9381013f08da16e4ac7c3804db3c57539b51769c378fdfbcb3bff69e17cd18"
     },
     {
       "alphaBounds": [
@@ -42812,10 +42819,10 @@
         58,
         58
       ],
-      "pngBytes": 2043,
-      "sha256": "9b5067db96f81ad12fb98034be96ac37a4e9208cb7f1c919da8aceadceaa0d82",
-      "source": "AppIcon/app_icon_1024.png",
-      "sourceSHA256": "855f21c7c91053099fb36df79bf80f103ec5ca260da469a5b64f532e5822e6e2"
+      "pngBytes": 8798,
+      "sha256": "5619d4de1e910b97234a62757819c68ca4b6f9ba6312bedbd599b6dd08b5d711",
+      "source": "ArtSources/IconV1/app_icon_1024.png",
+      "sourceSHA256": "ea9381013f08da16e4ac7c3804db3c57539b51769c378fdfbcb3bff69e17cd18"
     },
     {
       "alphaBounds": [
@@ -42835,10 +42842,10 @@
         87,
         87
       ],
-      "pngBytes": 3325,
-      "sha256": "971b79db138eed3ddf3f0d63dc2d1c42b316af2b599ae5619fd37a2b15ef6a19",
-      "source": "AppIcon/app_icon_1024.png",
-      "sourceSHA256": "855f21c7c91053099fb36df79bf80f103ec5ca260da469a5b64f532e5822e6e2"
+      "pngBytes": 19130,
+      "sha256": "79e9a8aebdebc28463bb268b2edd353b213c263842614f6923ba74acd16c2e1f",
+      "source": "ArtSources/IconV1/app_icon_1024.png",
+      "sourceSHA256": "ea9381013f08da16e4ac7c3804db3c57539b51769c378fdfbcb3bff69e17cd18"
     },
     {
       "alphaBounds": [
@@ -42858,10 +42865,10 @@
         1024,
         1024
       ],
-      "pngBytes": 59687,
-      "sha256": "dceef4adfb0e32947cc965d560011a9798b727b7fcab9d32309650b468560722",
-      "source": "AppIcon/app_icon_1024.png",
-      "sourceSHA256": "855f21c7c91053099fb36df79bf80f103ec5ca260da469a5b64f532e5822e6e2"
+      "pngBytes": 2077763,
+      "sha256": "3a8ce254ca048e534e6990c3a38bbd265d023c9097bd2727f1dc31acf4175fc2",
+      "source": "ArtSources/IconV1/app_icon_1024.png",
+      "sourceSHA256": "ea9381013f08da16e4ac7c3804db3c57539b51769c378fdfbcb3bff69e17cd18"
     }
   ],
   "schemaVersion": 1,

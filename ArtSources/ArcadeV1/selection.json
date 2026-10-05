@@ -1,0 +1,58 @@
+{
+  "targetPaddleCyan": {
+    "source": "ArtSources/ArcadeV1/target_paddle_cyan.png",
+    "sha256": "7a08977c0c7dd152bb73a7f9458c7306fe8b972f96b46c3b0d0388577046a81d",
+    "size": [
+      256,
+      256
+    ]
+  },
+  "targetPaddleLime": {
+    "source": "ArtSources/ArcadeV1/target_paddle_lime.png",
+    "sha256": "726c7e475b94e093cace315ccc7e92a1836e32e5db1b3fba2a3d4e65b76f8404",
+    "size": [
+      256,
+      256
+    ]
+  },
+  "targetPaddleMagenta": {
+    "source": "ArtSources/ArcadeV1/target_paddle_magenta.png",
+    "sha256": "c97c8086e7e4ed1a862fa6b9cb6c7e928ff0e5db04e9c04ff09e9dc1e82c05b6",
+    "size": [
+      256,
+      256
+    ]
+  },
+  "targetCone": {
+    "source": "ArtSources/ArcadeV1/target_cone.png",
+    "sha256": "20d0b3900ed6bff7626d773cc47f1329fd7cd8f55ba253f56efe35dde59af119",
+    "size": [
+      256,
+      256
+    ]
+  },
+  "targetBasket": {
+    "source": "ArtSources/ArcadeV1/target_basket.png",
+    "sha256": "72324e4bcd059d07aed9f877fecceee746714cf553af2654a1825eb50860881f",
+    "size": [
+      256,
+      256
+    ]
+  },
+  "targetBasketDamaged": {
+    "source": "ArtSources/ArcadeV1/target_basket_damaged.png",
+    "sha256": "30437859acece431476633253db66f87256bb9618cf3ad1ea568d8236c122f73",
+    "size": [
+      256,
+      256
+    ]
+  },
+  "appIcon": {
+    "source": "ArtSources/IconV1/app_icon_1024.png",
+    "sha256": "ea9381013f08da16e4ac7c3804db3c57539b51769c378fdfbcb3bff69e17cd18",
+    "size": [
+      1024,
+      1024
+    ]
+  }
+}

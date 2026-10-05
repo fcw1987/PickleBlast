@@ -6,6 +6,7 @@ final class TargetNode: SKNode {
     private let sprite = SKSpriteNode()
     private let textures: TextureLibrary
     private var flashUntil = 0.0
+    private var hitBegan = -Double.infinity
     private var lastHealth: Int?
     private var damageBlend = 0.0
     private(set) var logicalPosition = Vector2.zero
@@ -16,11 +17,25 @@ final class TargetNode: SKNode {
         apply(target)
     }
     required init?(coder: NSCoder) { fatalError("Use init(target:textures:)") }
-    func flash(at time: Double) { flashUntil = time + 0.10 }
-    func resetFeedback() { flashUntil = 0 }
-    func update(time: Double) {
+    func flash(at time: Double) { flashUntil = time + 0.10; hitBegan = time }
+    func resetFeedback() {
+        flashUntil = 0; hitBegan = -.infinity
+        sprite.setScale(1); sprite.zRotation = 0
+    }
+    func update(time: Double, reduceMotion: Bool = false) {
         sprite.color = time < flashUntil ? .white : Neon.magenta
         sprite.colorBlendFactor = time < flashUntil ? 0.65 : damageBlend
+        // One existing sprite, a finite recoil envelope, no actions or emitters.
+        // The collider and its projected center never move. Scene time freezes
+        // on pause; Reduced Motion keeps the same static damage/flash feedback.
+        let age = time - hitBegan
+        if !reduceMotion, age >= 0, age < 0.30 {
+            let envelope = pow(1 - age / 0.30, 2)
+            sprite.setScale(CGFloat(1 + 0.055 * envelope * sin(age * .pi / 0.15)))
+            sprite.zRotation = CGFloat(0.045 * envelope * sin(age * .pi / 0.075))
+        } else {
+            sprite.setScale(1); sprite.zRotation = 0
+        }
     }
     func apply(_ target: TargetState, projection: CourtProjection? = nil) {
         logicalPosition = target.position

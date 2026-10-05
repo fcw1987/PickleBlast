@@ -293,7 +293,6 @@ public final class GameEngine {
         state.rallyShot = nil
         state.rallyTime = 0
         state.currentRallyReturns = 0
-        state.consecutivePlayerReturns = 0
         incomingGuided = false; noProgressTime = 0; stallRedirected = false
         targetContacts.removeAll(keepingCapacity: true)
         if mode.isBossRally { resetRallyRuntime(retainingHistory: true) }
@@ -346,6 +345,7 @@ public final class GameEngine {
         }
         if mode.isBossRally {
             state.won = false
+            state.consecutivePlayerReturns = 0
             state.currentBossMatchLongestRallyReturns = 0
             state.crownVelocity = 0
             swingElapsed = 0
@@ -956,7 +956,6 @@ public final class GameEngine {
                 }
                 state.boss!.points += 1
                 state.score += tuning.bossPointScore
-                if mode.isBossRally { state.consecutivePlayerReturns = 0 }
                 events.append(.bossPoint(points: state.boss!.points))
                 if state.boss!.points >= activeBossConfiguration.pointsToWin {
                     state.score += tuning.bossVictoryBonus

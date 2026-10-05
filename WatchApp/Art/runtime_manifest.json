@@ -30073,10 +30073,10 @@
     },
     "targetBasket": {
       "alphaBounds": [
-        23,
-        14,
-        105,
-        110
+        18,
+        16,
+        110,
+        112
       ],
       "atlas": "Targets",
       "name": "target_basket",
@@ -30087,10 +30087,10 @@
     },
     "targetBasketDamaged": {
       "alphaBounds": [
-        23,
-        14,
-        105,
-        110
+        19,
+        16,
+        109,
+        112
       ],
       "atlas": "Targets",
       "name": "target_basket_damaged",
@@ -30101,10 +30101,10 @@
     },
     "targetCone": {
       "alphaBounds": [
-        27,
-        13,
-        101,
-        110
+        24,
+        16,
+        104,
+        112
       ],
       "atlas": "Targets",
       "name": "target_cone",
@@ -30130,9 +30130,9 @@
     "targetPaddleCyan": {
       "alphaBounds": [
         35,
-        17,
+        18,
         93,
-        117
+        110
       ],
       "atlas": "Targets",
       "name": "target_paddle_cyan",
@@ -30158,9 +30158,9 @@
     "targetPaddleLime": {
       "alphaBounds": [
         35,
-        17,
+        18,
         93,
-        117
+        110
       ],
       "atlas": "Targets",
       "name": "target_paddle_lime",
@@ -30186,9 +30186,9 @@
     "targetPaddleMagenta": {
       "alphaBounds": [
         35,
-        17,
+        18,
         93,
-        117
+        110
       ],
       "atlas": "Targets",
       "name": "target_paddle_magenta",
