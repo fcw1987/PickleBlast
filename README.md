@@ -4,7 +4,7 @@
 
 [Website](https://fcw1987.github.io/PickleBlast/) · [Privacy](https://fcw1987.github.io/PickleBlast/privacy/) · [Support](https://fcw1987.github.io/PickleBlast/support/)
 
-<a href="docs/images/boss-rally.png"><img src="docs/images/boss-rally.png" alt="A live Boss Rally on Apple Watch, with the ball crossing the black court." width="142"></a>
+<a href="docs/images/boss-rally.png"><img src="docs/images/boss-rally.png" alt="A live Boss Rally on Apple Watch, with the ball crossing the pickleball court." width="142"></a>
 <a href="docs/images/opponents.png"><img src="docs/images/opponents.png" alt="Build 10 individual Boss Rally selection screen." width="142"></a>
 <a href="docs/images/arcade.png"><img src="docs/images/arcade.png" alt="Arcade mode during a target wave on Apple Watch." width="142"></a>
 
