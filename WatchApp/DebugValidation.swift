@@ -162,8 +162,8 @@ struct DebugValidation {
             state.mode = startMode
             state.stage = .boss
             state.targets = []
-            state.boss = BossState(id: state.bossID, points: name == "boss-hud-points" ? 2 : 1)
-            state.boss?.opponentPoints = name == "boss-hud-points" ? 1 : 0
+            state.boss = BossState(id: state.bossID, points: name == "boss-hud-zero" ? 0 : (name == "boss-hud-three" ? 3 : (name == "boss-hud-points" ? 2 : 1)))
+            state.boss?.opponentPoints = name == "boss-hud-opponent-three" ? 3 : (name == "boss-hud-points" ? 1 : 0)
             state.ball = BallState(position: .init(x: 10, y: 18), velocity: .init(x: 0, y: -26))
             state.consecutivePlayerReturns = name == "boss-hud-milestone" ? 20 : (name == "boss-hud-earned" ? 21 : 7)
             state.recoveriesRemaining = ["boss-hud-earned", "boss-hud-milestone"].contains(name) ? 1 : 0
