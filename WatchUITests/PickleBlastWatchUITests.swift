@@ -10,6 +10,47 @@ final class PickleBlastWatchUITests: XCTestCase {
     }
 
     @MainActor
+    func testScoreboardNativeEvidenceAndPause() throws {
+        // Held renderer states are explicitly labelled fixtures; final iteration
+        // also records ordinary live gameplay and real Pause/Resume navigation.
+        for fixture in ["boss-hud-zero", "boss-hud-ordinary", "boss-hud-points", "boss-hud-three", "boss-hud-opponent-three", "boss-hud-earned", "boss-hud-milestone"] {
+            let app = XCUIApplication()
+            app.launchArguments = ["--validation-fixture", fixture, "--validation-boss=poacher"]
+            app.launch()
+            XCTAssertTrue(app.buttons["game.pause"].waitForExistence(timeout: 10))
+            capture("scoreboard-fixture-" + fixture, app: app)
+            app.terminate()
+        }
+        let app = launchHome()
+        app.buttons["home.bossRally"].tap()
+        let poacher = app.buttons["boss.select.poacher"]
+        reveal(poacher, in: app); poacher.tap()
+        XCTAssertTrue(app.buttons["game.pause"].waitForExistence(timeout: 5))
+        capture("scoreboard-ordinary-poacher", app: app)
+        app.buttons["game.pause"].tap()
+        XCTAssertTrue(app.buttons["pause.resume"].waitForExistence(timeout: 5))
+        XCTAssertTrue(element("pause.matchScore", in: app).exists)
+        capture("scoreboard-pause", app: app)
+        reveal(element("pause.matchScore", in: app), in: app)
+        capture("scoreboard-pause-score", app: app)
+        let restart = app.buttons["pause.restart"]
+        reveal(restart, in: app); restart.tap()
+        XCTAssertTrue(app.buttons["game.pause"].waitForExistence(timeout: 5))
+        XCTAssertTrue((element("game.court", in: app).value as? String ?? "").contains("You 0. Boss 0."))
+        capture("scoreboard-restarted", app: app)
+        app.buttons["game.pause"].tap()
+        XCTAssertTrue(app.buttons["pause.resume"].waitForExistence(timeout: 5))
+        app.buttons["pause.resume"].tap()
+        XCTAssertTrue(app.buttons["game.pause"].waitForExistence(timeout: 5))
+        app.buttons["game.pause"].tap()
+        let home = app.buttons["pause.home"]
+        reveal(home, in: app); home.tap()
+        _ = startRun(app)
+        capture("scoreboard-ordinary-arcade", app: app)
+        app.terminate()
+    }
+
+    @MainActor
     func testCoordinatePauseTapResumeAndHomeInEveryMode() throws {
         for mode in ["arcade", "wall", "dinker", "lobber"] {
             let app = launchHome()

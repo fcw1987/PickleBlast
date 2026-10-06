@@ -2,7 +2,7 @@ import Foundation
 import PickleBlastCore
 import SpriteKit
 
-/// A fixed set of small HUD nodes. Milestones replace the score row briefly;
+/// A fixed set of small HUD nodes. Milestones sit above the score lights;
 /// nothing is emitted over the court, ball or character contact poses.
 final class RallyMomentumHUD: SKNode {
     private let track = SKShapeNode(circleOfRadius: 4.5)
@@ -16,7 +16,6 @@ final class RallyMomentumHUD: SKNode {
     private var began = -Double.infinity
     private var lastMilestone = 0
     private var lastReturns = 0
-    private var displayedProgress: Int?
     private var displayedSave: Bool?
     private var leftWidth: CGFloat = 50
     private var rightWidth: CGFloat = 50
@@ -66,7 +65,7 @@ final class RallyMomentumHUD: SKNode {
         }
         count.horizontalAlignmentMode = .left
         count.fontColor = Neon.white
-        count.fontSize = 18
+        count.fontSize = 12
         caption.horizontalAlignmentMode = .right
         caption.fontSize = 9
         caption.fontColor = Neon.lime
@@ -84,20 +83,20 @@ final class RallyMomentumHUD: SKNode {
         previousCenter = centerX
         track.position = CGPoint(x: playerScore.maxX + 9, y: y + 1)
         progress.position = track.position
-        save.position = CGPoint(x: opponentScore.minX - 9, y: y + 1)
+        save.position = track.position
         savePlus.position = save.position
-        countAnchor = CGPoint(x: playerScore.minX + 2, y: y + 1.5)
+        countAnchor = CGPoint(x: playerScore.minX, y: y + 15)
         count.position = countAnchor
-        caption.position = CGPoint(x: opponentScore.maxX, y: y)
-        leftWidth = max(12, centerX - 18 - countAnchor.x)
-        rightWidth = max(12, opponentScore.maxX - centerX - 18)
+        caption.position = CGPoint(x: centerX + 8, y: y + 15)
+        leftWidth = 25
+        rightWidth = max(12, centerX + 8 - countAnchor.x - 29)
         fitCount()
         // Two crisp accents stay inside the same safe 20-point row as the text.
         let path = CGMutablePath()
         let edge = min(centerX - 19, countAnchor.x + count.frame.width + 5)
         for direction in [-1.0, 1.0] {
-            path.move(to: CGPoint(x: edge, y: y + direction * 3.5))
-            path.addLine(to: CGPoint(x: edge + 3, y: y + direction * 6.5))
+            path.move(to: CGPoint(x: edge, y: y + 15 + direction * 2.5))
+            path.addLine(to: CGPoint(x: edge + 3, y: y + 15 + direction * 4.5))
         }
         CrispVector.replacePath(of: sparks, with: path)
     }
@@ -120,7 +119,7 @@ final class RallyMomentumHUD: SKNode {
 
     private func fitCount() {
         count.setScale(1)
-        count.fontSize = 18
+        count.fontSize = 12
         if count.frame.width > leftWidth - 6 {
             count.fontSize *= (leftWidth - 6) / count.frame.width
         }
@@ -138,17 +137,6 @@ final class RallyMomentumHUD: SKNode {
     /// Returns whether the milestone currently replaces the ordinary score text.
     func render(state: GameState, time: Double, reduceMotion: Bool) -> Bool {
         isHidden = !state.mode.isBossRally || state.phase == .blackout || state.phase == .results
-        let amount = max(0, state.consecutivePlayerReturns) % GameTuning.earnedRecoveryReturnInterval
-        if displayedProgress != amount {
-            let path = CGMutablePath()
-            if amount > 0 {
-                path.addArc(center: .zero, radius: 4.5, startAngle: .pi / 2,
-                            endAngle: .pi / 2 - CGFloat(amount) / CGFloat(GameTuning.earnedRecoveryReturnInterval) * 2 * .pi,
-                            clockwise: true)
-            }
-            CrispVector.replacePath(of: progress, with: path)
-            displayedProgress = amount
-        }
         let hasSave = state.recoveriesRemaining > 0
         if displayedSave != hasSave {
             save.strokeColor = hasSave ? Neon.lime : Neon.white.withAlphaComponent(0.28)
@@ -159,9 +147,11 @@ final class RallyMomentumHUD: SKNode {
         let active = !isHidden && state.phase == .playing && !state.isPaused && state.resumeCountdown <= 0
             && age >= 0 && age < duration
         milestone.isHidden = !active
-        track.isHidden = active
-        progress.isHidden = active || amount == 0
-        save.isHidden = active
+        // A circular return meter would read as a fourth match point.
+        // Progress remains in VoiceOver; the earned-save shield is distinct.
+        track.isHidden = true
+        progress.isHidden = true
+        save.isHidden = active || !hasSave
         savePlus.isHidden = active || !hasSave
         guard active else { return false }
         if reduceMotion {

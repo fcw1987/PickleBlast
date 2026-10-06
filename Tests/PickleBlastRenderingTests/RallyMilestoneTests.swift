@@ -19,7 +19,7 @@ struct RallyMilestoneTests {
         return state
     }
 
-    @Test("A brief earned-save celebration replaces counters and always returns to the match score",
+    @Test("A brief earned-save celebration sits above persistent scorelights without moving the ball",
           arguments: [(162.0, 197.0, 40.0, 19.0), (211.0, 257.0, 56.5, 40.0)])
     func milestoneGeometryAndDeadline(size: (Double, Double, Double, Double)) throws {
         let scene = PickleBlastScene(size: CGSize(width: size.0, height: size.1))
@@ -33,7 +33,7 @@ struct RallyMilestoneTests {
         let bossScore = try #require(scene.childNode(withName: "//hudOpponentScore"))
         let ball = try #require(scene.childNode(withName: "//gameplayBall") as? SKSpriteNode)
         let ballBefore = ball.frame
-        #expect(banner.isHidden && !playerScore.isHidden && !bossScore.isHidden)
+        #expect(banner.isHidden && playerScore.isHidden && bossScore.isHidden)
         state.consecutivePlayerReturns = 20
         state.recoveriesRemaining = 1
         scene.render(state: state, events: [.rallyMilestone(returns: 20), .recoveryEarned], delta: 0)
@@ -46,9 +46,10 @@ struct RallyMilestoneTests {
             scene.render(state: state, events: [], delta: 0.1)
             #expect(!banner.isHidden)
             #expect(count.frame.maxX < size.0 / 2 - 14)
-            #expect(caption.frame.minX > size.0 / 2 + 14)
+            #expect(caption.frame.minX > count.frame.maxX + 1)
             for label in [count, caption] {
-                #expect(label.frame.maxY <= size.1 - size.2 + 0.5)
+                #expect(!label.frame.intersects((try #require(scene.childNode(withName: "//systemClockBacking"))).frame))
+                #expect(label.frame.minY > (try #require(scene.childNode(withName: "//scorelight.player.0"))).frame.maxY + 1)
                 #expect(label.frame.minY > scene.courtProjection.farY + 6)
             }
         }
@@ -56,7 +57,7 @@ struct RallyMilestoneTests {
         scene.render(state: state, events: [.rallyMilestone(returns: 20), .recoveryEarned], delta: 0)
         state.simulationTime = 2.31
         scene.render(state: state, events: [], delta: 0.16)
-        #expect(banner.isHidden && !playerScore.isHidden && !bossScore.isHidden)
+        #expect(banner.isHidden && playerScore.isHidden && bossScore.isHidden)
         #expect(!(try #require(scene.childNode(withName: "//hudRallySavePlus"))).isHidden)
     }
 

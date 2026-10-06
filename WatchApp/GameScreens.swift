@@ -523,6 +523,15 @@ struct RunView: View {
                             .contentShape(Rectangle())
                     }
                     .accessibilityIdentifier("pause.restart")
+                    if session.mode.isBossRally {
+                        VStack(spacing: 3) {
+                            Text("You (left) \(session.engine.state.playerRallyPoints)\n\(session.engine.state.bossID.rawValue.capitalized) (right) \(session.engine.state.opponentRallyPoints)")
+                                .font(.system(size: 12)).foregroundStyle(.white)
+                                .multilineTextAlignment(.center)
+                                .accessibilityIdentifier("pause.matchScore")
+                            Text("First to 3").font(.system(size: 11)).foregroundStyle(Neon.cyan)
+                        }
+                    }
                 }.padding(.horizontal, 12)
             }
         }
