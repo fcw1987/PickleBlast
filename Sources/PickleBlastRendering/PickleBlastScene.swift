@@ -409,7 +409,8 @@ public final class PickleBlastScene: SKScene {
         let panels = scorePanelFrames()
         let plates = CGMutablePath()
         for panel in [panels.left, panels.right] {
-            plates.addRoundedRect(in: panel, cornerWidth: 4, cornerHeight: 4)
+            let radius = min(4, panel.width / 2, panel.height / 2)
+            plates.addRoundedRect(in: panel, cornerWidth: radius, cornerHeight: radius)
         }
         hudBacking.path = plates
         let bevel = CGMutablePath()

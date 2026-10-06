@@ -38,6 +38,13 @@ import PickleBlastCore
         }
     }
 
+    @Test("Transient tiny SpriteKit viewports keep valid plaque paths")
+    func tinyViewport() throws {
+        let scene = PickleBlastScene(size: .zero)
+        scene.setViewport(CGSize(width: 1, height: 1), safeTop: 0, safeBottom: 0)
+        #expect((try #require(scene.childNode(withName: "//hudScorePanels") as? SKShapeNode)).path != nil)
+    }
+
     @Test("Arcade keeps full score, three life slots and mode identity inside the plaques",
           arguments: [(162.0, 197.0), (211.0, 257.0)])
     func arcade(size: (Double, Double)) throws {
