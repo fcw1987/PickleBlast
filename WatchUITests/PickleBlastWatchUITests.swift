@@ -10,6 +10,37 @@ final class PickleBlastWatchUITests: XCTestCase {
     }
 
     @MainActor
+    func testScoreboardNativeEvidenceAndPause() throws {
+        // Held renderer states are explicitly labelled fixtures; final iteration
+        // also records ordinary live gameplay and real Pause/Resume navigation.
+        for fixture in ["boss-hud-ordinary", "boss-hud-points", "boss-hud-earned", "boss-hud-milestone"] {
+            let app = XCUIApplication()
+            app.launchArguments = ["--validation-fixture", fixture, "--validation-boss=poacher"]
+            app.launch()
+            XCTAssertTrue(app.buttons["game.pause"].waitForExistence(timeout: 10))
+            capture("scoreboard-fixture-" + fixture, app: app)
+            app.terminate()
+        }
+        let app = launchHome()
+        app.buttons["home.bossRally"].tap()
+        let poacher = app.buttons["boss.select.poacher"]
+        reveal(poacher, in: app); poacher.tap()
+        XCTAssertTrue(app.buttons["game.pause"].waitForExistence(timeout: 5))
+        capture("scoreboard-ordinary-poacher", app: app)
+        app.buttons["game.pause"].tap()
+        XCTAssertTrue(app.buttons["pause.resume"].waitForExistence(timeout: 5))
+        capture("scoreboard-pause", app: app)
+        app.buttons["pause.resume"].tap()
+        XCTAssertTrue(app.buttons["game.pause"].waitForExistence(timeout: 5))
+        app.buttons["game.pause"].tap()
+        let home = app.buttons["pause.home"]
+        reveal(home, in: app); home.tap()
+        _ = startRun(app)
+        capture("scoreboard-ordinary-arcade", app: app)
+        app.terminate()
+    }
+
+    @MainActor
     func testCoordinatePauseTapResumeAndHomeInEveryMode() throws {
         for mode in ["arcade", "wall", "dinker", "lobber"] {
             let app = launchHome()

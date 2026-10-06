@@ -84,13 +84,13 @@ final class RallyMomentumHUD: SKNode {
         previousCenter = centerX
         track.position = CGPoint(x: playerScore.maxX + 9, y: y + 1)
         progress.position = track.position
-        save.position = CGPoint(x: opponentScore.minX - 9, y: y + 1)
+        save.position = track.position
         savePlus.position = save.position
         countAnchor = CGPoint(x: playerScore.minX + 2, y: y + 1.5)
         count.position = countAnchor
         caption.position = CGPoint(x: opponentScore.maxX, y: y)
-        leftWidth = max(12, centerX - 18 - countAnchor.x)
-        rightWidth = max(12, opponentScore.maxX - centerX - 18)
+        leftWidth = max(12, centerX - 29 - countAnchor.x)
+        rightWidth = max(12, opponentScore.maxX - centerX - 29)
         fitCount()
         // Two crisp accents stay inside the same safe 20-point row as the text.
         let path = CGMutablePath()
@@ -159,9 +159,9 @@ final class RallyMomentumHUD: SKNode {
         let active = !isHidden && state.phase == .playing && !state.isPaused && state.resumeCountdown <= 0
             && age >= 0 && age < duration
         milestone.isHidden = !active
-        track.isHidden = active
-        progress.isHidden = active || amount == 0
-        save.isHidden = active
+        track.isHidden = active || amount == 0 || hasSave
+        progress.isHidden = active || amount == 0 || hasSave
+        save.isHidden = active || !hasSave
         savePlus.isHidden = active || !hasSave
         guard active else { return false }
         if reduceMotion {

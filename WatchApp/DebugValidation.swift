@@ -157,6 +157,18 @@ struct DebugValidation {
             state.phase = .celebration; state.ball = nil; state.targets = []
             for _ in 0..<360 { state.celebration.update(delta: 1.0 / 120) }
         }
+        // Held native HUD evidence only; no Release code or core rule changes.
+        if name.hasPrefix("boss-hud-") {
+            state.mode = startMode
+            state.stage = .boss
+            state.targets = []
+            state.boss = BossState(id: state.bossID, points: name == "boss-hud-points" ? 2 : 1)
+            state.boss?.opponentPoints = name == "boss-hud-points" ? 1 : 0
+            state.ball = BallState(position: .init(x: 10, y: 18), velocity: .init(x: 0, y: -26))
+            state.consecutivePlayerReturns = name == "boss-hud-milestone" ? 20 : (name == "boss-hud-earned" ? 21 : 7)
+            state.recoveriesRemaining = ["boss-hud-earned", "boss-hud-milestone"].contains(name) ? 1 : 0
+            events = name == "boss-hud-milestone" ? [.rallyMilestone(returns: 20), .recoveryEarned] : []
+        }
         if name == "blackout" { state.phase = .blackout; state.ball = nil }
         return (state, events)
     }

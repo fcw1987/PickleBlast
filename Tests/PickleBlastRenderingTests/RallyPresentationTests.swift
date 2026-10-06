@@ -30,11 +30,11 @@ struct RallyPresentationTests {
         let savePlus = try #require(scene.childNode(withName: "//hudRallySavePlus") as? SKShapeNode)
         let hud = try #require(scene.children.first { $0.zPosition == 20 })
         let hearts = hud.children.compactMap { $0 as? SKSpriteNode }
-        #expect(playerScore.text == "YOU 1")
-        #expect(opponentScore.text == "BOSS 2")
+        #expect(playerScore.text == "1")
+        #expect(opponentScore.text == "2")
         #expect(!opponentScore.isHidden)
         #expect(rally.isHidden)
-        #expect(!progress.isHidden && !save.isHidden && !savePlus.isHidden)
+        #expect(progress.isHidden && !save.isHidden && !savePlus.isHidden)
         #expect(scene.childNode(withName: "//hudRallySaves") == nil)
         #expect(hearts.count == 3 && hearts.allSatisfy(\.isHidden))
         #expect(playerScore.frame.maxX < CGFloat(size.0) / 2 - 14,
@@ -48,7 +48,7 @@ struct RallyPresentationTests {
             state.simulationTime += 1.0 / 30.0
             scene.render(state: state, events: [], delta: 1.0 / 30.0)
         }
-        #expect(rally.isHidden && !progress.isHidden && !save.isHidden)
+        #expect(rally.isHidden && progress.isHidden && !save.isHidden)
         #expect(scene.children.reduce(0) { $0 + 1 + $1.children.count } == nodeCount,
                 "Rally updates reuse the existing HUD nodes")
     }
@@ -95,10 +95,10 @@ struct RallyPresentationTests {
                 }
                 #expect(progress.frame.minX > points.frame.maxX + 1)
                 #expect(bossPoints.frame.minX > save.frame.maxX + 1)
-                #expect(points.frame.maxX < center - 14)
-                #expect(progress.frame.maxX < center - 14)
-                #expect(save.frame.minX > center + 14)
-                #expect(bossPoints.frame.minX > center + 14)
+                #expect(points.frame.maxX < center - 22)
+                #expect(progress.frame.maxX < center - 22)
+                #expect(save.frame.maxX < center - 22)
+                #expect(bossPoints.frame.minX > center + 22)
                 #expect(points.frame.minX >= 6.5)
                 #expect(bossPoints.frame.maxX <= CGFloat(size.0) - 6.5)
             }

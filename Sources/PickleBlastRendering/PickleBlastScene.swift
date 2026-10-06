@@ -42,6 +42,11 @@ public final class PickleBlastScene: SKScene {
     private let hud = SKNode()
     private let hudBacking = SKShapeNode()
     private let hudAccent = SKShapeNode()
+    private let opponentAccent = SKShapeNode()
+    private let hudBevel = SKShapeNode()
+    private let playerIdentity = SKLabelNode(fontNamed: "HelveticaNeue-Bold")
+    private let opponentIdentity = SKLabelNode(fontNamed: "HelveticaNeue-Bold")
+    private var lastHUDIdentity: BossID?
     private let celebrationLayer = SKNode()
     private var hearts: [SKSpriteNode] = []
     private var targetNodes: [Int: TargetNode] = [:]
@@ -142,28 +147,44 @@ public final class PickleBlastScene: SKScene {
         ball.size = CGSize(width: tuning.ballRadius * 3.2 / textures.manifest.supporting["ball"]!.visibleFraction, height: tuning.ballRadius * 3.2 / textures.manifest.supporting["ball"]!.visibleFraction)
         addChild(hud)
         hud.zPosition = 20
-        hudBacking.name = "hudBlackBacking"
+        hudBacking.name = "hudScorePanels"
         hudBacking.zPosition = -2
-        hudBacking.fillColor = Neon.black
-        hudBacking.strokeColor = Neon.cyan.withAlphaComponent(0.18)
+        hudBacking.fillColor = SKColor(red: 0.055, green: 0.12, blue: 0.18, alpha: 0.95)
+        hudBacking.strokeColor = Neon.cyan.withAlphaComponent(0.32)
         hudBacking.lineWidth = 0.5
         hud.addChild(hudBacking)
-        hudAccent.name = "hudAccent"
-        hudAccent.zPosition = -1
-        hudAccent.strokeColor = Neon.cyan.withAlphaComponent(0.65)
-        hudAccent.lineWidth = 0.7
-        CrispVector.prepare(hudAccent)
-        hud.addChild(hudAccent)
+        for (node, color, name) in [(hudAccent, Neon.lime, "hudPlayerAccent"),
+                                     (opponentAccent, Neon.magenta, "hudOpponentAccent")] {
+            node.name = name
+            node.zPosition = -1
+            node.fillColor = color
+            node.strokeColor = .clear
+            hud.addChild(node)
+        }
+        for (label, color, name, alignment) in [
+            (playerIdentity, Neon.lime, "hudPlayerIdentity", SKLabelHorizontalAlignmentMode.left),
+            (opponentIdentity, Neon.magenta, "hudOpponentIdentity", SKLabelHorizontalAlignmentMode.right)] {
+            label.name = name
+            label.fontColor = color
+            label.fontSize = 6.5
+            label.horizontalAlignmentMode = alignment
+            label.verticalAlignmentMode = .center
+            hud.addChild(label)
+        }
+        hudBevel.name = "hudPlaqueBevel"
+        hudBevel.strokeColor = Neon.white.withAlphaComponent(0.16)
+        hudBevel.lineWidth = 0.5
+        hud.addChild(hudBevel)
         score.horizontalAlignmentMode = .left
         score.verticalAlignmentMode = .center
         score.fontSize = 15
-        score.fontColor = Neon.lime
+        score.fontColor = Neon.white
         score.name = "hudPlayerScore"
         hud.addChild(score)
         opponentScore.horizontalAlignmentMode = .right
         opponentScore.verticalAlignmentMode = .center
         opponentScore.fontSize = 12
-        opponentScore.fontColor = Neon.magenta
+        opponentScore.fontColor = Neon.white
         opponentScore.name = "hudOpponentScore"
         opponentScore.isHidden = true
         hud.addChild(opponentScore)
@@ -289,29 +310,37 @@ public final class PickleBlastScene: SKScene {
         submessage.isHidden = state.phase == .blackout
         let isBossRally = state.mode.isBossRally
         if lastHUDMode != state.mode {
-            score.fontSize = isBossRally ? 10.5 : 15
-            opponentScore.fontSize = isBossRally ? 10.5 : 12
+            score.fontSize = isBossRally ? 16 : 15
+            opponentScore.fontSize = 16
             opponentScore.isHidden = !isBossRally
             for heart in hearts { heart.isHidden = isBossRally }
             lastScore = nil
             lastPlayerRallyPoints = nil
             lastOpponentRallyPoints = nil
+            playerIdentity.text = isBossRally ? "YOU" : "POINTS"
+            opponentIdentity.text = isBossRally ? state.bossID.rawValue.uppercased() : "LIVES"
+            lastHUDIdentity = state.bossID
             lastHUDMode = state.mode
             layoutScoreDetails(isBossRally: isBossRally)
         }
         if isBossRally {
+            if lastHUDIdentity != state.bossID {
+                opponentIdentity.text = state.bossID.rawValue.uppercased()
+                lastHUDIdentity = state.bossID
+            }
             if lastPlayerRallyPoints != state.playerRallyPoints {
-                score.text = "YOU \(state.playerRallyPoints)"
+                score.text = String(state.playerRallyPoints)
                 lastPlayerRallyPoints = state.playerRallyPoints
             }
             if lastOpponentRallyPoints != state.opponentRallyPoints {
-                opponentScore.text = "BOSS \(state.opponentRallyPoints)"
+                opponentScore.text = String(state.opponentRallyPoints)
                 lastOpponentRallyPoints = state.opponentRallyPoints
             }
             layoutScoreDetails(isBossRally: true)
         } else if lastScore != state.score {
             score.text = String(state.score)
             lastScore = state.score
+            layoutScoreDetails(isBossRally: false)
         }
         if lastLives != state.lives {
             for (index, heart) in hearts.enumerated() {
@@ -329,6 +358,8 @@ public final class PickleBlastScene: SKScene {
         renderCascade(state.celebration, visible: state.phase == .celebration)
         combo.isHidden = isBossRally || state.targetChain < 2 || visualTime >= comboUntil || state.phase != .playing
         let milestoneVisible = rallyMomentum.render(state: state, time: visualTime, reduceMotion: reduceMotion)
+        playerIdentity.isHidden = milestoneVisible
+        opponentIdentity.isHidden = milestoneVisible
         score.isHidden = milestoneVisible
         opponentScore.isHidden = !isBossRally || milestoneVisible
         renderMessage(state)
@@ -373,15 +404,25 @@ public final class PickleBlastScene: SKScene {
         let groundingScale = sqrt(size.width / 211)
         CrispVector.setVisualScale(groundingScale, on: playerGround)
         CrispVector.setVisualScale(groundingScale, on: bossGround)
-        let panel = CGRect(x: safeInsets.leading + 4, y: courtProjection.hudY - 8,
-                           width: max(1, size.width - safeInsets.leading - safeInsets.trailing - 8), height: 16)
-        hudBacking.path = CGPath(roundedRect: panel, cornerWidth: 5, cornerHeight: 5, transform: nil)
-        let accent = CGMutablePath()
-        for side in [panel.minX + 7, panel.maxX - 24] {
-            accent.move(to: CGPoint(x: side, y: panel.minY))
-            accent.addLine(to: CGPoint(x: side + 17, y: panel.minY))
+        // Two independent plaques leave the arena and the 44pt Pause target open.
+        // Paths change only on viewport changes; no blur, filters or live shadows.
+        let panels = scorePanelFrames()
+        let plates = CGMutablePath()
+        for panel in [panels.left, panels.right] {
+            plates.addRoundedRect(in: panel, cornerWidth: 4, cornerHeight: 4)
         }
-        CrispVector.replacePath(of: hudAccent, with: accent)
+        hudBacking.path = plates
+        let bevel = CGMutablePath()
+        for panel in [panels.left, panels.right] {
+            bevel.move(to: CGPoint(x: panel.minX + 5, y: panel.maxY - 1))
+            bevel.addLine(to: CGPoint(x: panel.maxX - 5, y: panel.maxY - 1))
+        }
+        hudBevel.path = bevel
+        for (node, panel, right) in [(hudAccent, panels.left, false), (opponentAccent, panels.right, true)] {
+            let x = right ? panel.maxX - 21 : panel.minX + 5
+            node.path = CGPath(roundedRect: CGRect(x: x, y: panel.minY + 2, width: 16, height: 1),
+                               cornerWidth: 0.5, cornerHeight: 0.5, transform: nil)
+        }
         for effect in effects { effect.reproject(courtProjection) }
         let safeX = max(14, size.width * 0.08)
         score.position = CGPoint(x: safeInsets.leading + safeX, y: courtProjection.hudY)
@@ -401,20 +442,39 @@ public final class PickleBlastScene: SKScene {
         #endif
     }
 
+    private func scorePanelFrames() -> (left: CGRect, right: CGRect) {
+        let center = CGFloat(courtProjection.centerX)
+        let left = safeInsets.leading + 6
+        let right = size.width - safeInsets.trailing - 6
+        let y = CGFloat(courtProjection.hudY) - 5.5
+        return (CGRect(x: left, y: y, width: max(1, center - 27 - left), height: 19.5),
+                CGRect(x: center + 27, y: y, width: max(1, right - center - 27), height: 19.5))
+    }
+
     private func layoutScoreDetails(isBossRally: Bool) {
-        // Match scores and a quiet progress/save pair share the safe row above
-        // every boss pose. Growing numbers appear only for brief milestones.
-        if isBossRally {
-            let sideMargin = size.width < 190 ? CGFloat(7) : max(14, size.width * 0.08)
-            score.position.x = safeInsets.leading + sideMargin
-            opponentScore.position.x = size.width - safeInsets.trailing - sideMargin
+        let panels = scorePanelFrames()
+        score.position = CGPoint(x: panels.left.minX + 8, y: courtProjection.hudY + 2)
+        opponentScore.position = CGPoint(x: panels.right.maxX - 8, y: courtProjection.hudY + 2)
+        playerIdentity.position = CGPoint(x: score.position.x, y: courtProjection.hudY + 12)
+        opponentIdentity.position = CGPoint(x: opponentScore.position.x, y: courtProjection.hudY + 12)
+        opponentIdentity.fontSize = 6.5
+        if opponentIdentity.frame.width > panels.right.width - 16 {
+            opponentIdentity.fontSize *= (panels.right.width - 16) / opponentIdentity.frame.width
         }
-        score.position.y = courtProjection.hudY
-        opponentScore.position.y = courtProjection.hudY
-        combo.horizontalAlignmentMode = isBossRally ? .left : .center
-        combo.fontSize = isBossRally ? 8 : 10
-        combo.position = CGPoint(x: isBossRally ? score.frame.maxX + 2 : size.width / 2,
-                                 y: isBossRally ? courtProjection.hudY : courtProjection.hudY - 13)
+        if !isBossRally {
+            score.fontSize = 15
+            if score.frame.width > panels.left.width - 16 {
+                score.fontSize *= (panels.left.width - 16) / score.frame.width
+            }
+        }
+        for (index, heart) in hearts.enumerated() {
+            heart.size = CGSize(width: 12, height: 12)
+            heart.position = CGPoint(x: panels.right.maxX - 9 - CGFloat(hearts.count - 1 - index) * 12,
+                                     y: courtProjection.hudY)
+        }
+        combo.horizontalAlignmentMode = .center
+        combo.fontSize = 9
+        combo.position = CGPoint(x: size.width / 2, y: courtProjection.hudY - 13)
         rallyMomentum.layout(playerScore: score.frame, opponentScore: opponentScore.frame,
                              y: courtProjection.hudY, centerX: courtProjection.centerX)
     }
