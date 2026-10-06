@@ -33,7 +33,7 @@
   "owner_actions": [
     "Confirm app-name availability and category choices in App Store Connect.",
     "Confirm copyright holder and distribution rights.",
-    "Confirm the next unique upload build number from App Store Connect; build 10 is an accepted local development build.",
+    "Confirm the next unique upload build number from App Store Connect; build 12 is the accepted local development build.",
     "Provide required private App Review contact details only in Apple interfaces.",
     "Complete final privacy, age-rating, export-compliance and any account compliance questions."
   ],
