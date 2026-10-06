@@ -24,11 +24,29 @@ jobs:
           persist-credentials: false
           fetch-depth: 1
 
+      # Keep the job/check name stable and always run a validation route. There
+      # is no workflow-level path filter that could leave a required check pending.
+      - name: Choose validation route
+        id: route
+        env:
+          CI_EVENT_NAME: ${{ github.event_name }}
+          CI_BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+          CI_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python3 scripts/route_ci.py --github-output "$GITHUB_OUTPUT"
+
+      - name: Check CI routing regressions
+        run: python3 scripts/test_route_ci.py
+
+      - name: Validate documentation and website
+        if: steps.route.outputs.full == 'false'
+        run: bash scripts/ci_docs.sh
+
       - name: Validate source, unsigned Watch builds, and available UI tests
+        if: steps.route.outputs.full == 'true'
         run: bash scripts/ci_watch.sh
 
       - name: Retain unsigned Watch UI results
-        if: always()
+        if: always() && steps.route.outputs.full == 'true'
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: watch-ui-results
