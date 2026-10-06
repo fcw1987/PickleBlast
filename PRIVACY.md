@@ -1,6 +1,6 @@
 # PickleBlast Privacy
 
-Last updated: October 1, 2026.
+Last updated: October 6, 2026.
 
 This policy describes the PickleBlast app, this GitHub Pages website, and the GitHub services used for support and security reports.
 
@@ -8,7 +8,7 @@ This policy describes the PickleBlast app, this GitHub Pages website, and the Gi
 
 PickleBlast gameplay runs locally on Apple Watch. There are no in-app accounts, ads, tracking, analytics SDKs, or developer-operated gameplay servers. The app does not access health, location, contacts, microphone, or camera information.
 
-The app stores Digital Crown sensitivity, the haptics preference, the best Arcade score, and records for The Wall, The Banger, and The Poacher in its local storage. A match in progress is held in memory and is not restored after the app process ends. These settings and records are not sent to the developer.
+The app stores Digital Crown sensitivity, the haptics preference, the best Arcade score, and records for The Wall, The Banger, The Poacher, The Dinker, and The Lobber in its local storage. A match in progress is held in memory and is not restored after the app process ends. These settings and records are not sent to the developer.
 
 Privacy and Support information are bundled with the app and can be read offline without signing in. Reading these pages does not load remote content. If you separately visit the website or use GitHub to send a report, the website and support sections below apply.
 

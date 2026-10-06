@@ -1,8 +1,8 @@
 {
-  "app_source_commit": "36ee3e28d5e116787c57c842d766eb6fad06d540",
+  "app_source_commit": "5749eddf54f01fe6db09d16465392c2c072df054",
   "version": "1.0",
-  "build": "10",
-  "configuration": "Debug",
+  "build": "12",
+  "configuration": "Release",
   "toolchain": "Xcode 27.0 (27A266a)",
   "device": "Apple Watch Ultra 4 (49mm) simulator",
   "runtime": "watchOS 27.0",
@@ -12,43 +12,43 @@
   "captures": [
     {
       "id": "boss-rally",
-      "description": "Ordinary Lobber match after Pause/Resume.",
-      "captured_at_utc": "2026-10-05T19:18:22.334000+00:00",
+      "description": "Ordinary Lobber match after Pause/Resume, with three arena lights per side.",
+      "captured_at_utc": "2026-10-06T02:06:29.456000+00:00",
       "store_path": "screenshots/boss-rally.png",
       "website_path": "../images/boss-rally.png",
-      "sha256": "2a3832630872e843fb28b4cf247dc3f020bf14dd94fbe54dbdf0e4b8f93e0fc3",
-      "website_sha256": "2a3832630872e843fb28b4cf247dc3f020bf14dd94fbe54dbdf0e4b8f93e0fc3",
+      "sha256": "70ec5311404eb9ab3af90747eeaf1c6d5bf8d8e2a4d5504a52db93fa31d8aabd",
+      "website_sha256": "70ec5311404eb9ab3af90747eeaf1c6d5bf8d8e2a4d5504a52db93fa31d8aabd",
       "width": 422,
       "height": 514,
-      "store_bytes": 288250,
-      "website_bytes": 288250
+      "store_bytes": 305460,
+      "website_bytes": 305460
     },
     {
       "id": "opponents",
-      "description": "Individual opponent list beginning with Wall and Banger; no obsolete series action.",
-      "captured_at_utc": "2026-10-05T19:17:29.158000+00:00",
+      "description": "Individual opponent list beginning with Wall and Banger.",
+      "captured_at_utc": "2026-10-06T02:05:35.051000+00:00",
       "store_path": "screenshots/opponents.png",
       "website_path": "../images/opponents.png",
-      "sha256": "a38a39699b7e160fdb9ad7cf1659ce2defafcf935ed33d4417a8101811ae178b",
-      "website_sha256": "a38a39699b7e160fdb9ad7cf1659ce2defafcf935ed33d4417a8101811ae178b",
+      "sha256": "f52febe5b692094a2d18f7e80f74350a68c2a0ddcdf30ac1d60e49ab95178cf7",
+      "website_sha256": "f52febe5b692094a2d18f7e80f74350a68c2a0ddcdf30ac1d60e49ab95178cf7",
       "width": 422,
       "height": 514,
-      "store_bytes": 38394,
-      "website_bytes": 38394
+      "store_bytes": 38702,
+      "website_bytes": 38702
     },
     {
       "id": "arcade",
       "description": "Ordinary first Arcade wave with original paddle targets.",
-      "captured_at_utc": "2026-10-05T19:18:26.612000+00:00",
+      "captured_at_utc": "2026-10-06T02:06:33.909000+00:00",
       "store_path": "screenshots/arcade.png",
       "website_path": "../images/arcade.png",
-      "sha256": "c71bc426980b3c741802e34bd1caf96257fa2cf5dd4ba272ebfa76f2e8065c9c",
-      "website_sha256": "c71bc426980b3c741802e34bd1caf96257fa2cf5dd4ba272ebfa76f2e8065c9c",
+      "sha256": "e7787ce06b2d5c8bc8a6c33f22c6709e9ea79079079379cf82c35a6bd023d264",
+      "website_sha256": "e7787ce06b2d5c8bc8a6c33f22c6709e9ea79079079379cf82c35a6bd023d264",
       "width": 422,
       "height": 514,
-      "store_bytes": 293303,
-      "website_bytes": 293303
+      "store_bytes": 314590,
+      "website_bytes": 314590
     }
   ],
-  "status": "Actual accepted build 10 interface. Local store drafts only; no submission."
+  "status": "Current build 12 interface with five-boss policy correction; actual ordinary Release simulator captures, prepared for owner review; not submitted."
 }
