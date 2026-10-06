@@ -27,7 +27,7 @@
     ],
     "automatically_include_new_territories": false,
     "preorder": false,
-    "release": "Manual after App Review approval",
+    "release": "Automatic after App Review approval",
     "eula": "Apple standard EULA"
   },
   "owner_actions": [
