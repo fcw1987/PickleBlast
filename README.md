@@ -1,12 +1,12 @@
 # PickleBlast
 
-**Neon pickleball, made for Apple Watch.** Move with the Digital Crown, return automatically, and play quick rallies against five distinct bosses.
+**Pickleball, made for Apple Watch.** Move with the Digital Crown, return automatically, and play quick rallies against five distinct bosses.
 
 [Website](https://fcw1987.github.io/PickleBlast/) · [Privacy](https://fcw1987.github.io/PickleBlast/privacy/) · [Support](https://fcw1987.github.io/PickleBlast/support/)
 
-<a href="docs/images/boss-rally.png"><img src="docs/images/boss-rally.png" alt="A live Boss Rally on Apple Watch, with the ball crossing the neon court." width="142"></a>
+<a href="docs/images/boss-rally.png"><img src="docs/images/boss-rally.png" alt="A live Boss Rally on Apple Watch, with the ball crossing the black court." width="142"></a>
 <a href="docs/images/opponents.png"><img src="docs/images/opponents.png" alt="Build 10 individual Boss Rally selection screen." width="142"></a>
-<a href="docs/images/arcade.png"><img src="docs/images/arcade.png" alt="Arcade mode during a neon target wave on Apple Watch." width="142"></a>
+<a href="docs/images/arcade.png"><img src="docs/images/arcade.png" alt="Arcade mode during a target wave on Apple Watch." width="142"></a>
 
 These actual build 10 captures show the accepted interface and B3 court in a watchOS 27 simulator. They are ordinary gameplay and navigation captures, not concept art. See [screenshot provenance](docs/images/README.md).
 
