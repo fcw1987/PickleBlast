@@ -46,7 +46,13 @@ obj('testFrameworks', 'isa = PBXFrameworksBuildPhase; buildActionMask = 21474836
 obj('testResources', 'isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0;')
 obj('testProxy', f'isa = PBXContainerItemProxy; containerPortal = {uid("project")}; proxyType = 1; remoteGlobalIDString = {uid("target")}; remoteInfo = PickleBlast;')
 obj('testDependency', f'isa = PBXTargetDependency; target = {uid("target")}; targetProxy = {uid("testProxy")};')
-obj('products', f'isa = PBXGroup; name = Products; sourceTree = "<group>"; children = ({uid("product")}, {uid("testProduct")});')
+obj('containerProduct', 'isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PickleBlastContainer.app; sourceTree = BUILT_PRODUCTS_DIR;')
+obj('containerResources', 'isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0;')
+obj('embedWatchBuild', f'isa = PBXBuildFile; fileRef = {uid("product")}; settings = {{ ATTRIBUTES = (RemoveHeadersOnCopy); }};')
+obj('embedWatch', f'isa = PBXCopyFilesBuildPhase; buildActionMask = 2147483647; dstPath = "$(CONTENTS_FOLDER_PATH)/Watch"; dstSubfolderSpec = 16; files = ({uid("embedWatchBuild")}); name = "Embed Watch Content"; runOnlyForDeploymentPostprocessing = 0;')
+obj('containerProxy', f'isa = PBXContainerItemProxy; containerPortal = {uid("project")}; proxyType = 1; remoteGlobalIDString = {uid("target")}; remoteInfo = PickleBlast;')
+obj('containerDependency', f'isa = PBXTargetDependency; target = {uid("target")}; targetProxy = {uid("containerProxy")};')
+obj('products', f'isa = PBXGroup; name = Products; sourceTree = "<group>"; children = ({uid("product")}, {uid("testProduct")}, {uid("containerProduct")});')
 obj('signing', 'isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Signing.xcconfig; sourceTree = "<group>";')
 obj('signingExample', 'isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Signing.example.xcconfig; sourceTree = "<group>";')
 obj('configurationGroup', f'isa = PBXGroup; path = Configuration; sourceTree = "<group>"; children = ({uid("signing")}, {uid("signingExample")});')
@@ -61,16 +67,19 @@ obj('frameworks', f'isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647;
 for mode in ['Debug', 'Release']:
     common = 'CLANG_ENABLE_MODULES = YES; CLANG_ENABLE_OBJC_ARC = YES; SDKROOT = watchos; SWIFT_VERSION = 5.0; WATCHOS_DEPLOYMENT_TARGET = 10.0;'
     project = common + (' DEBUG_INFORMATION_FORMAT = dwarf; ENABLE_TESTABILITY = YES; SWIFT_OPTIMIZATION_LEVEL = "-Onone"; SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)"; ONLY_ACTIVE_ARCH = YES;' if mode == 'Debug' else ' DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym"; SWIFT_COMPILATION_MODE = wholemodule; SWIFT_OPTIMIZATION_LEVEL = "-O"; VALIDATE_PRODUCT = YES;')
-    app = 'ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon; CODE_SIGN_STYLE = Automatic; CURRENT_PROJECT_VERSION = 12; GENERATE_INFOPLIST_FILE = NO; INFOPLIST_FILE = WatchApp/Info.plist; MARKETING_VERSION = 1.0; PRODUCT_BUNDLE_IDENTIFIER = com.pickleblast.watchapp; PRODUCT_NAME = "$(TARGET_NAME)"; SUPPORTED_PLATFORMS = "watchos watchsimulator"; TARGETED_DEVICE_FAMILY = 4; SKIP_INSTALL = NO; LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks"; SWIFT_EMIT_LOC_STRINGS = YES;'
+    app = 'ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon; CODE_SIGN_STYLE = Automatic; CURRENT_PROJECT_VERSION = 12; GENERATE_INFOPLIST_FILE = NO; INFOPLIST_FILE = WatchApp/Info.plist; MARKETING_VERSION = 1.0; PRODUCT_BUNDLE_IDENTIFIER = com.pickleblast.watchapp; PRODUCT_NAME = "$(TARGET_NAME)"; SUPPORTED_PLATFORMS = "watchos watchsimulator"; TARGETED_DEVICE_FAMILY = 4; SKIP_INSTALL = YES; LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks"; SWIFT_EMIT_LOC_STRINGS = YES;'
     obj('project'+mode, f'isa = XCBuildConfiguration; buildSettings = {{ {project} }}; name = {mode};')
     obj('app'+mode, f'isa = XCBuildConfiguration; baseConfigurationReference = {uid("signing")}; buildSettings = {{ {app} }}; name = {mode};')
     test = 'CODE_SIGN_STYLE = Automatic; GENERATE_INFOPLIST_FILE = YES; PRODUCT_BUNDLE_IDENTIFIER = com.pickleblast.watchapp.uitests; PRODUCT_NAME = "$(TARGET_NAME)"; SUPPORTED_PLATFORMS = "watchos watchsimulator"; TARGETED_DEVICE_FAMILY = 4; TEST_TARGET_NAME = PickleBlast; SWIFT_EMIT_LOC_STRINGS = NO; STRING_CATALOG_GENERATE_SYMBOLS = NO; CURRENT_PROJECT_VERSION = 12; MARKETING_VERSION = 1.0;'
     obj('test'+mode, f'isa = XCBuildConfiguration; baseConfigurationReference = {uid("signing")}; buildSettings = {{ {test} }}; name = {mode};')
-for prefix in ['project', 'app', 'test']:
+    container = 'CODE_SIGN_STYLE = Automatic; CURRENT_PROJECT_VERSION = 12; MARKETING_VERSION = 1.0; PRODUCT_BUNDLE_IDENTIFIER = com.pickleblast; PRODUCT_NAME = "$(TARGET_NAME)"; SDKROOT = iphoneos; SUPPORTED_PLATFORMS = "iphoneos iphonesimulator"; IPHONEOS_DEPLOYMENT_TARGET = 17.0; TARGETED_DEVICE_FAMILY = "1,2"; SKIP_INSTALL = NO; GENERATE_INFOPLIST_FILE = YES; INFOPLIST_KEY_CFBundleDisplayName = PickleBlast; INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;'
+    obj('container'+mode, f'isa = XCBuildConfiguration; baseConfigurationReference = {uid("signing")}; buildSettings = {{ {container} }}; name = {mode};')
+for prefix in ['project', 'app', 'test', 'container']:
     obj(prefix+'Configs', f'isa = XCConfigurationList; buildConfigurations = ({uid(prefix+"Debug")}, {uid(prefix+"Release")}); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release;')
 obj('target', f'isa = PBXNativeTarget; buildConfigurationList = {uid("appConfigs")}; buildPhases = ({uid("sources")}, {uid("frameworks")}, {uid("resources")}); buildRules = (); dependencies = (); name = PickleBlast; packageProductDependencies = ({uid("PickleBlastCore")}, {uid("PickleBlastRendering")}); productName = PickleBlast; productReference = {uid("product")}; productType = "com.apple.product-type.application";')
 obj('testTarget', f'isa = PBXNativeTarget; buildConfigurationList = {uid("testConfigs")}; buildPhases = ({uid("testSources")}, {uid("testFrameworks")}, {uid("testResources")}); buildRules = (); dependencies = ({uid("testDependency")}); name = PickleBlastWatchUITests; productName = PickleBlastWatchUITests; productReference = {uid("testProduct")}; productType = \"com.apple.product-type.bundle.ui-testing\";')
-obj('project', f'isa = PBXProject; attributes = {{ BuildIndependentTargetsInParallel = YES; LastSwiftUpdateCheck = 1600; LastUpgradeCheck = 1600; TargetAttributes = {{ {uid("target")} = {{ CreatedOnToolsVersion = 27.0; }}; {uid("testTarget")} = {{ CreatedOnToolsVersion = 27.0; TestTargetID = {uid("target")}; }}; }}; }}; buildConfigurationList = {uid("projectConfigs")}; compatibilityVersion = "Xcode 14.0"; developmentRegion = en; hasScannedForEncodings = 0; knownRegions = (en, Base); mainGroup = {uid("rootGroup")}; productRefGroup = {uid("products")}; packageReferences = ({uid("localPackage")}); projectDirPath = ""; projectRoot = ""; targets = ({uid("target")}, {uid("testTarget")});')
+obj('containerTarget', f'isa = PBXNativeTarget; buildConfigurationList = {uid("containerConfigs")}; buildPhases = ({uid("containerResources")}, {uid("embedWatch")}); buildRules = (); dependencies = ({uid("containerDependency")}); name = PickleBlastContainer; productName = PickleBlastContainer; productReference = {uid("containerProduct")}; productType = "com.apple.product-type.application.watchapp2-container";')
+obj('project', f'isa = PBXProject; attributes = {{ BuildIndependentTargetsInParallel = YES; LastSwiftUpdateCheck = 1600; LastUpgradeCheck = 1600; TargetAttributes = {{ {uid("target")} = {{ CreatedOnToolsVersion = 27.0; }}; {uid("testTarget")} = {{ CreatedOnToolsVersion = 27.0; TestTargetID = {uid("target")}; }}; }}; }}; buildConfigurationList = {uid("projectConfigs")}; compatibilityVersion = "Xcode 14.0"; developmentRegion = en; hasScannedForEncodings = 0; knownRegions = (en, Base); mainGroup = {uid("rootGroup")}; productRefGroup = {uid("products")}; packageReferences = ({uid("localPackage")}); projectDirPath = ""; projectRoot = ""; targets = ({uid("target")}, {uid("testTarget")}, {uid("containerTarget")});')
 project_dir = ROOT / 'PickleBlast.xcodeproj'
 project_text = '// !$*UTF8*$!\n{\n\tarchiveVersion = 1;\n\tclasses = {};\n\tobjectVersion = 56;\n\tobjects = {\n'+'\n'.join(objects)+'\n\t};\n\trootObject = '+uid('project')+';\n}\n'
 scheme = f'''<?xml version="1.0" encoding="UTF-8"?>
@@ -83,7 +92,14 @@ scheme = f'''<?xml version="1.0" encoding="UTF-8"?>
 </Scheme>
 '''
 scheme_dir = project_dir/'xcshareddata/xcschemes'
-outputs = {project_dir/'project.pbxproj': project_text, scheme_dir/'PickleBlast.xcscheme': scheme}
+distribution_scheme = f'''<?xml version="1.0" encoding="UTF-8"?>
+<Scheme LastUpgradeVersion="2700" version="1.3">
+ <BuildAction parallelizeBuildables="YES" buildImplicitDependencies="YES"><BuildActionEntries><BuildActionEntry buildForTesting="NO" buildForRunning="NO" buildForProfiling="NO" buildForArchiving="YES" buildForAnalyzing="YES"><BuildableReference BuildableIdentifier="primary" BlueprintIdentifier="{uid('containerTarget')}" BuildableName="PickleBlastContainer.app" BlueprintName="PickleBlastContainer" ReferencedContainer="container:PickleBlast.xcodeproj"/></BuildActionEntry></BuildActionEntries></BuildAction>
+ <AnalyzeAction buildConfiguration="Debug"/><ArchiveAction buildConfiguration="Release" revealArchiveInOrganizer="YES"/>
+</Scheme>
+'''
+outputs = {project_dir/'project.pbxproj': project_text, scheme_dir/'PickleBlast.xcscheme': scheme,
+           scheme_dir/'PickleBlastDistribution.xcscheme': distribution_scheme}
 for path in outputs:
     if not path.resolve().is_relative_to(ROOT):
         raise SystemExit('Project generation failed: output path escapes checkout: ' + str(path.relative_to(ROOT)))
@@ -97,4 +113,4 @@ else:
     for path, content in outputs.items():
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(content, encoding='utf-8')
-    print('Generated native standalone watchOS project; local signing configuration remains separate.')
+    print('Generated Watch-only application and distribution container; local signing configuration remains separate.')

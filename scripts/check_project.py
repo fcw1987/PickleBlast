@@ -35,7 +35,7 @@ p = json.loads(subprocess.check_output(['plutil', '-convert', 'json', '-o', '-',
 objects = p['objects']
 project = objects[p['rootObject']]
 targets = {objects[t]['name']: objects[t] for t in project['targets']}
-require(set(targets) == {'PickleBlast', 'PickleBlastWatchUITests'}, 'Unexpected native targets.')
+require(set(targets) == {'PickleBlast', 'PickleBlastWatchUITests', 'PickleBlastContainer'}, 'Unexpected native targets.')
 app = targets['PickleBlast']
 test = targets['PickleBlastWatchUITests']
 require(app['productType'] == 'com.apple.product-type.application', 'Incorrect app product type.')
@@ -137,6 +137,24 @@ target_ids = set(project['targets'])
 for reference in scheme.findall('.//BuildableReference'):
     require(reference.get('BlueprintIdentifier') in target_ids and
             reference.get('ReferencedContainer') == 'container:PickleBlast.xcodeproj', 'Invalid shared scheme target.')
-require(all(objects[oid]['buildSettings'].get('SKIP_INSTALL') == 'NO'
-            for oid in objects[app['buildConfigurationList']]['buildConfigurations']), 'App must be archivable.')
+require(all(objects[oid]['buildSettings'].get('SKIP_INSTALL') == 'YES'
+            for oid in objects[app['buildConfigurationList']]['buildConfigurations']), 'Watch app must archive inside its container.')
 print('PASS: portable native targets, source/resource references, signing defaults, versions, optimization, privacy, icons and shared scheme.')
+
+container = targets['PickleBlastContainer']
+require(container['productType'] == 'com.apple.product-type.application.watchapp2-container', 'Incorrect distribution container type.')
+for oid in objects[container['buildConfigurationList']]['buildConfigurations']:
+    config = objects[oid]
+    settings = config['buildSettings']
+    require(config.get('baseConfigurationReference') == signing_id and settings.get('CODE_SIGN_STYLE') == 'Automatic', 'Container must use portable signing defaults.')
+    require(settings.get('PRODUCT_BUNDLE_IDENTIFIER') == 'com.pickleblast' and settings.get('SDKROOT') == 'iphoneos' and settings.get('SKIP_INSTALL') == 'NO', 'Incorrect container identity/platform/archive settings.')
+    require((settings.get('MARKETING_VERSION'), settings.get('CURRENT_PROJECT_VERSION')) in versions, 'Container version differs from Watch.')
+require([objects[oid]['target'] for oid in container['dependencies']] == [next(oid for oid in project['targets'] if objects[oid] is app)], 'Container must depend on Watch app.')
+embed = [objects[oid] for oid in container['buildPhases'] if objects[oid]['isa'] == 'PBXCopyFilesBuildPhase']
+require(len(embed) == 1 and embed[0]['dstPath'] == '$(CONTENTS_FOLDER_PATH)/Watch' and embed[0]['dstSubfolderSpec'] == '16', 'Incorrect Watch embedding location.')
+require([objects[oid]['fileRef'] for oid in embed[0]['files']] == [app['productReference']], 'Container must embed only the Watch app.')
+distribution = ET.parse(root / 'PickleBlast.xcodeproj/xcshareddata/xcschemes/PickleBlastDistribution.xcscheme').getroot()
+require(distribution.find('ArchiveAction').get('buildConfiguration') == 'Release', 'Distribution archive must use Release.')
+references = distribution.findall('.//BuildableReference')
+require(len(references) == 1 and all(objects[ref.get('BlueprintIdentifier')] is container and ref.get('ReferencedContainer') == 'container:PickleBlast.xcodeproj' for ref in references), 'Distribution scheme must reference container.')
+print('PASS: distribution container identity, versions, dependency, embedding and archive scheme.')
