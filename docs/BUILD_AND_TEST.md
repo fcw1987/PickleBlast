@@ -65,6 +65,18 @@ Documentation-only changes use [the lightweight suite](../scripts/ci_docs.sh): M
 
 Changes to application code, runtime assets, projects, configuration, build/test scripts, tests, workflows, root `PRIVACY.md`, or the bundled Watch policy retain [the full Watch suite](../scripts/ci_watch.sh). Mixed changes, unknown file types/paths, empty diffs, and unavailable comparison commits also take the full route. Routing compares the entire push range and checks both old and new paths for renames and deletions. Concurrency is scoped to each commit so a later documentation-only push cannot cancel an earlier app-affecting full run.
 
+Examples of main-push routing:
+
+| Changed paths | Validation |
+| --- | --- |
+| `README.md`, `docs/index.html`, website CSS/images | Lightweight documentation suite |
+| `docs/app_store/metadata_en_US.json` | Lightweight, including store-draft checks |
+| `docs/privacy/index.html` only | Lightweight, with required policy synchronization |
+| `PRIVACY.md` or `WatchApp/Policy/Privacy.txt` | Full Watch suite |
+| `Sources`, `WatchApp/Art`, project, generator, tests, or workflow files | Full Watch suite |
+| A source file deleted or moved into `docs` | Full Watch suite |
+| Missing comparison, unknown path, or manual workflow request | Full Watch suite |
+
 To run the full suite regardless of changed paths, use **Run workflow** on Watch validation in GitHub Actions (`workflow_dispatch`). CI remains unsigned and does not need Apple credentials. The existing main-push and manual triggers remain in place; no pull-request trigger was added.
 
 Focused local checks for this routing are:
