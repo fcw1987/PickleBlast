@@ -57,6 +57,23 @@ python3 scripts/check_project.py
 
 The runtime check validates the committed resources without the optional full master pack. Importer tests use committed fixtures and isolated temporary output. Full master regeneration is an optional maintenance operation described in [Artwork and runtime assets](ART_ASSETS.md); it is not part of a newcomer's setup.
 
+## Continuous integration
+
+Every push to `main` runs the **Watch validation** workflow. Its **Source and unsigned Watch validation** check always runs a validation route; documentation changes do not leave that check skipped or pending.
+
+Documentation-only changes use [the lightweight suite](../scripts/ci_docs.sh): Markdown links, website and App Store draft metadata, site regressions, privacy synchronization, and public-tree checks. This route covers root Markdown files except `PRIVACY.md`, Markdown under `.github`, and ordinary text/image/site files under `docs`. It does not import artwork, compile Swift, build Watch products, or launch simulator UI tests.
+
+Changes to application code, runtime assets, projects, configuration, build/test scripts, tests, workflows, root `PRIVACY.md`, or the bundled Watch policy retain [the full Watch suite](../scripts/ci_watch.sh). Mixed changes, unknown file types/paths, empty diffs, and unavailable comparison commits also take the full route. Routing compares the entire push range and checks both old and new paths for renames and deletions. Concurrency is scoped to each commit so a later documentation-only push cannot cancel an earlier app-affecting full run.
+
+To run the full suite regardless of changed paths, use **Run workflow** on Watch validation in GitHub Actions (`workflow_dispatch`). CI remains unsigned and does not need Apple credentials. The existing main-push and manual triggers remain in place; no pull-request trigger was added.
+
+Focused local checks for this routing are:
+
+```sh
+python3 scripts/test_route_ci.py
+bash scripts/ci_docs.sh
+```
+
 ## Unsigned Watch simulator builds
 
 Select a current simulator identifier:
