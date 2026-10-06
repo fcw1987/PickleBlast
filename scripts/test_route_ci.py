@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Routing regressions: never omit full validation for app/build/policy changes."""
 from pathlib import Path
+import re
 import subprocess
 import tempfile
 import unittest
@@ -24,6 +25,13 @@ class PathRoutingTests(unittest.TestCase):
                      '../README.md', '/README.md']:
             with self.subTest(path=path):
                 self.assertFalse(route_ci.docs_only(['README.md', path]))
+
+    def test_different_main_commits_do_not_share_a_cancellation_group(self):
+        workflow = (route_ci.ROOT / '.github/workflows/validation.yml').read_text()
+        group = re.search(r'^  group: (.+)$', workflow, re.MULTILINE).group(1)
+        def resolve(sha):
+            return group.replace('${{ github.ref }}', 'refs/heads/main').replace('${{ github.sha }}', sha)
+        self.assertNotEqual(resolve('a' * 40), resolve('b' * 40))
 
     def test_empty_change_list_is_full(self):
         self.assertFalse(route_ci.docs_only([]))

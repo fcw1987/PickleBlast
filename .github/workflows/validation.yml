@@ -9,7 +9,8 @@ permissions:
   contents: read
 
 concurrency:
-  group: watch-validation-${{ github.ref }}
+  # A docs-only push must not cancel an earlier app-affecting full run.
+  group: watch-validation-${{ github.ref }}-${{ github.sha }}
   cancel-in-progress: true
 
 jobs:
